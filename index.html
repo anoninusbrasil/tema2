@@ -27,7 +27,6 @@
             --background: #ecf0f1;
             --surface: #ffffff;
         }
-
         [data-theme="dark"] {
             --primary: #3498db;
             --secondary: #2c3e50;
@@ -40,14 +39,12 @@
             --surface: #34495e;
             --gray: #7f8c8d;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             transition: var(--transition);
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--background);
@@ -56,12 +53,10 @@
             padding: 15px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-
         .container {
             max-width: 100%;
             margin: 0 auto;
         }
-
         /* Header e Navegação */
         header {
             display: flex;
@@ -73,13 +68,11 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
         .header-actions {
             display: flex;
             gap: 10px;
             align-items: center;
         }
-
         h1 {
             font-size: 1.6rem;
             color: var(--primary);
@@ -87,7 +80,6 @@
             align-items: center;
             gap: 10px;
         }
-
         /* Welcome Screen */
         .welcome-screen {
             text-align: center;
@@ -98,17 +90,14 @@
             margin-bottom: 20px;
             display: none;
         }
-
         .welcome-screen.active {
             display: block;
         }
-
         .welcome-icon {
             font-size: 3rem;
             color: var(--secondary);
             margin-bottom: 20px;
         }
-
         .welcome-buttons {
             display: flex;
             gap: 15px;
@@ -116,7 +105,6 @@
             margin-top: 25px;
             flex-wrap: wrap;
         }
-
         /* Tutorial */
         .tutorial-container {
             position: fixed;
@@ -131,11 +119,9 @@
             z-index: 2000;
             display: none;
         }
-
         .tutorial-container.active {
             display: flex;
         }
-
         .tutorial-content {
             background-color: var(--surface);
             border-radius: var(--border-radius);
@@ -145,28 +131,23 @@
             box-shadow: var(--box-shadow);
             position: relative;
         }
-
         .tutorial-step {
             display: none;
         }
-
         .tutorial-step.active {
             display: block;
         }
-
         .tutorial-navigation {
             display: flex;
             justify-content: space-between;
             margin-top: 25px;
         }
-
         .tutorial-indicators {
             display: flex;
             gap: 8px;
             justify-content: center;
             margin: 15px 0;
         }
-
         .tutorial-indicator {
             width: 10px;
             height: 10px;
@@ -174,11 +155,9 @@
             background-color: var(--gray);
             cursor: pointer;
         }
-
         .tutorial-indicator.active {
             background-color: var(--secondary);
         }
-
         /* Theme Toggle */
         .theme-toggle {
             background: var(--card-bg);
@@ -192,7 +171,6 @@
             align-items: center;
             padding: 0 5px;
         }
-
         .theme-toggle-handle {
             position: absolute;
             width: 22px;
@@ -202,26 +180,21 @@
             transition: left 0.3s ease;
             left: 5px;
         }
-
         [data-theme="dark"] .theme-toggle-handle {
             left: 33px;
         }
-
         .theme-toggle i {
             font-size: 14px;
             z-index: 2;
         }
-
         .theme-toggle .fa-sun {
             color: #f39c12;
             margin-right: auto;
         }
-
         .theme-toggle .fa-moon {
             color: #ecf0f1;
             margin-left: auto;
         }
-
         /* Dashboard mobile-first */
         .dashboard {
             display: flex;
@@ -229,14 +202,12 @@
             gap: 15px;
             margin-bottom: 20px;
         }
-
         .card {
             background-color: var(--card-bg);
             border-radius: var(--border-radius);
             padding: 18px;
             box-shadow: var(--box-shadow);
         }
-
         .card h2 {
             margin-bottom: 15px;
             color: var(--secondary);
@@ -245,47 +216,39 @@
             align-items: center;
             gap: 8px;
         }
-
         .summary-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
-
         .summary-item {
             background: rgba(0, 0, 0, 0.03);
             padding: 12px;
             border-radius: 8px;
             text-align: center;
         }
-
         .summary-label {
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-bottom: 5px;
         }
-
         .value {
             font-weight: bold;
             font-size: 1.1rem;
             color: var(--primary);
         }
-
         .positive {
             color: var(--success);
         }
-
         .negative {
             color: var(--danger);
         }
-
         /* Distribuição por Tipo */
         .distribution-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-
         .distribution-item {
             display: flex;
             justify-content: space-between;
@@ -293,13 +256,11 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-
         .distribution-info {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
         .distribution-bar {
             height: 8px;
             border-radius: 4px;
@@ -307,25 +268,21 @@
             flex-grow: 1;
             overflow: hidden;
         }
-
         .distribution-fill {
             height: 100%;
             border-radius: 4px;
         }
-
         /* Dividendos */
         .dividends-container {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
         .dividends-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
         .dividend-item {
             display: flex;
             justify-content: space-between;
@@ -335,27 +292,22 @@
             border-radius: 8px;
             border-left: 4px solid var(--success);
         }
-
         .dividend-info {
             flex-grow: 1;
         }
-
         .dividend-ticker {
             font-weight: bold;
             color: var(--success);
         }
-
         .dividend-date {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-
         .dividend-value {
             font-weight: bold;
             color: var(--success);
             font-size: 1.1rem;
         }
-
         /* Últimos dividendos */
         .last-dividend-item {
             display: flex;
@@ -366,27 +318,22 @@
             border-radius: 8px;
             border-left: 4px solid var(--secondary);
         }
-
         .last-dividend-info {
             flex-grow: 1;
         }
-
         .last-dividend-ticker {
             font-weight: bold;
             color: var(--secondary);
         }
-
         .last-dividend-date {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-
         .last-dividend-value {
             font-weight: bold;
             color: var(--secondary);
             font-size: 1.1rem;
         }
-
         /* Tabs mobile */
         .tabs {
             display: flex;
@@ -396,11 +343,9 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
         }
-
         .tabs::-webkit-scrollbar {
             display: none;
         }
-
         .tab {
             padding: 12px 18px;
             cursor: pointer;
@@ -412,12 +357,10 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
-
         .tab.active {
             color: var(--secondary);
             font-weight: bold;
         }
-
         .tab.active::after {
             content: '';
             position: absolute;
@@ -427,15 +370,12 @@
             height: 3px;
             background-color: var(--secondary);
         }
-
         .tab-content {
             display: none;
         }
-
         .tab-content.active {
             display: block;
         }
-
         /* Tabela responsiva */
         .table-responsive {
             overflow-x: auto;
@@ -443,7 +383,6 @@
             margin-bottom: 20px;
             -webkit-overflow-scrolling: touch;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -453,30 +392,25 @@
             box-shadow: var(--box-shadow);
             min-width: 700px;
         }
-
         th, td {
             padding: 12px 10px;
             text-align: left;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             font-size: 0.9rem;
         }
-
         th {
             background-color: var(--primary);
             color: white;
             font-weight: 600;
             font-size: 0.85rem;
         }
-
         tr:hover {
             background-color: rgba(0, 0, 0, 0.03);
         }
-
         .actions {
             display: flex;
             gap: 8px;
         }
-
         .btn {
             padding: 8px 14px;
             border: none;
@@ -489,48 +423,38 @@
             align-items: center;
             gap: 5px;
         }
-
         .btn-primary {
             background-color: var(--secondary);
             color: white;
         }
-
         .btn-primary:hover {
             background-color: #2980b9;
         }
-
         .btn-danger {
             background-color: var(--danger);
             color: white;
         }
-
         .btn-danger:hover {
             background-color: #c0392b;
         }
-
         .btn-success {
             background-color: var(--success);
             color: white;
         }
-
         .btn-success:hover {
             background-color: #27ae60;
         }
-
         .btn-warning {
             background-color: var(--warning);
             color: white;
         }
-
         .btn-warning:hover {
             background-color: #e67e22;
         }
-
         .btn-small {
             padding: 6px 10px;
             font-size: 0.8rem;
         }
-
         /* Formulário */
         .add-form {
             background-color: var(--card-bg);
@@ -539,18 +463,15 @@
             margin-bottom: 20px;
             box-shadow: var(--box-shadow);
         }
-
         .form-group {
             margin-bottom: 15px;
         }
-
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 600;
             font-size: 0.9rem;
         }
-
         .form-control {
             width: 100%;
             padding: 12px;
@@ -560,7 +481,6 @@
             background-color: var(--card-bg);
             color: var(--text-primary);
         }
-
         /* Charts */
         .charts-container {
             display: flex;
@@ -568,20 +488,17 @@
             gap: 15px;
             margin-bottom: 20px;
         }
-
         .chart {
             background-color: var(--card-bg);
             border-radius: var(--border-radius);
             padding: 18px;
             box-shadow: var(--box-shadow);
         }
-
         .chart h3 {
             font-size: 1.1rem;
             margin-bottom: 15px;
             color: var(--secondary);
         }
-
         /* Modal */
         .modal {
             display: none;
@@ -596,7 +513,6 @@
             z-index: 1000;
             padding: 15px;
         }
-
         .modal-content {
             background-color: var(--card-bg);
             padding: 25px;
@@ -607,24 +523,20 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
         .close {
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-secondary);
         }
-
         .close:hover {
             color: var(--danger);
         }
-
         /* Footer */
         footer {
             text-align: center;
@@ -634,7 +546,6 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-
         /* Import/Export */
         .import-export {
             display: flex;
@@ -642,7 +553,6 @@
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
-
         /* Notification */
         .notification {
             position: fixed;
@@ -657,24 +567,19 @@
             z-index: 1100;
             max-width: 300px;
         }
-
         .notification.success {
             background-color: var(--success);
         }
-
         .notification.error {
             background-color: var(--danger);
         }
-
         .notification.warning {
             background-color: var(--warning);
         }
-
         .notification.show {
             opacity: 1;
             transform: translateY(0);
         }
-
         /* Asset type badges */
         .asset-type-badge {
             display: inline-block;
@@ -684,41 +589,32 @@
             font-weight: 600;
             color: white;
         }
-
         .stock {
             background-color: #3498db;
         }
-
         .etf {
             background-color: #9b59b6;
         }
-
         .reit {
             background-color: #e67e22;
         }
-
         .bond {
             background-color: #2ecc71;
         }
-
         .cash {
             background-color: #95a5a6;
         }
-
         .crypto {
             background-color: #f1c40f;
             color: #2c3e50;
         }
-
         .other {
             background-color: #7f8c8d;
         }
-
         /* Search suggestions */
         .search-container {
             position: relative;
         }
-
         .suggestions {
             position: absolute;
             background: var(--card-bg);
@@ -730,16 +626,13 @@
             box-shadow: var(--box-shadow);
             border-radius: 0 0 6px 6px;
         }
-
         .suggestion-item {
             padding: 10px;
             cursor: pointer;
         }
-
         .suggestion-item:hover {
             background-color: rgba(0, 0, 0, 0.05);
         }
-
         /* Toggle do formulário */
         .add-form-header {
             display: flex;
@@ -748,7 +641,6 @@
             margin-bottom: 15px;
             cursor: pointer;
         }
-
         .btn-toggle {
             background: transparent;
             border: none;
@@ -757,11 +649,9 @@
             color: var(--secondary);
             transition: transform 0.3s;
         }
-
         .add-form.collapsed .btn-toggle i {
             transform: rotate(180deg);
         }
-
         .add-form.collapsed .form-content {
             display: none;
         }
@@ -773,19 +663,16 @@
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
-
         .filter-group {
             flex: 1;
             min-width: 200px;
         }
-
         .filter-label {
             display: block;
             margin-bottom: 5px;
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-
         select.filter-control, input.filter-control {
             width: 100%;
             padding: 8px 12px;
@@ -794,7 +681,6 @@
             background-color: var(--card-bg);
             color: var(--text-primary);
         }
-
         /* Progress Bar */
         .progress-bar {
             height: 6px;
@@ -803,14 +689,12 @@
             overflow: hidden;
             margin: 10px 0;
         }
-
         .progress-bar-fill {
             height: 100%;
             background-color: var(--secondary);
             border-radius: 3px;
             transition: width 0.3s ease;
         }
-
         /* Mobile Navigation */
         .mobile-nav {
             position: fixed;
@@ -825,7 +709,6 @@
             z-index: 100;
             display: none;
         }
-
         .mobile-nav-btn {
             display: flex;
             flex-direction: column;
@@ -835,16 +718,13 @@
             font-size: 0.8rem;
             padding: 5px 10px;
         }
-
         .mobile-nav-btn.active {
             color: var(--secondary);
         }
-
         .mobile-nav-btn i {
             font-size: 1.2rem;
             margin-bottom: 3px;
         }
-
         /* Loading Spinner */
         .spinner {
             width: 40px;
@@ -855,11 +735,114 @@
             animation: spin 1s ease-in-out infinite;
             margin: 20px auto;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+            margin-left: 10px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: var(--secondary);
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        /* Paginação */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid var(--gray);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .page-btn:hover {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        .page-btn.active {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-btn:disabled:hover {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border-color: var(--gray);
+        }
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .loading-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+        .loading-text {
+            margin-top: 15px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
         /* Media queries para ajustes adicionais */
         @media (min-width: 768px) {
             body {
@@ -880,6 +863,10 @@
                 grid-column: span 2;
             }
             
+            .card:nth-child(4) {
+                grid-column: span 2;
+            }
+            
             .summary-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -890,7 +877,6 @@
                 gap: 20px;
             }
         }
-
         @media (max-width: 767px) {
             .mobile-nav {
                 display: flex;
@@ -900,7 +886,6 @@
                 padding-bottom: 60px;
             }
         }
-
         @media (max-width: 480px) {
             header {
                 flex-direction: column;
@@ -930,16 +915,41 @@
         .modal-confirm {
             text-align: center;
         }
-
         .modal-confirm p {
             margin-bottom: 25px;
             font-size: 1.1rem;
         }
-
         .modal-confirm-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
+        }
+        /* Estilo para a tabela de dividendos */
+        .dividend-table {
+            min-width: unset;
+        }
+        
+        .dividend-table th, 
+        .dividend-table td {
+            padding: 10px 8px;
+            font-size: 0.85rem;
+        }
+        
+        .dividend-table th:nth-child(1),
+        .dividend-table td:nth-child(1) {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .dividend-table th:nth-child(2),
+        .dividend-table td:nth-child(2) {
+            width: 80px;
+        }
+        
+        .dividend-table th:nth-child(5),
+        .dividend-table td:nth-child(5) {
+            text-align: right;
+            width: 100px;
         }
     </style>
 </head>
@@ -995,7 +1005,7 @@
                 
                 <div class="tutorial-step" data-step="2">
                     <h3>Acompanhe seu desempenho</h3>
-                    <p>Visualize gráficos de distribuição por tipo de ativo e acompanhe a performance da sua carteira.</p>
+                    <p>Visualize gráficos de distribuição por tipo de ativo and acompanhe a performance da sua carteira.</p>
                     <div class="tutorial-indicators">
                         <div class="tutorial-indicator"></div>
                         <div class="tutorial-indicator active"></div>
@@ -1070,8 +1080,14 @@
                 </div>
             </div>
             
-            <div class="card">
-                <h2><i class="fas fa-coins"></i> Dividendos</h2>
+            <div class="card" id="dividends-card">
+                <h2>
+                    <i class="fas fa-coins"></i> Dividendos
+                    <label class="toggle-switch" style="float: right; font-size: 0.6rem; margin-top: 5px;">
+                        <input type="checkbox" id="hide-dividends-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </h2>
                 <div class="dividends-container">
                     <div>
                         <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--success);"><i class="fas fa-calendar-alt"></i> Próximos Dividendos</h3>
@@ -1086,6 +1102,59 @@
                             <!-- Conteúdo preenchido via JavaScript -->
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Novo cartão para Top Pagadores de Dividendos -->
+            <div class="card" id="top-dividends-card">
+                <h2><i class="fas fa-trophy"></i> Top Pagadores de Dividendos</h2>
+                <div class="tabs">
+                    <button class="tab active" data-tab="dividend-current">2025</button>
+                    <button class="tab" data-tab="dividend-12m">12 Meses</button>
+                </div>
+                
+                <div class="tab-content active" id="dividend-current">
+                    <div class="table-responsive">
+                        <table class="dividend-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Ticker</th>
+                                    <th>Empresa</th>
+                                    <th>Setor</th>
+                                    <th>Dividend Yield</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-dividend-current">
+                                <!-- Conteúdo preenchido via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="dividend-12m">
+                    <div class="table-responsive">
+                        <table class="dividend-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Ticker</th>
+                                    <th>Empresa</th>
+                                    <th>Setor</th>
+                                    <th>Dividend Yield</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-dividend-12m">
+                                <!-- Conteúdo preenchido via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="dividend-info" style="margin-top: 15px; padding: 10px; background-color: rgba(46, 204, 113, 0.1); border-radius: 8px;">
+                    <p style="margin: 0; font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> Dados baseados nos melhores dividend yields de 2025 até setembro.
+                        Dividend Yield representa o rendimento dos dividendos em relação ao preço atual da ação.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1194,6 +1263,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="pagination" id="assets-pagination">
+                <!-- Paginação será preenchida via JavaScript -->
+            </div>
         </div>
         
         <div class="tab-content" id="distribution-tab">
@@ -1294,11 +1366,19 @@
                     <h2>Limpar Todos os Dados</h2>
                     <span class="close">&times;</span>
                 </div>
-                <p>Tem certeza que deseja excluir todos os seus dados? Esta ação não pode ser desfeita.</p>
+                <p>Tem certeza que deseja excluir todos os seus dados? Esta ação não pode be desfeita.</p>
                 <div class="modal-confirm-buttons">
                     <button class="btn btn-danger" id="confirm-clear">Limpar Tudo</button>
                     <button class="btn btn-primary" id="cancel-clear">Cancelar</button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <div class="loading-text">Carregando dados...</div>
             </div>
         </div>
         
@@ -1342,6 +1422,31 @@
             cash: { label: 'Caixa', color: '#95a5a6' },
             other: { label: 'Outro', color: '#7f8c8d' }
         };
+        // Dados dos top pagadores de dividendos
+        const TOP_DIVIDEND_STOCKS = [
+            { ticker: 'DIRR3', company: 'Direcional', dy: 12.29, sector: 'Incorporações' },
+            { ticker: 'BBSE3', company: 'BB Seguridade', dy: 11.76, sector: 'Seguradoras' },
+            { ticker: 'ITSA4', company: 'Itaúsa', dy: 10.65, sector: 'Holdings' },
+            { ticker: 'ISAE4', company: 'ISA Energia', dy: 10.26, sector: 'Energia' },
+            { ticker: 'TIMS3', company: 'TIM', dy: 9.59, sector: 'Telecomunicações' },
+            { ticker: 'CMIG4', company: 'Cemig', dy: 9.51, sector: 'Energia' },
+            { ticker: 'CPFE3', company: 'CPFL Energia', dy: 8.85, sector: 'Energia' },
+            { ticker: 'BBDC4', company: 'Bradesco', dy: 8.79, sector: 'Bancos' },
+            { ticker: 'ELET3', company: 'Eletrobras', dy: 7.77, sector: 'Energia' },
+            { ticker: 'VALE3', company: 'Vale', dy: 7.40, sector: 'Mineração' }
+        ];
+        const TOP_DIVIDEND_12M = [
+            { ticker: 'MRFG3', company: 'Marfrig', dy: 19.60, sector: 'Carnes e derivados' },
+            { ticker: 'CMIN3', company: 'CSN Mineração', dy: 13.98, sector: 'Mineração' },
+            { ticker: 'PETR4', company: 'Petrobras', dy: 13.92, sector: 'Petróleo' },
+            { ticker: 'CMIG4', company: 'Cemig', dy: 12.02, sector: 'Energia' },
+            { ticker: 'RECV3', company: 'PetroReconcavo', dy: 11.59, sector: 'Petróleo' },
+            { ticker: 'BRAP4', company: 'Bradespar', dy: 11.05, sector: 'Mineração' },
+            { ticker: 'TAEE11', company: 'Taesa', dy: 8.45, sector: 'Energia' },
+            { ticker: 'ITUB4', company: 'Itaú Unibanco', dy: 8.46, sector: 'Bancos' },
+            { ticker: 'BBSE3', company: 'BB Seguridade', dy: 11.61, sector: 'Seguradoras' },
+            { ticker: 'ITSA4', company: 'Itaúsa', dy: 9.98, sector: 'Holdings' }
+        ];
         
         // Setores para ações (exemplo)
         const SECTORS = {
@@ -1357,14 +1462,24 @@
             'SANB11': 'Financeiro'
         };
         
+        // Lista de tickers válidos para validação
+        const VALID_TICKERS = [
+            'PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'B3SA3', 'WEGE3', 'ABEV3', 
+            'MGLU3', 'BBAS3', 'SANB11', 'BOVA11', 'IVVB11', 'SMAL11', 
+            'TAEE11', 'HGLG11', 'MXRF11', 'KNRI11', 'BTC', 'ETH', 'USD', 'EUR'
+        ];
+        
         let assets = JSON.parse(localStorage.getItem('investmentAssets')) || [];
         let charts = {};
         let currentPrices = {};
         let assetToDelete = null;
         let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentPage = 1;
+        const itemsPerPage = 10;
         
         // Elementos DOM
         const notification = document.getElementById('notification');
+        const loadingOverlay = document.getElementById('loading-overlay');
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -1384,6 +1499,8 @@
             updateDividendsList();
             updateLastDividendsList();
             setupTableFilters();
+            renderDividendTables();
+            checkDividendsVisibilityPreference();
             
             // Tornar tabela responsiva
             const assetsTable = document.getElementById('assets-table');
@@ -1523,6 +1640,34 @@
             
             // Toggle de tema
             document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Toggle para ocultar dividendos
+            document.getElementById('hide-dividends-toggle').addEventListener('change', function() {
+                const isHidden = this.checked;
+                toggleDividendsVisibility(isHidden);
+                localStorage.setItem('hideDividends', isHidden);
+            });
+            
+            // Abas de dividendos
+            document.querySelectorAll('.tab[data-tab^="dividend"]').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    // Encontrar o container pai do tab (o cartão de top dividendos)
+                    const card = tab.closest('.card');
+                    // Esconder todos os conteúdos de abas dentro deste cartão
+                    card.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    // Mostrar a aba correspondente
+                    card.querySelector(`#${tabName}`).classList.add('active');
+                    
+                    // Atualizar a classe active das abas
+                    card.querySelectorAll('.tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                });
+            });
         }
         
         // Alternar entre temas claro/escuro
@@ -1575,6 +1720,11 @@
             return b3Pattern.test(ticker);
         }
         
+        // Validar se o ticker existe na lista de tickers válidos
+        function isValidTicker(ticker) {
+            return VALID_TICKERS.includes(ticker);
+        }
+        
         // Validar formato no campo de adição
         function validateTickerFormat() {
             const tickerInput = document.getElementById('ticker');
@@ -1609,6 +1759,7 @@
         async function loadAssets() {
             if (assets.length === 0) {
                 document.getElementById('assets-table').querySelector('tbody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">Nenhum ativo cadastrado. Adicione seu primeiro investimento!</td></tr>';
+                document.getElementById('assets-pagination').innerHTML = '';
                 return;
             }
             
@@ -1644,7 +1795,7 @@
             }
         }
         
-        // Renderizar tabela de ativos
+        // Renderizar tabela de ativos com paginação
         function renderAssetsTable() {
             const tbody = document.getElementById('assets-table').querySelector('tbody');
             tbody.innerHTML = '';
@@ -1664,10 +1815,17 @@
             
             if (filteredAssets.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">Nenhum ativo encontrado com os filtros aplicados.</td></tr>';
+                document.getElementById('assets-pagination').innerHTML = '';
                 return;
             }
             
-            filteredAssets.forEach(asset => {
+            // Calcular paginação
+            const totalPages = Math.ceil(filteredAssets.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedAssets = filteredAssets.slice(startIndex, endIndex);
+            
+            paginatedAssets.forEach(asset => {
                 const currentPrice = currentPrices[asset.ticker] || 0;
                 const investedValue = asset.quantity * asset.avgPrice;
                 const currentValue = asset.quantity * currentPrice;
@@ -1717,10 +1875,60 @@
                     }
                 });
             });
+            
+            // Renderizar paginação
+            renderPagination(totalPages);
+        }
+        
+        // Renderizar controles de paginação
+        function renderPagination(totalPages) {
+            const paginationContainer = document.getElementById('assets-pagination');
+            paginationContainer.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Botão Anterior
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderAssetsTable();
+                }
+            });
+            paginationContainer.appendChild(prevBtn);
+            
+            // Números das páginas
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderAssetsTable();
+                });
+                paginationContainer.appendChild(pageBtn);
+            }
+            
+            // Botão Próximo
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderAssetsTable();
+                }
+            });
+            paginationContainer.appendChild(nextBtn);
         }
         
         // Filtrar tabela
         function filterTable() {
+            currentPage = 1; // Resetar para primeira página ao filtrar
             renderAssetsTable();
         }
         
@@ -1918,7 +2126,7 @@
                     <div class="last-dividend-item">
                         <div class="last-dividend-info">
                             <div class="last-dividend-ticker">${dividend.ticker}</div>
-                            <div class="last-dividend-date">Recebido: ${formattedDate}</div>
+                            <div class='last-dividend-date'>Recebido: ${formattedDate}</div>
                         </div>
                         <div class="last-dividend-value">R$ ${formattedValue}</div>
                     </div>
@@ -1926,6 +2134,61 @@
             });
             
             lastDividendsList.innerHTML = html;
+        }
+        
+        // Renderizar tabelas de dividendos
+        function renderDividendTables() {
+            const currentBody = document.getElementById('top-dividend-current');
+            const twelveMonthsBody = document.getElementById('top-dividend-12m');
+            
+            // Renderizar tabela de 2025
+            currentBody.innerHTML = '';
+            TOP_DIVIDEND_STOCKS.forEach((stock, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${stock.ticker}</td>
+                    <td>${stock.company}</td>
+                    <td>${stock.sector}</td>
+                    <td class="positive">${stock.dy}%</td>
+                `;
+                currentBody.appendChild(row);
+            });
+            
+            // Renderizar tabela de 12 meses
+            twelveMonthsBody.innerHTML = '';
+            TOP_DIVIDEND_12M.forEach((stock, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${stock.ticker}</td>
+                    <td>${stock.company}</td>
+                    <td>${stock.sector}</td>
+                    <td class="positive">${stock.dy}%</td>
+                `;
+                twelveMonthsBody.appendChild(row);
+            });
+        }
+        
+        // Alternar visibilidade dos dividendos
+        function toggleDividendsVisibility(hide) {
+            const dividendsCard = document.getElementById('dividends-card');
+            const topDividendsCard = document.getElementById('top-dividends-card');
+            
+            if (hide) {
+                dividendsCard.style.display = 'none';
+                topDividendsCard.style.display = 'none';
+            } else {
+                dividendsCard.style.display = 'block';
+                topDividendsCard.style.display = 'block';
+            }
+        }
+        
+        // Verificar preferência de visibilidade de dividendos
+        function checkDividendsVisibilityPreference() {
+            const hideDividends = localStorage.getItem('hideDividends') === 'true';
+            document.getElementById('hide-dividends-toggle').checked = hideDividends;
+            toggleDividendsVisibility(hideDividends);
         }
         
         // Adicionar ativo
@@ -1951,6 +2214,12 @@
             // Validar formato do ticker
             if (!isValidB3Ticker(ticker)) {
                 showNotification('Formato de ticker inválido. Use o padrão da B3 (ex: PETR4, VALE3, BOVA11).', 'error');
+                return;
+            }
+            
+            // Validar se o ticker existe na lista de tickers válidos
+            if (!isValidTicker(ticker)) {
+                showNotification('Ticker não encontrado. Verifique se o código está correto.', 'error');
                 return;
             }
             
@@ -2045,6 +2314,12 @@
             // Validar formato do ticker
             if (!isValidB3Ticker(ticker)) {
                 showNotification('Formato de ticker inválido. Use o padrão da B3 (ex: PETR4, VALE3, BOVA11).', 'error');
+                return;
+            }
+            
+            // Validar se o ticker existe na lista de tickers válidos
+            if (!isValidTicker(ticker)) {
+                showNotification('Ticker não encontrado. Verifique se o código está correto.', 'error');
                 return;
             }
             
@@ -2266,7 +2541,7 @@
                 });
             });
             
-            // Ordenar por valor e pegar os top 5
+            // Ordenar por valor and pegar os top 5
             assetValues.sort((a, b) => b.value - a.value);
             const topAssets = assetValues.slice(0, 5);
             
@@ -2714,13 +2989,12 @@
         
         // Mostrar indicador de carregamento
         function showLoading() {
-            // Implementação simplificada
-            document.body.style.cursor = 'wait';
+            loadingOverlay.classList.add('active');
         }
         
         // Ocultar indicador de carregamento
         function hideLoading() {
-            document.body.style.cursor = 'default';
+            loadingOverlay.classList.remove('active');
         }
         
         // Formatar número para exibição
