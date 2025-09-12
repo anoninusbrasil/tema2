@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Carteira de Investimentos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: white;
+            --border-color: #ddd;
+        }
+
+        .dark-mode {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --card-bg: #2d2d2d;
+            --border-color: #444;
+            --light: #333;
+            --gray: #aaa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--secondary);
+            color: white;
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .positive {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .negative {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 25px 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .summary-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .summary-item h3 {
+            margin-top: 0;
+            color: var(--gray);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .summary-item p {
+            margin-bottom: 0;
+            font-size: 26px;
+            font-weight: bold;
+        }
+        
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .kpi-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+        
+        .kpi-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        .kpi-label {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .chart-container {
+            height: 320px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .dividendos {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .dividendos li {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .dividendos li:hover {
+            transform: translateX(5px);
+        }
+        
+        .dividendos .ticker {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .dividendos .data {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .dividendos .valor {
+            font-weight: bold;
+            color: var(--success);
+        }
+        
+        .instructions {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 18px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .instructions code {
+            background: rgba(52, 152, 219, 0.15);
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--gray);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .loading .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1.2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            text-align: center;
+            padding: 25px;
+            color: var(--danger);
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: #1a252f;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+        }
+        
+        .btn-warning:hover {
+            background: #d68910;
+        }
+        
+        .btn-light {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        .btn-light:hover {
+            background: #dde4e6;
+        }
+        
+        .btn-toggle {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+        
+        .modal h2 {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .modal .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+        
+        .modal .close:hover {
+            color: var(--danger);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 25px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 56px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        .tab-container {
+            margin-bottom: 25px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 25px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 14px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .tab:hover:not(.active) {
+            background: rgba(0, 0, 0, 0.03);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .performance-chart {
+            margin-top: 35px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .badge-acao { background: rgba(52, 152, 219, 0.15); color: var(--secondary); }
+        .badge-fii { background: rgba(231, 76, 60, 0.15); color: var(--danger); }
+        .badge-etf { background: rgba(243, 156, 18, 0.15); color: var(--warning); }
+        .badge-bdr { background: rgba(39, 174, 96, 0.15); color: var(--success); }
+        .badge-outro { background: rgba(153, 102, 255, 0.15); color: #7d3ff1; }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: var(--gray);
+            font-size: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .suggestions {
+            position: absolute;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .ticker-search {
+            position: relative;
+        }
+        
+        .news-container {
+            margin-top: 30px;
+        }
+        
+        .news-item {
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+        
+        .news-item h3 {
+            margin-bottom: 10px;
+        }
+        
+        .news-item p {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .news-item .news-date {
+            font-size: 14px;
+            color: var(--secondary);
+        }
+        
+        .simulator {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+        
+        .simulator-result {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .theme-toggle {
+            background: var(--light);
+            color: var(--dark);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+            
+            .modal-content {
+                padding: 25px 20px;
+                width: 95%;
+            }
+            
+            .actions {
+                justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+            }
+            
+            .tab {
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 20px 15px;
+            }
+            
+            .summary-item {
+                padding: 20px 15px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: var(--success);
+        }
+        
+        .notification.error {
+            background: var(--danger);
+        }
+        
+        .notification.warning {
+            background: var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        <span>Minha Carteira de Investimentos</span>
+        <div class="header-actions">
+            <button id="btn-theme" class="btn btn-light theme-toggle" title="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="btn-atualizar-dados" class="btn btn-primary">
+                <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+            <button id="btn-editar-carteira" class="btn">
+                <i class="fas fa-edit"></i> Editar Carteira
+            </button>
+        </div>
+    </h1>
+    
+    <div class="instructions">
+        <div>
+            <h3><i class="fas fa-info-circle"></i> Como usar:</h3>
+            <p>Adicione ou edite seus ativos diretamente pela interface. Seus dados são salvos localmente no navegador.</p>
+        </div>
+        <button id="btn-instructions" class="btn btn-light btn-sm">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="summary">
+        <div class="summary-item">
+            <h3><i class="fas fa-wallet"></i> Total Investido</h3>
+            <p id="total-investido">R$ 0,00</p>
+        </div>
+        <div class="summary-item">
+            <h3><i class="fas fa-chart-line"></i> Patrimônio Atual</h3>
+            <p id="patrimonio-atual">R$ 0,00</p>
+        </div>
+        <div class="summary-item">
+            <h3><i class="fas fa-balance-scale"></i> Lucro/Prejuízo</h3>
+            <p id="lucro-prejuizo">R$ 0,00</p>
+        </div>
+        <div class="summary-item">
+            <h3><i class="fas fa-percentage"></i> Rentabilidade</h3>
+            <p id="rentabilidade">0.00%</p>
+        </div>
+    </div>
+
+    <div class="kpi-container">
+        <div class="kpi-item">
+            <div class="kpi-label">Maior Valorização</div>
+            <div class="kpi-value positive" id="maior-valorizacao">-</div>
+            <div class="kpi-label" id="maior-valorizacao-ticker">Ticker</div>
+        </div>
+        <div class="kpi-item">
+            <div class="kpi-label">Maior Desvalorização</div>
+            <div class="kpi-value negative" id="maior-desvalorizacao">-</div>
+            <div class="kpi-label" id="maior-desvalorizacao-ticker">Ticker</div>
+        </div>
+        <div class="kpi-item">
+            <div class="kpi-label">Maior Posição</div>
+            <div class="kpi-value" id="maior-posicao">R$ 0,00</div>
+            <div class="kpi-label" id="maior-posicao-ticker">Ticker</div>
+        </div>
+        <div class="kpi-item">
+            <div class="kpi-label">Projeção Dividendos/Ano</div>
+            <div class="kpi-value" id="proj-dividendos">R$ 0,00</div>
+            <div class="kpi-label">Baseado nos últimos</div>
+        </div>
+    </div>
+    
+    <div class="tab-container">
+        <div class="tabs">
+            <div class="tab active" data-tab="carteira">Minha Carteira</div>
+            <div class="tab" data-tab="graficos">Gráficos</div>
+            <div class="tab" data-tab="dividendos">Dividendos</div>
+            <div class="tab" data-tab="noticias">Notícias</div>
+            <div class="tab" data-tab="simulador">Simulador</div>
+        </div>
+        
+        <div class="tab-content active" id="carteira-content">
+            <div class="container">
+                <div class="card">
+                    <h2>Meus Ativos</h2>
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>Carregando dados de mercado...</p>
+                    </div>
+                    <div id="error-message" class="error" style="display: none;"></div>
+                    <table id="ativos-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Ativo</th>
+                                <th>Qtd</th>
+                                <th>Preço Médio</th>
+                                <th>Cotação</th>
+                                <th>Patrimônio</th>
+                                <th>Variação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Conteúdo será gerado pelo JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="card">
+                    <h2>Distribuição da Carteira</h2>
+                    <div class="chart-container">
+                        <canvas id="distribuicaoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="graficos-content">
+            <div class="container">
+                <div class="card">
+                    <h2>Composição por Ativo</h2>
+                    <div class="chart-container">
+                        <canvas id="composicaoChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Performance por Ativo</h2>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="dividendos-content">
+            <div class="card">
+                <h2>Agenda de Dividendos</h2>
+                <div id="loading-dividendos" class="loading">
+                    <div class="spinner"></div>
+                    <p>Carregando dados de dividendos...</p>
+                </div>
+                <ul id="agenda-proventos" class="dividendos" style="display: none;">
+                    <!-- Conteúdo será gerado pelo JavaScript -->
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Histórico de Dividendos</h2>
+                <div class="chart-container">
+                    <canvas id="dividendosChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="noticias-content">
+            <div class="card">
+                <h2>Notícias do Mercado</h2>
+                <div id="loading-news" class="loading">
+                    <div class="spinner"></div>
+                    <p>Carregando notícias...</p>
+                </div>
+                <div id="news-container" class="news-container">
+                    <!-- Notícias serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="simulador-content">
+            <div class="card">
+                <h2>Simulador de Aportes</h2>
+                <p>Simule o impacto de um novo aporte em sua carteira</p>
+                
+                <div class="simulator">
+                    <div class="form-group">
+                        <label for="sim-ticker">Selecione o Ativo</label>
+                        <select id="sim-ticker" class="form-control">
+                            <!-- Options serão preenchidas via JS -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sim-valor">Valor do Aporte (R$)</label>
+                        <input type="number" id="sim-valor" placeholder="Ex: 1000" class="form-control">
+                    </div>
+                    
+                    <button id="btn-simular" class="btn btn-success">
+                        <i class="fas fa-calculator"></i> Simular Aporte
+                    </button>
+                    
+                    <div id="simulator-result" class="simulator-result" style="display: none;">
+                        <h3>Resultado da Simulação</h3>
+                        <p>Novo preço médio: <span id="novo-preco-medio">R$ 0,00</span></p>
+                        <p>Nova quantidade: <span id="nova-quantidade">0</span></p>
+                        <p>Novo percentual na carteira: <span id="novo-percentual">0%</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para editar a carteira -->
+    <div id="modal-editar" class="modal">
+        <div class="modal-content">
+            <h2>
+                <span>Editar Carteira</span>
+                <span class="close">&times;</span>
+            </h2>
+            
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class="fas fa-folder-open"></i>
+                <p>Você ainda não possui ativos em sua carteira.</p>
+            </div>
+            
+            <div id="form-container">
+                <h3>Adicionar/Editar Ativo</h3>
+                <form id="form-ativo">
+                    <div class="form-group">
+                        <label for="ticker">Ticker</label>
+                        <div class="ticker-search">
+                            <input type="text" id="ticker" placeholder="Ex: ITSA4" required>
+                            <div id="ticker-suggestions" class="suggestions" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade</label>
+                        <input type="number" id="quantidade" placeholder="Ex: 100" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precoMedio">Preço Médio (R$)</label>
+                        <input type="number" id="precoMedio" step="0.01" min="0.01" placeholder="Ex: 9.50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Ativo</label>
+                        <select id="tipo" required>
+                            <!-- Options serão populadas pelo JavaScript -->
+                        </select>
+                    </div>
+                    <div class="actions">
+                        <button type="submit" class="btn btn-success" id="btn-submit-ativo">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btn-cancelar-edicao" style="display: none;">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+                
+                <h3 style="margin-top: 30px;">Meus Ativos</h3>
+                <table id="edicao-ativos">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Qtd</th>
+                            <th>Preço Médio</th>
+                            <th>Tipo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Conteúdo será gerado pelo JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div class="actions">
+                    <button id="btn-exportar-carteira" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Exportar Carteira
+                    </button>
+                    <button id="btn-importar-carteira" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Importar Carteira
+                    </button>
+                    <input type="file" id="input-importar" style="display: none;" accept=".json">
+                    <button id="btn-salvar-carteira" class="btn">
+                        <i class="fas fa-save"></i> Salvar e Atualizar
+                    </button>
+                    <button id="btn-fechar-modal" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification" style="display: none;"></div>
+    
+    <footer>
+        <p>Desenvolvido com ❤️ para investidores | Dados fornecidos por Brapi.dev</p>
+        <p>Atualizado em: <span id="data-atualizacao"></span></p>
+    </footer>
+    
+    <script>
+        // ==============================================================
+        // 🔑 CONFIGURAÇÃO E DADOS INICIAIS
+        // ==============================================================
+        
+        // ** IMPORTANTE: Cole seu token da Brapi.dev aqui para evitar limites de requisição. **
+        // Obtenha o seu em https://brapi.dev/
+        const API_TOKEN = 'pQz4Vg3wanoH5RQYV9kcch';
+        const carteiraInicial = [
+            { ticker:'ITSA4', quantidade:100, precoMedio:9.50, tipo:'acao' },
+            { ticker:'MXRF11', quantidade:50, precoMedio:10.20, tipo:'fii' },
+            { ticker:'PETR4', quantidade:30, precoMedio:25.00, tipo:'acao' },
+            { ticker:'HGLG11', quantidade:20, precoMedio:160.00, tipo:'fii' }
+        ];
+        
+        // Objeto central para configuração de tipos de ativos
+        const ASSET_TYPES = {
+            acao: { label: 'Ação', color: 'rgba(54, 162, 235, 0.7)' },
+            fii: { label: 'Fundo Imobiliário', color: 'rgba(255, 99, 132, 0.7)' },
+            etf: { label: 'ETF', color: 'rgba(255, 206, 86, 0.7)' },
+            bdr: { label: 'BDR', color: 'rgba(75, 192, 192, 0.7)' },
+            outro: { label: 'Outro', color: 'rgba(153, 102, 255, 0.7)' }
+        };
+        
+        // Lista de tickers conhecidos para sugestões
+        const TICKERS_CONHECIDOS = [
+            'PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'ABEV3', 'BBAS3', 'ITSA4', 'GGBR4',
+            'CSNA3', 'CIEL3', 'HAPV3', 'RADL3', 'LREN3', 'WEGE3', 'TOTS3', 'MGLU3',
+            'B3SA3', 'SANB11', 'VIVT3', 'EQTL3', 'SULA11', 'ENBR3', 'CMIG4', 'CPLE6',
+            'EGIE3', 'CPFE3', 'KLBN11', 'SUZB3', 'BRFS3', 'JBSS3', 'MRFG3', 'RAIL3',
+            'CCRO3', 'CASH3', 'IGTI11', 'MXRF11', 'HGLG11', 'FIIB11', 'FIEM11',
+            'XPLG11', 'HCTR11', 'VISC11', 'RBRM11', 'RNGO11', 'PQDP11', 'OUFF11',
+            'NVHO11', 'KNRI11', 'KINU11', 'HABT11', 'GALG11', 'FEXD11', 'FIGS11',
+            'FFTL11', 'EURO4', 'BOVA11', 'IVVB11', 'SMAL11', 'BRAX11'
+        ];
+        
+        // ============================================================== 
+        // 📦 VARIÁVEIS GLOBAIS
+        // ============================================================== 
+        let minhaCarteira = [];
+        let dadosMercado = [];
+        let charts = {};
+        let editingIndex = null;
+        
+        // ============================================================== 
+        // 🚀 INICIALIZAÇÃO
+        // ============================================================== 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('data-atualizacao').textContent = new Date().toLocaleDateString('pt-BR');
+            
+            configurarEventListeners();
+            popularDropdownTipos();
+            carregarCarteira();
+            carregarDados();
+            setupTheme();
+        });
+        
+        // ============================================================== 
+        // ⚙️ CONFIGURAÇÃO DE EVENT LISTENERS
+        // ============================================================== 
+        function configurarEventListeners() {
+            document.getElementById('btn-editar-carteira').addEventListener('click', abrirModalEdicao);
+            document.getElementById('btn-atualizar-dados').addEventListener('click', carregarDados);
+            document.querySelector('.modal .close').addEventListener('click', fecharModalEdicao);
+            document.getElementById('btn-fechar-modal').addEventListener('click', fecharModalEdicao);
+            document.getElementById('btn-salvar-carteira').addEventListener('click', fecharModalEdicaoEAtualizar);
+            document.getElementById('btn-theme').addEventListener('click', toggleTheme);
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === document.getElementById('modal-editar')) {
+                    fecharModalEdicao();
+                }
+            });
+            
+            document.getElementById('form-ativo').addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (editingIndex !== null) {
+                    atualizarAtivo();
+                } else {
+                    adicionarAtivo();
+                }
+            });
+            
+            document.getElementById('btn-cancelar-edicao').addEventListener('click', cancelarEdicao);
+            
+            document.getElementById('btn-instructions').addEventListener('click', function() {
+                document.querySelector('.instructions').style.display = 'none';
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    alternarAba(this.getAttribute('data-tab'));
+                });
+            });
+            
+            // Eventos para importar/exportar
+            document.getElementById('btn-exportar-carteira').addEventListener('click', exportarCarteira);
+            document.getElementById('btn-importar-carteira').addEventListener('click', function() {
+                document.getElementById('input-importar').click();
+            });
+            
+            document.getElementById('input-importar').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importedCarteira = JSON.parse(e.target.result);
+                            if (Array.isArray(importedCarteira)) {
+                                minhaCarteira = importedCarteira;
+                                salvarCarteira();
+                                atualizarTabelaEdicao();
+                                showNotification('Carteira importada com sucesso!', 'success');
+                            } else {
+                                showNotification('Arquivo inválido!', 'error');
+                            }
+                        } catch (error) {
+                            showNotification('Erro ao importar arquivo: ' + error.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+            
+            // Eventos para sugestões de ticker
+            const tickerInput = document.getElementById('ticker');
+            const suggestionsDiv = document.getElementById('ticker-suggestions');
+            
+            tickerInput.addEventListener('input', function() {
+                const value = this.value.toUpperCase();
+                if (value.length >= 2) {
+                    const filtered = TICKERS_CONHECIDOS.filter(ticker => 
+                        ticker.includes(value) && !minhaCarteira.some(item => item.ticker === ticker)
+                    );
+                    
+                    if (filtered.length > 0) {
+                        suggestionsDiv.innerHTML = '';
+                        filtered.slice(0, 5).forEach(ticker => {
+                            const div = document.createElement('div');
+                            div.className = 'suggestion-item';
+                            div.textContent = ticker;
+                            div.addEventListener('click', function() {
+                                tickerInput.value = ticker;
+                                suggestionsDiv.style.display = 'none';
+                            });
+                            suggestionsDiv.appendChild(div);
+                        });
+                        suggestionsDiv.style.display = 'block';
+                    } else {
+                        suggestionsDiv.style.display = 'none';
+                    }
+                } else {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+            
+            // Esconder sugestões ao clicar fora
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.ticker-search')) {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+
+            // Simulador de aportes
+            document.getElementById('btn-simular').addEventListener('click', simularAporte);
+        }
+        
+        // ============================================================== 
+        // 💾 FUNÇÕES DE ARMAZENAMENTO E DADOS LOCAIS
+        // ============================================================== 
+        function carregarCarteira() {
+            const carteiraSalva = localStorage.getItem('carteiraInvestimentos');
+            if (carteiraSalva && JSON.parse(carteiraSalva).length > 0) {
+                minhaCarteira = JSON.parse(carteiraSalva);
+            } else {
+                minhaCarteira = [...carteiraInicial];
+                salvarCarteira();
+            }
+        }
+        
+        function salvarCarteira() {
+            localStorage.setItem('carteiraInvestimentos', JSON.stringify(minhaCarteira));
+        }
+        
+        function popularDropdownTipos() {
+            const select = document.getElementById('tipo');
+            select.innerHTML = '';
+            for (const [key, value] of Object.entries(ASSET_TYPES)) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = value.label;
+                select.appendChild(option);
+            }
+        }
+
+        function setupTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('btn-theme').innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('btn-theme').innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('dark-mode')) {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('btn-theme').innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('btn-theme').innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+        
+        // ============================================================== 
+        // 📊 FUNÇÕES DE CARREGAMENTO DE DADOS DA API
+        // ============================================================== 
+        async function carregarDados() {
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error-message');
+            const table = document.getElementById('ativos-table');
+            
+            try {
+                // Limpa erros antigos e mostra o loading
+                errorDiv.style.display = 'none';
+                errorDiv.innerHTML = '';
+                loadingDiv.style.display = 'flex';
+                table.style.display = 'none';
+                document.getElementById('loading-dividendos').style.display = 'flex';
+                document.getElementById('agenda-proventos').style.display = 'none';
+                
+                const tickers = minhaCarteira.map(item => item.ticker).join(',');
+                
+                if (!tickers) {
+                    loadingDiv.style.display = 'none';
+                    document.getElementById('loading-dividendos').style.display = 'none';
+                    return; // Sai se a carteira estiver vazia
+                }
+                
+                // Verifica se temos dados em cache (válidos por 5 minutos)
+                const cacheKey = `carteiraData-${tickers}`;
+                const cachedData = localStorage.getItem(cacheKey);
+                const cacheTimestamp = localStorage.getItem(`${cacheKey}-timestamp`);
+                const now = Date.now();
+                
+                if (cachedData && cacheTimestamp && (now - cacheTimestamp < 300000)) {
+                    // Usa dados do cache
+                    const data = JSON.parse(cachedData);
+                    dadosMercado = data.results;
+                    processarDados();
+                    
+                    loadingDiv.style.display = 'none';
+                    table.style.display = 'table';
+                    document.getElementById('loading-dividendos').style.display = 'none';
+                    document.getElementById('agenda-proventos').style.display = 'block';
+                    
+                    showNotification('Dados carregados do cache.', 'success');
+                    return;
+                }
+                
+                // Constrói a URL com o token
+                let url = `https://brapi.dev/api/quote/${tickers}?range=1d&interval=1d&dividends=true`;
+                if (API_TOKEN && API_TOKEN !== 'pQz4Vg3wanoH5RQYV9kcch') {
+                    url += `&token=${API_TOKEN}`;
+                }
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Erro na API: ${response.status}`);
+                
+                const data = await response.json();
+                if (!data.results || !Array.isArray(data.results)) throw new Error('Resposta da API inválida');
+                
+                dadosMercado = data.results;
+                
+                // Salva no cache
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                localStorage.setItem(`${cacheKey}-timestamp`, now);
+                
+                processarDados();
+                
+                loadingDiv.style.display = 'none';
+                table.style.display = 'table';
+                document.getElementById('loading-dividendos').style.display = 'none';
+                document.getElementById('agenda-proventos').style.display = 'block';
+                
+                showNotification('Dados atualizados com sucesso!', 'success');
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                loadingDiv.style.display = 'none';
+                document.getElementById('loading-dividendos').style.display = 'none';
+                errorDiv.textContent = `Erro ao carregar dados: ${error.message}. Tente novamente mais tarde.`;
+                errorDiv.style.display = 'block';
+                
+                showNotification('Erro ao carregar dados: ' + error.message, 'error');
+            }
+        }
+        
+        // ============================================================== 
+        // 📈 PROCESSAMENTO DE DADOS E ATUALIZAÇÃO DA UI
+        // ============================================================== 
+        function processarDados() {
+            let totalInvestido = 0;
+            let patrimonioAtual = 0;
+            const distribuicao = Object.keys(ASSET_TYPES).reduce((acc, key) => ({ ...acc, [key]: 0 }), {});
+            const tabelaBody = document.querySelector('#ativos-table tbody');
+            tabelaBody.innerHTML = '';
+            let notFoundTickers = [];
+            
+            // Variáveis para KPIs
+            let maiorValorizacao = { valor: -Infinity, ticker: '' };
+            let maiorDesvalorizacao = { valor: Infinity, ticker: '' };
+            let maiorPosicao = { valor: -Infinity, ticker: '' };
+            let totalDividendosAno = 0;
+            
+            minhaCarteira.forEach(item => {
+                const ativo = dadosMercado.find(a => a.symbol === item.ticker);
+                if (!ativo) {
+                    notFoundTickers.push(item.ticker);
+                    return;
+                }
+                
+                const precoAtual = ativo.regularMarketPrice || 0;
+                const patrimonio = item.quantidade * precoAtual;
+                const investido = item.quantidade * item.precoMedio;
+                const variacao = item.precoMedio > 0 ? ((precoAtual - item.precoMedio) / item.precoMedio) * 100 : 0;
+                const variacaoValor = precoAtual - item.precoMedio;
+                
+                totalInvestido += investido;
+                patrimonioAtual += patrimonio;
+                if (distribuicao.hasOwnProperty(item.tipo)) {
+                    distribuicao[item.tipo] += patrimonio;
+                }
+                
+                // Atualiza KPIs
+                if (variacao > maiorValorizacao.valor) {
+                    maiorValorizacao = { valor: variacao, ticker: item.ticker };
+                }
+                
+                if (variacao < maiorDesvalorizacao.valor) {
+                    maiorDesvalorizacao = { valor: variacao, ticker: item.ticker };
+                }
+                
+                if (patrimonio > maiorPosicao.valor) {
+                    maiorPosicao = { valor: patrimonio, ticker: item.ticker };
+                }
+                
+                // Calcula dividendos anuais (aproximado)
+                if (ativo.dividendsData && ativo.dividendsData.dividends) {
+                    const ultimos12Meses = ativo.dividendsData.dividends
+                        .filter(d => {
+                            const dataPagamento = new Date(d.paymentDate);
+                            const umAnoAtras = new Date();
+                            umAnoAtras.setFullYear(umAnoAtras.getFullYear() - 1);
+                            return dataPagamento >= umAnoAtras;
+                        })
+                        .reduce((sum, d) => sum + d.amount, 0);
+                    
+                    totalDividendosAno += ultimos12Meses * item.quantidade;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        ${item.ticker} 
+                        <span class="badge badge-${item.tipo}">${(ASSET_TYPES[item.tipo]?.label || item.tipo).toUpperCase()}</span>
+                    </td>
+                    <td>${item.quantidade}</td>
+                    <td>${formatarValor(item.precoMedio)}</td>
+                    <td>${formatarValor(precoAtual)}</td>
+                    <td>${formatarValor(patrimonio)}</td>
+                    <td class="${variacao >= 0 ? 'positive' : 'negative'}">
+                        ${variacao.toFixed(2)}%<br>
+                        <small>(${variacao >= 0 ? '+' : ''}${formatarValor(variacaoValor * item.quantidade)})</small>
+                    </td>
+                `;
+                tabelaBody.appendChild(row);
+            });
+            
+            if (notFoundTickers.length > 0) {
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.innerHTML += `<br>Atenção: Não foi possível obter dados para os seguintes ativos: ${notFoundTickers.join(', ')}. Verifique os tickers.`;
+                errorDiv.style.display = 'block';
+            }
+            
+            const lucroPrejuizo = patrimonioAtual - totalInvestido;
+            const rentabilidade = totalInvestido > 0 ? (lucroPrejuizo / totalInvestido) * 100 : 0;
+            
+            document.getElementById('total-investido').textContent = formatarValor(totalInvestido);
+            document.getElementById('patrimonio-atual').textContent = formatarValor(patrimonioAtual);
+            document.getElementById('lucro-prejuizo').textContent = formatarValor(lucroPrejuizo);
+            document.getElementById('lucro-prejuizo').className = lucroPrejuizo >= 0 ? 'positive' : 'negative';
+            document.getElementById('rentabilidade').textContent = `${rentabilidade.toFixed(2)}%`;
+            document.getElementById('rentabilidade').className = rentabilidade >= 0 ? 'positive' : 'negative';
+            
+            // Atualiza KPIs na interface
+            document.getElementById('maior-valorizacao').textContent = `${maiorValorizacao.valor.toFixed(2)}%`;
+            document.getElementById('maior-valorizacao-ticker').textContent = maiorValorizacao.ticker;
+            
+            document.getElementById('maior-desvalorizacao').textContent = `${maiorDesvalorizacao.valor.toFixed(2)}%`;
+            document.getElementById('maior-desvalorizacao-ticker').textContent = maiorDesvalorizacao.ticker;
+            
+            document.getElementById('maior-posicao').textContent = formatarValor(maiorPosicao.valor);
+            document.getElementById('maior-posicao-ticker').textContent = maiorPosicao.ticker;
+            
+            document.getElementById('proj-dividendos').textContent = formatarValor(totalDividendosAno);
+            
+            criarGraficoDistribuicao(distribuicao);
+            if (document.getElementById('graficos-content').classList.contains('active')) {
+                criarGraficoComposicao();
+                criarGraficoPerformance();
+            }
+            carregarDividendos();
+            popularSimulador();
+        }
+        
+        // ============================================================== 
+        // 📉 FUNÇÕES DE GRÁFICOS
+        // ============================================================== 
+        function criarGraficoDistribuicao(distribuicao) {
+            const ctx = document.getElementById('distribuicaoChart').getContext('2d');
+            if (charts.distribuicao) charts.distribuicao.destroy();
+            
+            const labels = [];
+            const data = [];
+            const colors = [];
+            
+            for (const [tipo, valor] of Object.entries(distribuicao)) {
+                if (valor > 0) {
+                    labels.push(ASSET_TYPES[tipo]?.label || tipo);
+                    data.push(valor);
+                    colors.push(ASSET_TYPES[tipo]?.color || 'rgba(150, 150, 150, 0.7)');
+                }
+            }
+            
+            charts.distribuicao = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: colors, borderWidth: 1 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: context => {
+                        const value = context.raw;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                        return `${context.label}: ${formatarValor(value)} (${percentage}%)`;
+                    }}}}
+                }
+            });
+        }
+        
+        function criarGraficoComposicao() {
+            const ctx = document.getElementById('composicaoChart').getContext('2d');
+            if (charts.composicao) charts.composicao.destroy();
+            
+            const labels = [];
+            const data = [];
+            const backgroundColors = [];
+            
+            minhaCarteira.forEach(item => {
+                const ativo = dadosMercado.find(a => a.symbol === item.ticker);
+                if (ativo) {
+                    labels.push(item.ticker);
+                    data.push(item.quantidade * ativo.regularMarketPrice);
+                    backgroundColors.push(ASSET_TYPES[item.tipo]?.color || 'rgba(150, 150, 150, 0.7)');
+                }
+            });
+            
+            charts.composicao = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: data, backgroundColor: backgroundColors, borderWidth: 1 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: context => {
+                        const value = context.raw;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                        return `${context.label}: ${formatarValor(value)} (${percentage}%)`;
+                    }}}}
+                }
+            });
+        }
+        
+        function criarGraficoPerformance() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            if (charts.performance) charts.performance.destroy();
+            
+            const labels = [];
+            const dataInvestido = [];
+            const dataAtual = [];
+            
+            minhaCarteira.forEach(item => {
+                const ativo = dadosMercado.find(a => a.symbol === item.ticker);
+                if (ativo) {
+                    labels.push(item.ticker);
+                    dataInvestido.push(item.quantidade * item.precoMedio);
+                    dataAtual.push(item.quantidade * ativo.regularMarketPrice);
+                }
+            });
+            
+            charts.performance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Valor Investido', data: dataInvestido, backgroundColor: 'rgba(54, 162, 235, 0.7)' },
+                        { label: 'Valor Atual', data: dataAtual, backgroundColor: 'rgba(75, 192, 192, 0.7)' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { callback: value => formatarValor(value) }}},
+                    plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: context => `${context.dataset.label}: ${formatarValor(context.raw)}` }}}
+                }
+            });
+        }
+        
+        // ============================================================== 
+        // 💰 FUNÇÕES DE DIVIDENDOS
+        // ============================================================== 
+        function carregarDividendos() {
+            const dividendosList = document.getElementById('agenda-proventos');
+            dividendosList.innerHTML = '';
+            let dividendosFuturos = [];
+            
+            minhaCarteira.forEach(item => {
+                const ativo = dadosMercado.find(a => a.symbol === item.ticker);
+                if (!ativo?.dividendsData?.dividends) return;
+                
+                const hoje = new Date().setHours(0, 0, 0, 0);
+                ativo.dividendsData.dividends.forEach(d => {
+                    const dataPagamento = new Date(d.paymentDate);
+                    if (dataPagamento >= hoje) {
+                        dividendosFuturos.push({ ...d, ticker: item.ticker, quantidade: item.quantidade });
+                    }
+                });
+            });
+            
+            dividendosFuturos.sort((a, b) => new Date(a.paymentDate) - new Date(b.paymentDate));
+            
+            if (dividendosFuturos.length === 0) {
+                dividendosList.innerHTML = `<li class="empty-state"><i class="fas fa-calendar-times"></i><p>Nenhum dividendo futuro encontrado para seus ativos.</p></li>`;
+                return;
+            }
+            
+            dividendosFuturos.forEach(d => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div>
+                        <span class="ticker">${d.ticker}</span> - <span class="data">${new Date(d.paymentDate).toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <div>
+                        <span class="valor">${formatarValor(d.amount * d.quantidade)}</span>
+                    </div>
+                `;
+                dividendosList.appendChild(li);
+            });
+        }
+        
+        // ============================================================== 
+        // ✏️ FUNÇÕES DE EDIÇÃO DA CARTEIRA
+        // ============================================================== 
+        function abrirModalEdicao() {
+            document.getElementById('modal-editar').style.display = 'flex';
+            atualizarTabelaEdicao();
+        }
+        
+        function fecharModalEdicao() {
+            document.getElementById('modal-editar').style.display = 'none';
+        }
+        
+        function fecharModalEdicaoEAtualizar() {
+            fecharModalEdicao();
+            carregarDados();
+        }
+        
+        function atualizarTabelaEdicao() {
+            const tabelaBody = document.querySelector('#edicao-ativos tbody');
+            tabelaBody.innerHTML = '';
+            
+            const isEmpty = minhaCarteira.length === 0;
+            document.getElementById('empty-state').style.display = isEmpty ? 'block' : 'none';
+            document.getElementById('form-container').style.display = isEmpty ? 'none' : 'block';
+            
+            if(isEmpty) return;
+            
+            minhaCarteira.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.ticker}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${formatarValor(item.precoMedio)}</td>
+                    <td>${ASSET_TYPES[item.tipo]?.label || item.tipo}</td>
+                    <td>
+                        <button class="btn btn-primary btn-editar" data-index="${index}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-remover" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tabelaBody.appendChild(row);
+            });
+            
+            document.querySelectorAll('.btn-editar').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editarAtivo(parseInt(this.getAttribute('data-index')));
+                });
+            });
+            
+            document.querySelectorAll('.btn-remover').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Tem certeza que deseja remover este ativo?')) {
+                        removerAtivo(parseInt(this.getAttribute('data-index')));
+                    }
+                });
+            });
+        }
+        
+        function editarAtivo(index) {
+            const item = minhaCarteira[index];
+            document.getElementById('ticker').value = item.ticker;
+            document.getElementById('quantidade').value = item.quantidade;
+            document.getElementById('precoMedio').value = item.precoMedio;
+            document.getElementById('tipo').value = item.tipo;
+            
+            editingIndex = index;
+            
+            const submitBtn = document.getElementById('btn-submit-ativo');
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Atualizar';
+            
+            const cancelBtn = document.getElementById('btn-cancelar-edicao');
+            cancelBtn.style.display = 'inline-block';
+        }
+        
+        function cancelarEdicao() {
+            editingIndex = null;
+            document.getElementById('form-ativo').reset();
+            
+            const submitBtn = document.getElementById('btn-submit-ativo');
+            submitBtn.innerHTML = '<i class="fas fa-plus"></i> Adicionar';
+            
+            const cancelBtn = document.getElementById('btn-cancelar-edicao');
+            cancelBtn.style.display = 'none';
+        }
+        
+        function atualizarAtivo() {
+            const ticker = document.getElementById('ticker').value.toUpperCase().trim();
+            const quantidade = parseInt(document.getElementById('quantidade').value);
+            const precoMedio = parseFloat(document.getElementById('precoMedio').value);
+            const tipo = document.getElementById('tipo').value;
+            
+            if (!ticker || !quantidade || !precoMedio || !tipo) return;
+            
+            minhaCarteira[editingIndex] = { ticker, quantidade, precoMedio, tipo };
+            
+            cancelarEdicao();
+            atualizarTabelaEdicao();
+            salvarCarteira();
+            showNotification('Ativo atualizado com sucesso!', 'success');
+        }
+        
+        function adicionarAtivo() {
+            const ticker = document.getElementById('ticker').value.toUpperCase().trim();
+            const quantidade = parseInt(document.getElementById('quantidade').value);
+            const precoMedio = parseFloat(document.getElementById('precoMedio').value);
+            const tipo = document.getElementById('tipo').value;
+            
+            if (!ticker || !quantidade || !precoMedio || !tipo) {
+                showNotification('Preencha todos os campos corretamente.', 'error');
+                return;
+            }
+            
+            const index = minhaCarteira.findIndex(item => item.ticker === ticker);
+            
+            if (index !== -1) {
+                // CORRIGIDO: Cálculo correto do preço médio ponderado
+                const ativoExistente = minhaCarteira[index];
+                const totalInvestidoExistente = ativoExistente.quantidade * ativoExistente.precoMedio;
+                const novoInvestimento = quantidade * precoMedio;
+                const novaQuantidadeTotal = ativoExistente.quantidade + quantidade;
+                
+                ativoExistente.precoMedio = (totalInvestidoExistente + novoInvestimento) / novaQuantidadeTotal;
+                ativoExistente.quantidade = novaQuantidadeTotal;
+                showNotification('Ativo atualizado com sucesso!', 'success');
+            } else {
+                minhaCarteira.push({ ticker, quantidade, precoMedio, tipo });
+                showNotification('Ativo adicionado com sucesso!', 'success');
+            }
+            
+            document.getElementById('form-ativo').reset();
+            atualizarTabelaEdicao();
+            salvarCarteira();
+        }
+        
+        function removerAtivo(index) {
+            minhaCarteira.splice(index, 1);
+            atualizarTabelaEdicao();
+            salvarCarteira();
+            showNotification('Ativo removido com sucesso!', 'success');
+        }
+        
+        function exportarCarteira() {
+            const dataStr = JSON.stringify(minhaCarteira, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `carteira_investimentos_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Carteira exportada com sucesso!', 'success');
+        }
+
+        // ============================================================== 
+        // 🔧 FUNÇÕES UTILITÁRIAS
+        // ============================================================== 
+        function formatarValor(valor) {
+            if (typeof valor !== 'number') return 'R$ 0,00';
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+        
+        function alternarAba(tabId) {
+            document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}-content`).classList.add('active');
+            
+            if (tabId === 'graficos' && dadosMercado.length > 0) {
+                criarGraficoComposicao();
+                criarGraficoPerformance();
+            } else if (tabId === 'noticias') {
+                carregarNoticias();
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+
+        function popularSimulador() {
+            const select = document.getElementById('sim-ticker');
+            select.innerHTML = '';
+            
+            minhaCarteira.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.ticker;
+                option.textContent = `${item.ticker} - ${ASSET_TYPES[item.tipo]?.label || item.tipo}`;
+                select.appendChild(option);
+            });
+        }
+
+        function simularAporte() {
+            const ticker = document.getElementById('sim-ticker').value;
+            const valorAporte = parseFloat(document.getElementById('sim-valor').value);
+            
+            if (!ticker || !valorAporte || valorAporte <= 0) {
+                showNotification('Selecione um ativo e informe um valor válido.', 'error');
+                return;
+            }
+            
+            const ativo = minhaCarteira.find(item => item.ticker === ticker);
+            if (!ativo) return;
+            
+            const ativoMercado = dadosMercado.find(a => a.symbol === ticker);
+            if (!ativoMercado) {
+                showNotification('Dados de mercado não disponíveis para este ativo.', 'error');
+                return;
+            }
+            
+            const precoAtual = ativoMercado.regularMarketPrice;
+            const quantidadeAtual = ativo.quantidade;
+            const precoMedioAtual = ativo.precoMedio;
+            
+            const quantidadeCompra = valorAporte / precoAtual;
+            const novaQuantidade = quantidadeAtual + quantidadeCompra;
+            const novoPrecoMedio = ((quantidadeAtual * precoMedioAtual) + (quantidadeCompra * precoAtual)) / novaQuantidade;
+            
+            // Calcula o patrimônio total atual
+            let patrimonioTotal = 0;
+            minhaCarteira.forEach(item => {
+                const assetMarket = dadosMercado.find(a => a.symbol === item.ticker);
+                if (assetMarket) {
+                    patrimonioTotal += item.quantidade * assetMarket.regularMarketPrice;
+                }
+            });
+            
+            const novoPatrimonioAtivo = novaQuantidade * precoAtual;
+            const novoPercentual = (novoPatrimonioAtivo / (patrimonioTotal + valorAporte)) * 100;
+            
+            document.getElementById('novo-preco-medio').textContent = formatarValor(novoPrecoMedio);
+            document.getElementById('nova-quantidade').textContent = novaQuantidade.toFixed(2);
+            document.getElementById('novo-percentual').textContent = novoPercentual.toFixed(2) + '%';
+            
+            document.getElementById('simulator-result').style.display = 'block';
+        }
+
+        async function carregarNoticias() {
+            const newsContainer = document.getElementById('news-container');
+            const loadingNews = document.getElementById('loading-news');
+            
+            loadingNews.style.display = 'flex';
+            newsContainer.innerHTML = '';
+            
+            try {
+                // Simulação de notícias (em uma implementação real, você usaria uma API de notícias)
+                const noticias = [
+                    {
+                        titulo: 'Ibovespa tem alta impulsionada por commodities',
+                        resumo: 'O índice Ibovespa fechou em alta de 1,5% nesta sexta-feira, impulsionado pelo bom desempenho das ações do setor de commodities.',
+                        data: '2023-11-10',
+                        fonte: 'InvestNews'
+                    },
+                    {
+                        titulo: 'Juros nos EUA se mantêm estáveis',
+                        resumo: 'O Federal Reserve (Fed) decidiu manter os juros estáveis na última reunião, indicando cautela com a inflação.',
+                        data: '2023-11-09',
+                        fonte: 'Economia Today'
+                    },
+                    {
+                        titulo: 'Setor de tecnologia impulsiona dividendos',
+                        resumo: 'Empresas de tecnologia têm surpreendido com aumento na distribuição de dividendos aos acionistas.',
+                        data: '2023-11-08',
+                        fonte: 'TechInvest'
+                    }
+                ];
+                
+                setTimeout(() => {
+                    loadingNews.style.display = 'none';
+                    
+                    noticias.forEach(noticia => {
+                        const newsItem = document.createElement('div');
+                        newsItem.className = 'news-item';
+                        newsItem.innerHTML = `
+                            <h3>${noticia.titulo}</h3>
+                            <p>${noticia.resumo}</p>
+                            <div class="news-date">${noticia.data} | Fonte: ${noticia.fonte}</div>
+                        `;
+                        newsContainer.appendChild(newsItem);
+                    });
+                }, 1000);
+                
+            } catch (error) {
+                loadingNews.style.display = 'none';
+                newsContainer.innerHTML = '<div class="error">Erro ao carregar notícias. Tente novamente mais tarde.</div>';
+            }
+        }
+    </script>
+</body>
+</html>
