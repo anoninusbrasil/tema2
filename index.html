@@ -444,6 +444,87 @@
         .search-container {
             position: relative;
         }
+
+        /* Novas adições para responsividade em celular */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            /* Tabela responsiva com scroll horizontal */
+            .table-responsive {
+                overflow-x: auto;
+                width: 100%;
+                display: block;
+                margin-bottom: 15px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .theme-switch {
+                align-self: flex-end;
+            }
+            
+            .import-export {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Estilos para o toggle do formulário */
+        .add-form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .btn-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            transition: transform 0.3s;
+        }
+
+        .add-form.collapsed .btn-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .add-form.collapsed .form-content {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -504,38 +585,45 @@
         </div>
 
         <div class="add-form" id="add-form">
-            <h2>Adicionar Investimento</h2>
-            <form id="investment-form">
-                <div class="form-group">
-                    <label for="ticker">Ticker (ex: PETR4, BTC)</label>
-                    <div class="search-container">
-                        <input type="text" id="ticker" class="form-control" required>
-                        <div class="suggestions" id="ticker-suggestions" style="display: none;"></div>
+            <div class="add-form-header">
+                <h2>Adicionar Investimento</h2>
+                <button type="button" class="btn-toggle" id="toggle-form">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="form-content" id="form-content">
+                <form id="investment-form">
+                    <div class="form-group">
+                        <label for="ticker">Ticker (ex: PETR4, BTC)</label>
+                        <div class="search-container">
+                            <input type="text" id="ticker" class="form-control" required>
+                            <div class="suggestions" id="ticker-suggestions" style="display: none;"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="type">Tipo de Ativo</label>
-                    <select id="type" class="form-control" required>
-                        <option value="">Selecione o tipo</option>
-                        <option value="stock">Ação</option>
-                        <option value="etf">ETF</option>
-                        <option value="reit">FII</option>
-                        <option value="bond">Renda Fixa</option>
-                        <option value="crypto">Criptomoeda</option>
-                        <option value="cash">Caixa</option>
-                        <option value="other">Outro</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="quantity">Quantidade</label>
-                    <input type="number" id="quantity" class="form-control" step="any" required>
-                </div>
-                <div class="form-group">
-                    <label for="avg-price">Preço Médio (R$)</label>
-                    <input type="number" id="avg-price" class="form-control" step="any" required>
-                </div>
-                <button type="submit" class="btn btn-success">Adicionar Investimento</button>
-            </form>
+                    <div class="form-group">
+                        <label for="type">Tipo de Ativo</label>
+                        <select id="type" class="form-control" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="stock">Ação</option>
+                            <option value="etf">ETF</option>
+                            <option value="reit">FII</option>
+                            <option value="bond">Renda Fixa</option>
+                            <option value="crypto">Criptomoeda</option>
+                            <option value="cash">Caixa</option>
+                            <option value="other">Outro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantidade</label>
+                        <input type="number" id="quantity" class="form-control" step="any" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="avg-price">Preço Médio (R$)</label>
+                        <input type="number" id="avg-price" class="form-control" step="any" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Adicionar Investimento</button>
+                </form>
+            </div>
         </div>
 
         <div class="tabs">
@@ -587,6 +675,10 @@
                 <div class="chart">
                     <h3>Rentabilidade por Ativo</h3>
                     <canvas id="returns-chart"></canvas>
+                </div>
+                <div class="chart">
+                    <h3>Histórico de Proventos (6 meses)</h3>
+                    <canvas id="dividends-chart"></canvas>
                 </div>
             </div>
         </div>
@@ -663,6 +755,16 @@
             loadAssets();
             setupEventListeners();
             updateDashboard();
+            
+            // Tornar tabela responsiva
+            const assetsTable = document.getElementById('assets-table');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-responsive';
+            assetsTable.parentNode.insertBefore(wrapper, assetsTable);
+            wrapper.appendChild(assetsTable);
+            
+            // Inicializar estado do formulário
+            initFormVisibility();
         });
 
         // Configuração do tema
@@ -677,6 +779,35 @@
                 document.body.classList.toggle('dark-mode');
                 localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
             });
+        }
+
+        // Toggle para o formulário de adicionar investimento
+        function initFormVisibility() {
+            const formContent = document.getElementById('form-content');
+            const toggleBtn = document.getElementById('toggle-form');
+            const addForm = document.getElementById('add-form');
+            const addFormHeader = document.querySelector('.add-form-header');
+            
+            // Verificar estado salvo
+            const isCollapsed = localStorage.getItem('formCollapsed') === 'true';
+            if (isCollapsed) {
+                addForm.classList.add('collapsed');
+            }
+            
+            // Evento de clique no botão ou no cabeçalho
+            toggleBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleForm();
+            });
+            
+            addFormHeader.addEventListener('click', function() {
+                toggleForm();
+            });
+            
+            function toggleForm() {
+                addForm.classList.toggle('collapsed');
+                localStorage.setItem('formCollapsed', addForm.classList.contains('collapsed'));
+            }
         }
 
         // Configuração de listeners de eventos
@@ -706,6 +837,11 @@
             // Botão de adicionar
             document.getElementById('show-add-form').addEventListener('click', () => {
                 document.getElementById('add-form').scrollIntoView({ behavior: 'smooth' });
+                // Expandir o formulário se estiver colapsado
+                if (document.getElementById('add-form').classList.contains('collapsed')) {
+                    document.getElementById('add-form').classList.remove('collapsed');
+                    localStorage.setItem('formCollapsed', 'false');
+                }
             });
             
             // Busca de tickers
@@ -1016,6 +1152,7 @@
             renderTopAssetsChart();
             renderPerformanceChart();
             renderReturnsChart();
+            renderDividendsChart(); // Novo gráfico de proventos
         }
 
         // Gráfico de distribuição por tipo
@@ -1256,6 +1393,83 @@
                                 ticks: {
                                     callback: function(value) {
                                         return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.font = '16px Arial';
+                ctx.fillStyle = '#999';
+                ctx.textAlign = 'center';
+                ctx.fillText('Nenhum dado disponível', ctx.canvas.width / 2, ctx.canvas.height / 2);
+            }
+        }
+
+        // Gráfico de histórico de proventos
+        function renderDividendsChart() {
+            const ctx = document.getElementById('dividends-chart').getContext('2d');
+            
+            // Gerar dados simulados de proventos para os últimos 6 meses
+            const months = [];
+            const dividends = [];
+            
+            const today = new Date();
+            for (let i = 5; i >= 0; i--) {
+                const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                const monthName = month.toLocaleString('pt-BR', { month: 'short' });
+                months.push(monthName);
+                
+                // Simular valores de proventos baseados nos ativos
+                let monthDividend = 0;
+                assets.forEach(asset => {
+                    // FIIs e ações têm mais chances de pagar proventos
+                    if (asset.type === 'stock' || asset.type === 'reit') {
+                        // 30% de chance para FIIs, 15% para ações
+                        const paymentChance = asset.type === 'reit' ? 0.3 : 0.15;
+                        
+                        if (Math.random() < paymentChance) {
+                            // Yield mensal: 1-2% para FIIs, 0.2-0.8% para ações
+                            const yieldRate = asset.type === 'reit' 
+                                ? (Math.random() * 0.01) + 0.01 
+                                : (Math.random() * 0.006) + 0.002;
+                            
+                            const investedValue = asset.quantity * asset.avgPrice;
+                            monthDividend += investedValue * yieldRate;
+                        }
+                    }
+                });
+                
+                dividends.push(monthDividend);
+            }
+            
+            if (charts.dividendsChart) {
+                charts.dividendsChart.destroy();
+            }
+            
+            if (months.length > 0) {
+                charts.dividendsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Proventos Recebidos (R$)',
+                            data: dividends,
+                            backgroundColor: '#27ae60',
+                            borderColor: '#2ecc71',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'R$ ' + formatNumber(value);
                                     }
                                 }
                             }
