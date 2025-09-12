@@ -25,19 +25,6 @@
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
-
-        [data-theme="dark"] {
-            --primary: #ecf0f1;
-            --secondary: #3498db;
-            --light: #2c3e50;
-            --dark: #ecf0f1;
-            --card-bg: #34495e;
-            --text-primary: #ecf0f1;
-            --text-secondary: #bdc3c7;
-            --gray: #7f8c8d;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -99,12 +86,6 @@
             border-radius: 8px;
             text-align: center;
         }
-        [data-theme="dark"] .summary-item {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .summary-item span {
-            display: block;
-        }
         .summary-label {
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -134,9 +115,6 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-        [data-theme="dark"] .distribution-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
         .distribution-info {
             display: flex;
             align-items: center;
@@ -149,14 +127,16 @@
             flex-grow: 1;
             overflow: hidden;
         }
-        [data-theme="dark"] .distribution-bar {
-            background: #444;
-        }
         .distribution-fill {
             height: 100%;
             border-radius: 4px;
         }
-        /* Próximos Dividendos */
+        /* Dividendos */
+        .dividends-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
         .dividends-list {
             display: flex;
             flex-direction: column;
@@ -170,9 +150,6 @@
             background: rgba(46, 204, 113, 0.1);
             border-radius: 8px;
             border-left: 4px solid var(--success);
-        }
-        [data-theme="dark"] .dividend-item {
-            background: rgba(46, 204, 113, 0.15);
         }
         .dividend-info {
             flex-grow: 1;
@@ -188,6 +165,32 @@
         .dividend-value {
             font-weight: bold;
             color: var(--success);
+            font-size: 1.1rem;
+        }
+        /* Últimos dividendos */
+        .last-dividend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+        .last-dividend-info {
+            flex-grow: 1;
+        }
+        .last-dividend-ticker {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        .last-dividend-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .last-dividend-value {
+            font-weight: bold;
+            color: var(--secondary);
             font-size: 1.1rem;
         }
         /* Tabs mobile */
@@ -254,10 +257,6 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             font-size: 0.9rem;
         }
-        [data-theme="dark"] th, 
-        [data-theme="dark"] td {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
         th {
             background-color: var(--primary);
             color: white;
@@ -266,9 +265,6 @@
         }
         tr:hover {
             background-color: rgba(0, 0, 0, 0.03);
-        }
-        [data-theme="dark"] tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
         }
         .actions {
             display: flex;
@@ -333,9 +329,6 @@
             font-size: 1rem;
             background-color: var(--card-bg);
             color: var(--text-primary);
-        }
-        [data-theme="dark"] .form-control {
-            border: 1px solid var(--gray);
         }
         /* Charts */
         .charts-container {
@@ -486,9 +479,6 @@
         .suggestion-item:hover {
             background-color: rgba(0, 0, 0, 0.05);
         }
-        [data-theme="dark"] .suggestion-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
         /* Toggle do formulário */
         .add-form-header {
             display: flex;
@@ -536,19 +526,6 @@
             border-radius: 6px;
             background-color: var(--card-bg);
             color: var(--text-primary);
-        }
-        
-        /* Dark mode toggle */
-        .theme-toggle {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            margin-left: 15px;
-        }
-        .theme-toggle:hover {
-            color: var(--secondary);
         }
         
         /* Media queries para ajustes adicionais */
@@ -625,9 +602,6 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-chart-line"></i> Minha Carteira</h1>
-            <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
-                <i class="fas fa-moon"></i>
-            </button>
         </header>
         
         <div class="dashboard">
@@ -661,28 +635,60 @@
             </div>
             
             <div class="card">
-                <h2><i class="fas fa-calendar-alt"></i> Próximos Dividendos</h2>
-                <div id="dividends-list" class="dividends-list">
-                    <div class="dividend-item">
-                        <div class="dividend-info">
-                            <div class="dividend-ticker">PETR4</div>
-                            <div class="dividend-date">Vencimento: 15/08/2023</div>
+                <h2><i class="fas fa-coins"></i> Dividendos</h2>
+                <div class="dividends-container">
+                    <div>
+                        <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--success);"><i class="fas fa-calendar-alt"></i> Próximos Dividendos</h3>
+                        <div id="dividends-list" class="dividends-list">
+                            <div class="dividend-item">
+                                <div class="dividend-info">
+                                    <div class="dividend-ticker">PETR4</div>
+                                    <div class="dividend-date">Vencimento: 15/08/2023</div>
+                                </div>
+                                <div class="dividend-value">R$ 42,50</div>
+                            </div>
+                            <div class="dividend-item">
+                                <div class="dividend-info">
+                                    <div class="dividend-ticker">ITSA4</div>
+                                    <div class="dividend-date">Vencimento: 20/08/2023</div>
+                                </div>
+                                <div class="dividend-value">R$ 28,30</div>
+                            </div>
+                            <div class="dividend-item">
+                                <div class="dividend-info">
+                                    <div class="dividend-ticker">MXRF11</div>
+                                    <div class="dividend-date">Vencimento: 05/09/2023</div>
+                                </div>
+                                <div class="dividend-value">R$ 65,80</div>
+                            </div>
                         </div>
-                        <div class="dividend-value">R$ 42,50</div>
                     </div>
-                    <div class="dividend-item">
-                        <div class="dividend-info">
-                            <div class="dividend-ticker">ITSA4</div>
-                            <div class="dividend-date">Vencimento: 20/08/2023</div>
+                    
+                    <div>
+                        <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--secondary);"><i class="fas fa-history"></i> Últimos Dividendos</h3>
+                        <div id="last-dividends-list" class="dividends-list">
+                            <div class="last-dividend-item">
+                                <div class="last-dividend-info">
+                                    <div class="last-dividend-ticker">VALE3</div>
+                                    <div class="last-dividend-date">Recebido: 10/07/2023</div>
+                                </div>
+                                <div class="last-dividend-value">R$ 85,20</div>
+                            </div>
+                            <div class="last-dividend-item">
+                                <div class="last-dividend-info">
+                                    <div class="last-dividend-ticker">BBAS3</div>
+                                    <div class="last-dividend-date">Recebido: 05/07/2023</div>
+                                </div>
+                                <div class="last-dividend-value">R$ 32,75</div>
+                            </div>
+                            <div class="last-dividend-item">
+                                <div class="last-dividend-info">
+                                    <div class="last-dividend-ticker">HGLG11</div>
+                                    <div class="last-dividend-date">Recebido: 28/06/2023</div>
+                                </div>
+                                <div class="last-dividend-value">R$ 52,40</div>
+                            </div>
                         </div>
-                        <div class="dividend-value">R$ 28,30</div>
-                    </div>
-                    <div class="dividend-item">
-                        <div class="dividend-info">
-                            <div class="dividend-ticker">MXRF11</div>
-                            <div class="dividend-date">Vencimento: 05/09/2023</div>
-                        </div>
-                        <div class="dividend-value">R$ 65,80</div>
                     </div>
                 </div>
             </div>
@@ -902,17 +908,14 @@
         
         // Elementos DOM
         const notification = document.getElementById('notification');
-        const themeToggle = document.getElementById('theme-toggle');
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            // Carregar tema salvo
-            loadTheme();
-            
             loadAssets();
             setupEventListeners();
             updateDashboard();
             updateDividendsList();
+            updateLastDividendsList();
             setupTableFilters();
             
             // Tornar tabela responsiva
@@ -925,18 +928,6 @@
             // Inicializar estado do formulário
             initFormVisibility();
         });
-        
-        // Função para carregar tema salvo
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-            }
-        }
         
         // Toggle para o formulário de adicionar investimento
         function initFormVisibility() {
@@ -1004,9 +995,6 @@
             document.getElementById('ticker').addEventListener('blur', validateTickerFormat);
             document.getElementById('edit-ticker').addEventListener('blur', validateEditTickerFormat);
             
-            // Dark mode toggle
-            themeToggle.addEventListener('click', toggleTheme);
-            
             // Confirm delete buttons
             document.getElementById('confirm-delete').addEventListener('click', confirmDelete);
             document.getElementById('cancel-delete').addEventListener('click', () => {
@@ -1018,20 +1006,6 @@
         function setupTableFilters() {
             document.getElementById('filter-type').addEventListener('change', filterTable);
             document.getElementById('filter-search').addEventListener('input', filterTable);
-        }
-        
-        // Alternar tema
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                localStorage.setItem('theme', 'dark');
-            }
         }
         
         // Validar formato de ticker (padrão B3)
@@ -1318,6 +1292,71 @@
             dividendsList.innerHTML = html;
         }
         
+        // Atualizar lista de últimos dividendos
+        function updateLastDividendsList() {
+            const lastDividendsList = document.getElementById('last-dividends-list');
+            
+            if (assets.length === 0) {
+                lastDividendsList.innerHTML = '<p>Adicione ativos que pagam dividendos para acompanhar.</p>';
+                return;
+            }
+            
+            // Gerar dividendos simulados para os últimos 3 meses
+            const today = new Date();
+            const dividends = [];
+            
+            assets.forEach(asset => {
+                // Considerar apenas ações e FIIs para dividendos
+                if (asset.type === 'stock' || asset.type === 'reit') {
+                    // Simular data de pagamento - entre 1 e 90 dias atrás
+                    const daysAgo = Math.floor(Math.random() * 90) + 1;
+                    const paymentDate = new Date(today);
+                    paymentDate.setDate(today.getDate() - daysAgo);
+                    
+                    // Simular valor do dividendo (0.5% a 2% do valor investido)
+                    const investedValue = asset.quantity * asset.avgPrice;
+                    const dividendYield = (Math.random() * 0.015) + 0.005;
+                    const dividendValue = investedValue * dividendYield;
+                    
+                    dividends.push({
+                        ticker: asset.ticker,
+                        date: paymentDate,
+                        value: dividendValue,
+                        type: asset.type
+                    });
+                }
+            });
+            
+            // Ordenar por data mais recente
+            dividends.sort((a, b) => b.date - a.date);
+            
+            // Pegar os últimos 3 dividendos
+            const lastDividends = dividends.slice(0, 3);
+            
+            if (lastDividends.length === 0) {
+                lastDividendsList.innerHTML = '<p>Nenhum dividendo recebido recentemente.</p>';
+                return;
+            }
+            
+            let html = '';
+            lastDividends.forEach(dividend => {
+                const formattedDate = dividend.date.toLocaleDateString('pt-BR');
+                const formattedValue = formatNumber(dividend.value);
+                
+                html += `
+                    <div class="last-dividend-item">
+                        <div class="last-dividend-info">
+                            <div class="last-dividend-ticker">${dividend.ticker}</div>
+                            <div class="last-dividend-date">Recebido: ${formattedDate}</div>
+                        </div>
+                        <div class="last-dividend-value">R$ ${formattedValue}</div>
+                    </div>
+                `;
+            });
+            
+            lastDividendsList.innerHTML = html;
+        }
+        
         // Adicionar ativo
         function addAsset(e) {
             e.preventDefault();
@@ -1363,6 +1402,7 @@
             // Recarregar a lista
             loadAssets();
             updateDividendsList();
+            updateLastDividendsList();
             
             showNotification('Investimento adicionado com sucesso!', 'success');
         }
@@ -1405,6 +1445,7 @@
             
             loadAssets();
             updateDividendsList();
+            updateLastDividendsList();
             
             showNotification('Investimento excluído com sucesso!', 'success');
         }
@@ -1448,6 +1489,7 @@
             closeModal('edit-modal');
             loadAssets();
             updateDividendsList();
+            updateLastDividendsList();
             
             showNotification('Investimento atualizado com sucesso!', 'success');
         }
@@ -1828,6 +1870,7 @@
                     saveAssets();
                     loadAssets();
                     updateDividendsList();
+                    updateLastDividendsList();
                     
                     showNotification('Dados importados com sucesso!', 'success');
                 } catch (error) {
