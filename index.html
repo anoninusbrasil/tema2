@@ -493,6 +493,10 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+        .modal-content.edit-mode {
+            border: 2px solid #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -565,26 +569,6 @@
         }
         .btn-delete:active {
             background-color: #a93226;
-        }
-        .btn-shift {
-            background-color: #9b59b6;
-            color: white;
-        }
-        .btn-shift:hover {
-            background-color: #8e44ad;
-        }
-        .btn-shift:active {
-            background-color: #7d3c98;
-        }
-        .btn-edit-shift {
-            background-color: #e67e22;
-            color: white;
-        }
-        .btn-edit-shift:hover {
-            background-color: #d35400;
-        }
-        .btn-edit-shift:active {
-            background-color: #ba4a00;
         }
         
         /* Seletor de cores */
@@ -711,6 +695,10 @@
             width: 100%;
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .note-modal-content.edit-mode {
+            border: 2px solid #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
         }
         
         /* Seletor de dias alternados */
@@ -1384,12 +1372,6 @@
                 </div>
                 <div class="modal-actions">
                     <div>
-                        <button type="button" class="btn btn-shift" id="new-shift-btn">Novo Plantão</button>
-                    </div>
-                    <div>   
-                        <button type="button" class="btn btn-edit-shift" id="edit-shift-btn">Editar Plantão</button>
-                    </div>
-                    <div>
                         <button type="button" class="btn btn-delete" id="delete-event" style="display: none;">Excluir</button>
                     </div>
                     <div>
@@ -1571,8 +1553,9 @@
             
             // Função para formatar valores monetários no padrão brasileiro
             function formatCurrency(value) {
-                // Garantir que o valor seja um número
-                const numValue = parseFloat(value);
+                // Garantir que o valor seja uma string e substituir vírgula por ponto
+                const stringValue = String(value).replace(',', '.');
+                const numValue = parseFloat(stringValue);
                 if (isNaN(numValue)) return "R$ 0,00";
                 
                 // Formatar com duas casas decimais
@@ -1621,8 +1604,6 @@
             const eventTimeInput = document.getElementById('event-time');
             const deleteEventBtn = document.getElementById('delete-event');
             const closeModalBtn = document.getElementById('close-modal');
-            const newShiftBtn = document.getElementById('new-shift-btn');
-            const editShiftBtn = document.getElementById('edit-shift-btn');
             const dayEventsSection = document.getElementById('day-events');
             const eventList = document.getElementById('event-list');
             const shiftsSelector = document.getElementById('shifts-selector');
@@ -1969,7 +1950,8 @@
                     noteCard.appendChild(noteDelete);
                     
                     noteCard.addEventListener('click', () => {
-                        openNoteViewModal(note);
+                        // Abrir diretamente em modo de edição
+                        openNoteModal(note);
                     });
                     
                     notesMosaic.appendChild(noteCard);
@@ -2175,10 +2157,14 @@
                 selectedNoteColor = 'yellow';
                 
                 if (note) {
+                    // Modo de edição
                     noteModalTitle.textContent = 'Editar Nota';
                     noteIdInput.value = note.id;
                     noteTitleInput.value = note.title;
                     noteContentInput.value = note.content;
+                    
+                    // Adicionar classe de modo de edição
+                    noteModal.querySelector('.note-modal-content').classList.add('edit-mode');
                     
                     // Definir cor selecionada
                     if (note.color) {
@@ -2191,10 +2177,14 @@
                         });
                     }
                 } else {
+                    // Modo de criação
                     noteModalTitle.textContent = 'Adicionar Nota';
                     noteIdInput.value = '';
                     noteTitleInput.value = '';
                     noteContentInput.value = '';
+                    
+                    // Remover classe de modo de edição
+                    noteModal.querySelector('.note-modal-content').classList.remove('edit-mode');
                 }
                 
                 noteModal.style.display = 'flex';
@@ -2317,18 +2307,18 @@
                 switch(alternateType) {
                     case 'odd':
                         // Dias ímpares: começando do dia de início, pegar todos os dias ímpares
-                        for (let day = startDay; day <= lastDay; day++) {
-                            if (day % 2 === 1) { // Dia ímpar
-                                dayPattern.push(day);
-                            }
+                        // Se o dia de início for ímpar, comece por ele, senão comece pelo próximo ímpar
+                        let firstOdd = startDay % 2 === 1 ? startDay : startDay + 1;
+                        for (let day = firstOdd; day <= lastDay; day += 2) {
+                            dayPattern.push(day);
                         }
                         break;
                     case 'even':
                         // Dias pares: começando do dia de início, pegar todos os dias pares
-                        for (let day = startDay; day <= lastDay; day++) {
-                            if (day % 2 === 0) { // Dia par
-                                dayPattern.push(day);
-                            }
+                        // Se o dia de início for par, comece por ele, senão comece pelo próximo par
+                        let firstEven = startDay % 2 === 0 ? startDay : startDay + 1;
+                        for (let day = firstEven; day <= lastDay; day += 2) {
+                            dayPattern.push(day);
                         }
                         break;
                     case 'every3':
@@ -2403,6 +2393,7 @@
                 selectedShift = null;
                 
                 if (event) {
+                    // Modo de edição
                     modalTitle.textContent = `Editar Plantão - ${formattedDate}`;
                     eventIdInput.value = event.id;
                     eventDatePickerInput.value = dateString;
@@ -2410,6 +2401,9 @@
                     eventDescriptionInput.value = event.description || '';
                     eventTimeInput.value = event.time || '';
                     deleteEventBtn.style.display = 'block';
+                    
+                    // Adicionar classe de modo de edição
+                    eventModal.querySelector('.modal-content').classList.add('edit-mode');
                     
                     // Definir cor selecionada
                     if (event.color) {
@@ -2441,9 +2435,10 @@
                                     option.classList.add('selected');
                                 }
                             });
-                        }, 100);
+                        }, 300);
                     }
                 } else {
+                    // Modo de criação
                     modalTitle.textContent = `Adicionar Plantão - ${formattedDate}`;
                     eventIdInput.value = '';
                     eventDatePickerInput.value = dateString;
@@ -2451,6 +2446,9 @@
                     eventDescriptionInput.value = '';
                     eventTimeInput.value = '';
                     deleteEventBtn.style.display = 'none';
+                    
+                    // Remover classe de modo de edição
+                    eventModal.querySelector('.modal-content').classList.remove('edit-mode');
                 }
                 
                 eventDateInput.value = dateString;
@@ -2499,51 +2497,8 @@
                 eventTimeInput.value = '';
                 deleteEventBtn.style.display = 'none';
                 
-                eventDateInput.value = dateString;
-                eventModal.style.display = 'flex';
-                
-                // Renderizar lista de plantões
-                renderShiftsSelector();
-                
-                // Carregar eventos do dia
-                loadDayEvents(dateString);
-                
-                // Focar no campo de título ao abrir o modal
-                setTimeout(() => {
-                    eventTitleInput.focus();
-                }, 300);
-            }
-            
-            // Abrir modal para editar plantão
-            function openEditShiftModal(dateString) {
-                // Abrir o modal de eventos com o título "Editar Plantão"
-                const date = new Date(dateString);
-                const formattedDate = date.toLocaleDateString('pt-BR');
-                
-                // Resetar seleção de cor e dias alternados
-                eventColorOptions.forEach(option => {
-                    option.classList.remove('selected');
-                    if (option.dataset.color === 'blue') {
-                        option.classList.add('selected');
-                    }
-                });
-                selectedEventColor = 'blue';
-                
-                alternateDayOptions.forEach(option => {
-                    option.classList.remove('selected');
-                });
-                selectedAlternateDaysType = null;
-                
-                // Resetar seleção de plantão
-                selectedShift = null;
-                
-                modalTitle.textContent = `Editar Plantão - ${formattedDate}`;
-                eventIdInput.value = '';
-                eventDatePickerInput.value = dateString;
-                eventTitleInput.value = '';
-                eventDescriptionInput.value = '';
-                eventTimeInput.value = '';
-                deleteEventBtn.style.display = 'none';
+                // Remover classe de modo de edição
+                eventModal.querySelector('.modal-content').classList.remove('edit-mode');
                 
                 eventDateInput.value = dateString;
                 eventModal.style.display = 'flex';
@@ -2700,17 +2655,17 @@
                     cell.addEventListener('click', function(e) {
                         // Verificar se o clique foi em um evento ou na célula do dia
                         if (e.target.classList.contains('event')) {
-                            // Clicou em um evento existente
+                            // Clicou em um evento existente - abrir diretamente em modo de edição
                             const dateString = this.getAttribute('data-date');
                             const eventId = e.target.getAttribute('data-event-id');
                             const events = getEventsForDate(dateString);
                             const event = events.find(ev => ev.id === eventId);
                             
                             if (event) {
-                                openEventViewModal(event, dateString);
+                                openEventModal(dateString, event);
                             }
                         } else {
-                            // Clicou em um dia vazio
+                            // Clicou em um dia vazio - abrir em modo de criação
                             const dateString = this.getAttribute('data-date');
                             openEventModal(dateString);
                         }
@@ -3198,38 +3153,14 @@
                     loadDayEvents(dateString);
                     calculateShiftStats();
                     calculateYearStats(parseInt(yearSelect.value));
-                    showToast(eventId ? 'Plantão atualizado com sucesso!' : 'Plantão adicionado com sucesso!');
+                    if (eventId) {
+                        showToast('Plantão atualizado com sucesso!');
+                    } else {
+                        showToast('Plantão adicionado com sucesso!');
+                    }
                 }
                 
                 closeEventModal();
-            });
-            
-            // Event listener para o botão "Novo Plantão"
-            newShiftBtn.addEventListener('click', function() {
-                // Manter a data atual do modal
-                const currentDateString = eventDatePickerInput.value;
-                
-                // Fechar o modal atual
-                closeEventModal();
-                
-                // Abrir um novo modal para adicionar um plantão na mesma data
-                setTimeout(() => {
-                    openShiftModal(currentDateString);
-                }, 300);
-            });
-            
-            // Event listener para o botão "Editar Plantão"
-            editShiftBtn.addEventListener('click', function() {
-                // Manter a data atual do modal
-                const currentDateString = eventDatePickerInput.value;
-                
-                // Fechar o modal atual
-                closeEventModal();
-                
-                // Abrir um novo modal para editar um plantão na mesma data
-                setTimeout(() => {
-                    openEditShiftModal(currentDateString);
-                }, 300);
             });
             
             deleteEventBtn.addEventListener('click', function() {
