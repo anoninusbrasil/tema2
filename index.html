@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3498db">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bloco de Notas com Calendário</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloco de Notas com Análise de Plantões</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -49,38 +48,15 @@
             font-size: 0.9rem;
         }
         
-        /* Botão Desocultar Tudo */
-        .show-all-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
-            transition: all 0.3s;
-            display: none;
-        }
-        .show-all-btn:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-        .show-all-btn.show {
-            display: block;
-        }
-        
-        .calendar-section, .notes-section, .stats-section {
+        .calendar-section, .notes-section, .analytics-section {
             width: 100%;
             background: white;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
             transition: transform 0.3s ease;
+            padding: 15px;
         }
-        .calendar-section:hover, .notes-section:hover, .stats-section:hover {
+        .calendar-section:hover, .notes-section:hover, .analytics-section:hover {
             transform: translateY(-5px);
         }
         
@@ -338,77 +314,6 @@
             background-color: #FFD180;
         }
         
-        /* Seção de estatísticas */
-        .stats-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .stats-summary {
-            display: flex;
-            gap: 15px;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            flex: 1;
-            min-width: 120px;
-        }
-        .stat-card h3 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-            font-size: 1rem;
-        }
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #3498db;
-        }
-        .chart-container {
-            height: 200px;
-            position: relative;
-            margin: 10px 0;
-        }
-        .shifts-details {
-            margin-top: 10px;
-        }
-        .shifts-details h3 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-            font-size: 1rem;
-        }
-        .shift-detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .shift-detail-name {
-            font-weight: 600;
-        }
-        .shift-detail-count {
-            color: #7f8c8d;
-        }
-        .shift-detail-value {
-            color: #27ae60;
-            font-weight: 600;
-        }
-        
-        /* Seletor de ano */
-        .year-selector {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .year-selector label {
-            margin-right: 10px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
         /* Botão flutuante oval */
         .fab-container {
             position: fixed;
@@ -445,7 +350,7 @@
             right: 0;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             padding: 8px 0;
             width: 200px;
             opacity: 0;
@@ -760,6 +665,40 @@
         .note-modal-content.edit-mode {
             border: 2px solid #3498db;
             box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        
+        /* Seletor de padrões de escala */
+        .scale-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .scale-option {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        .scale-option:hover {
+            background-color: #f5f7fa;
+            border-color: #3498db;
+        }
+        .scale-option.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .scale-info {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-top: 4px;
         }
         
         /* Seletor de dias alternados */
@@ -1114,6 +1053,76 @@
             font-weight: 600;
         }
         
+        /* Novos estilos para a seção de análise */
+        .analytics-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .filter-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .filter-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .chart-wrapper {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .chart-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .analytics-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .summary-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        @media (min-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -1180,22 +1189,15 @@
             .fab-menu {
                 width: 180px;
             }
-            .alternate-day-option {
+            .alternate-day-option, .scale-option {
                 min-width: 80px;
                 font-size: 0.8rem;
             }
             .form-row {
                 flex-direction: column;
             }
-            .stats-summary {
+            .analytics-filters {
                 flex-direction: column;
-            }
-            .stat-card {
-                margin-bottom: 10px;
-            }
-            .show-all-btn {
-                font-size: 0.7rem;
-                padding: 6px 10px;
             }
         }
         
@@ -1204,7 +1206,7 @@
             body {
                 padding: 8px;
             }
-            .calendar-section, .notes-section, .stats-section {
+            .calendar-section, .notes-section, .analytics-section {
                 padding: 12px;
             }
             #calendar th {
@@ -1249,17 +1251,16 @@
                 padding: 4px 6px;
                 font-size: 0.7rem;
             }
-            .alternate-day-option {
+            .alternate-day-option, .scale-option {
                 min-width: 70px;
                 font-size: 0.75rem;
                 padding: 6px;
             }
-            .chart-container {
-                height: 150px;
+            .analytics-summary {
+                grid-template-columns: 1fr 1fr;
             }
-            .show-all-btn {
-                font-size: 0.65rem;
-                padding: 4px 8px;
+            .summary-value {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -1268,7 +1269,6 @@
     <header>
         <h1>Bloco de Notas Calendário</h1>
         <p class="subtitle">Organize suas tarefas e anotações com este bloco de notas interativo</p>
-        <button class="show-all-btn" id="show-all-btn">Desocultar Tudo</button>
     </header>
     <div class="container">
         <div class="calendar-section">
@@ -1298,7 +1298,7 @@
         </div>
         <div class="notes-section" id="notes-section">
             <div class="section-header">
-                <h4>Minhas Notas</h4>
+                <h2>Minhas Notas</h2>
                 <button class="toggle-section" id="toggle-notes" title="Ocultar/Mostrar seção">👁️</button>
             </div>
             <div class="section-content">
@@ -1311,66 +1311,68 @@
                 </div>
             </div>
         </div>
-        <div class="stats-section" id="stats-section">
+
+        <!-- Nova seção de análise -->
+        <div class="analytics-section" id="analytics-section">
             <div class="section-header">
-                <h4>Estatísticas de Plantões</h4>
-                <button class="toggle-section" id="toggle-stats" title="Ocultar/Mostrar seção">👁️</button>
+                <h2>📊 Análise de Plantões</h2>
+                <button class="toggle-section" id="toggle-analytics" title="Ocultar/Mostrar seção">👁️</button>
             </div>
             <div class="section-content">
-                <div class="stats-container">
-                    <div class="stats-summary">
-                        <div class="stat-card">
-                            <h3>Total de Plantões</h3>
-                            <div class="stat-value" id="total-shifts">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Valor Total</h3>
-                            <div class="stat-value" id="total-value">R$ 0,00</div>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="shifts-chart"></canvas>
-                    </div>
-                    <div class="shifts-details">
-                        <h3>Detalhes por Tipo</h3>
-                        <div id="shifts-details-list">
-                            <!-- Lista será preenchida via JavaScript -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="stats-section" id="year-stats-section">
-            <div class="section-header">
-                <h4>Estatísticas Anuais de Plantões</h4>
-                <button class="toggle-section" id="toggle-year-stats" title="Ocultar/Mostrar seção">👁️</button>
-            </div>
-            <div class="section-content">
-                <div class="stats-container">
-                    <div class="year-selector">
-                        <label for="year-select">Ano:</label>
-                        <select id="year-select" class="form-control" style="width: auto; display: inline-block;">
-                            <!-- Opções de ano serão preenchidas via JavaScript -->
+                <div class="analytics-filters">
+                    <div class="filter-group">
+                        <label for="period-filter">Período</label>
+                        <select id="period-filter" class="filter-select">
+                            <option value="month">Este mês</option>
+                            <option value="last-month">Mês anterior</option>
+                            <option value="quarter">Este trimestre</option>
+                            <option value="semester">Este semestre</option>
+                            <option value="year">Este ano</option>
+                            <option value="all">Todos</option>
                         </select>
                     </div>
-                    <div class="stats-summary">
-                        <div class="stat-card">
-                            <h3>Total de Plantões no Ano</h3>
-                            <div class="stat-value" id="total-year-shifts">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Valor Total no Ano</h3>
-                            <div class="stat-value" id="total-year-value">R$ 0,00</div>
-                        </div>
+                    <div class="filter-group">
+                        <label for="chart-type-filter">Tipo de Gráfico</label>
+                        <select id="chart-type-filter" class="filter-select">
+                            <option value="bar">Barras</option>
+                            <option value="line">Linhas</option>
+                            <option value="pie">Pizza</option>
+                        </select>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="year-shifts-chart"></canvas>
+                    <div class="filter-group">
+                        <label for="group-by-filter">Agrupar por</label>
+                        <select id="group-by-filter" class="filter-select">
+                            <option value="day">Dia</option>
+                            <option value="week">Semana</option>
+                            <option value="month">Mês</option>
+                        </select>
                     </div>
-                    <div class="shifts-details">
-                        <h3>Detalhes por Mês</h3>
-                        <div id="year-shifts-details-list">
-                            <!-- Lista será preenchida via JavaScript -->
-                        </div>
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-save" id="apply-filters">Aplicar</button>
+                    </div>
+                </div>
+
+                <div class="analytics-summary" id="analytics-summary">
+                    <!-- Resumo será preenchido via JavaScript -->
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">Plantões por Tipo</h3>
+                        <canvas id="shifts-by-type-chart"></canvas>
+                    </div>
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">Valores por Mês</h3>
+                        <canvas id="values-by-month-chart"></canvas>
+                    </div>
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">Distribuição por Dia da Semana</h3>
+                        <canvas id="shifts-by-weekday-chart"></canvas>
+                    </div>
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">Evolução de Valores</h3>
+                        <canvas id="values-evolution-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -1398,6 +1400,10 @@
             <div class="fab-menu-item" id="settings-btn">
                 <span class="fab-menu-icon">⚙️</span>
                 <span class="fab-menu-text">Ajustes</span>
+            </div>
+            <div class="fab-menu-item" id="analytics-btn">
+                <span class="fab-menu-icon">📊</span>
+                <span class="fab-menu-text">Análise</span>
             </div>
         </div>
         <button class="fab" id="fab-btn">👆🏻</button>
@@ -1447,7 +1453,28 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Dias Alternados (opcional)</label>
+                    <label>📋 Padrões de Escala de Plantão</label>
+                    <div class="scale-selector" id="scale-selector">
+                        <div class="scale-option" data-type="12x24">
+                            12x24
+                            <div class="scale-info">12h trab, 24h desc</div>
+                        </div>
+                        <div class="scale-option" data-type="12x36">
+                            12x36
+                            <div class="scale-info">12h trab, 36h desc</div>
+                        </div>
+                        <div class="scale-option" data-type="24x72">
+                            24x72
+                            <div class="scale-info">24h trab, 72h desc</div>
+                        </div>
+                        <div class="scale-option" data-type="custom">
+                            Personalizado
+                            <div class="scale-info">Dias específicos</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="custom-days-selector" style="display: none;">
+                    <label>📅 Dias Personalizados</label>
                     <div class="alternate-days-selector">
                         <div class="alternate-day-option" data-type="odd">Dias Ímpares</div>
                         <div class="alternate-day-option" data-type="even">Dias Pares</div>
@@ -1676,6 +1703,7 @@
             const addShiftBtn = document.getElementById('add-shift-btn');
             const addNoteBtn = document.getElementById('add-note-btn');
             const settingsBtn = document.getElementById('settings-btn');
+            const analyticsBtn = document.getElementById('analytics-btn');
             
             // Elementos do modal de eventos
             const eventModal = document.getElementById('event-modal');
@@ -1750,30 +1778,32 @@
             const alternateDayOptions = document.querySelectorAll('.alternate-day-option');
             let selectedAlternateDaysType = null;
             
+            // Elementos do seletor de escala
+            const scaleOptions = document.querySelectorAll('.scale-option');
+            const customDaysSelector = document.getElementById('custom-days-selector');
+            let selectedScaleType = null;
+            
             // Elemento de notificação toast
             const toast = document.getElementById('toast');
             
-            // Elementos da seção de estatísticas
-            const totalShiftsElement = document.getElementById('total-shifts');
-            const totalValueElement = document.getElementById('total-value');
-            const shiftsDetailsList = document.getElementById('shifts-details-list');
-            const shiftsChart = document.getElementById('shifts-chart');
-            
-            // Elementos para estatísticas anuais
-            const yearSelect = document.getElementById('year-select');
-            const totalYearShiftsElement = document.getElementById('total-year-shifts');
-            const totalYearValueElement = document.getElementById('total-year-value');
-            const yearShiftsChart = document.getElementById('year-shifts-chart');
-            const yearShiftsDetailsList = document.getElementById('year-shifts-details-list');
-            
-            // Elementos para ocultar/mostrar seções
+            // Elementos da seção de notas
             const notesSection = document.getElementById('notes-section');
-            const statsSection = document.getElementById('stats-section');
-            const yearStatsSection = document.getElementById('year-stats-section');
             const toggleNotesBtn = document.getElementById('toggle-notes');
-            const toggleStatsBtn = document.getElementById('toggle-stats');
-            const toggleYearStatsBtn = document.getElementById('toggle-year-stats');
-            const showAllBtn = document.getElementById('show-all-btn');
+            
+            // Elementos da nova seção de análise
+            const analyticsSection = document.getElementById('analytics-section');
+            const toggleAnalyticsBtn = document.getElementById('toggle-analytics');
+            const applyFiltersBtn = document.getElementById('apply-filters');
+            const periodFilter = document.getElementById('period-filter');
+            const chartTypeFilter = document.getElementById('chart-type-filter');
+            const groupByFilter = document.getElementById('group-by-filter');
+            const analyticsSummary = document.getElementById('analytics-summary');
+            
+            // Referências para os gráficos
+            let shiftsByTypeChart = null;
+            let valuesByMonthChart = null;
+            let shiftsByWeekdayChart = null;
+            let valuesEvolutionChart = null;
             
             // Variáveis para armazenar os itens atuais em visualização
             let currentViewingNote = null;
@@ -1815,52 +1845,24 @@
                         toggleNotesBtn.textContent = '👁️';
                     }
                     
-                    if (preferences.statsHidden) {
-                        statsSection.classList.add('section-hidden');
-                        toggleStatsBtn.textContent = '👁️‍🗨️';
+                    if (preferences.analyticsHidden) {
+                        analyticsSection.classList.add('section-hidden');
+                        toggleAnalyticsBtn.textContent = '👁️‍🗨️';
                     } else {
-                        statsSection.classList.remove('section-hidden');
-                        toggleStatsBtn.textContent = '👁️';
-                    }
-                    
-                    if (preferences.yearStatsHidden) {
-                        yearStatsSection.classList.add('section-hidden');
-                        toggleYearStatsBtn.textContent = '👁️‍🗨️';
-                    } else {
-                        yearStatsSection.classList.remove('section-hidden');
-                        toggleYearStatsBtn.textContent = '👁️';
+                        analyticsSection.classList.remove('section-hidden');
+                        toggleAnalyticsBtn.textContent = '👁️';
                     }
                 }
-                
-                // Verificar se o botão "Desocultar Tudo" deve ser exibido
-                updateShowAllButtonVisibility();
             }
             
             // Salvar preferências de seções visíveis
             function saveSectionPreferences() {
                 const preferences = {
                     notesHidden: notesSection.classList.contains('section-hidden'),
-                    statsHidden: statsSection.classList.contains('section-hidden'),
-                    yearStatsHidden: yearStatsSection.classList.contains('section-hidden')
+                    analyticsHidden: analyticsSection.classList.contains('section-hidden')
                 };
                 
                 localStorage.setItem('sectionPreferences', JSON.stringify(preferences));
-                
-                // Atualizar visibilidade do botão "Desocultar Tudo"
-                updateShowAllButtonVisibility();
-            }
-            
-            // Atualizar visibilidade do botão "Desocultar Tudo"
-            function updateShowAllButtonVisibility() {
-                const hasHiddenSections = notesSection.classList.contains('section-hidden') ||
-                                      statsSection.classList.contains('section-hidden') ||
-                                      yearStatsSection.classList.contains('section-hidden');
-                
-                if (hasHiddenSections) {
-                    showAllBtn.classList.add('show');
-                } else {
-                    showAllBtn.classList.remove('show');
-                }
             }
             
             // Funções para alternar visibilidade das seções
@@ -1874,38 +1876,38 @@
                 saveSectionPreferences();
             }
             
-            function toggleStatsSection() {
-                statsSection.classList.toggle('section-hidden');
-                if (statsSection.classList.contains('section-hidden')) {
-                    toggleStatsBtn.textContent = '👁️‍🗨️';
+            function toggleAnalyticsSection() {
+                analyticsSection.classList.toggle('section-hidden');
+                if (analyticsSection.classList.contains('section-hidden')) {
+                    toggleAnalyticsBtn.textContent = '👁️‍🗨️';
+                    // Destruir gráficos quando a seção estiver oculta para economizar recursos
+                    destroyCharts();
                 } else {
-                    toggleStatsBtn.textContent = '👁️';
+                    toggleAnalyticsBtn.textContent = '👁️';
+                    // Gerar gráficos quando a seção for mostrada
+                    generateAnalytics();
                 }
                 saveSectionPreferences();
             }
             
-            function toggleYearStatsSection() {
-                yearStatsSection.classList.toggle('section-hidden');
-                if (yearStatsSection.classList.contains('section-hidden')) {
-                    toggleYearStatsBtn.textContent = '👁️‍🗨️';
-                } else {
-                    toggleYearStatsBtn.textContent = '👁️';
+            // Função para destruir todos os gráficos
+            function destroyCharts() {
+                if (shiftsByTypeChart) {
+                    shiftsByTypeChart.destroy();
+                    shiftsByTypeChart = null;
                 }
-                saveSectionPreferences();
-            }
-            
-            // Função para mostrar todas as seções
-            function showAllSections() {
-                notesSection.classList.remove('section-hidden');
-                statsSection.classList.remove('section-hidden');
-                yearStatsSection.classList.remove('section-hidden');
-                
-                toggleNotesBtn.textContent = '👁️';
-                toggleStatsBtn.textContent = '👁️';
-                toggleYearStatsBtn.textContent = '👁️';
-                
-                saveSectionPreferences();
-                showToast('Todas as seções foram restauradas!');
+                if (valuesByMonthChart) {
+                    valuesByMonthChart.destroy();
+                    valuesByMonthChart = null;
+                }
+                if (shiftsByWeekdayChart) {
+                    shiftsByWeekdayChart.destroy();
+                    shiftsByWeekdayChart = null;
+                }
+                if (valuesEvolutionChart) {
+                    valuesEvolutionChart.destroy();
+                    valuesEvolutionChart = null;
+                }
             }
             
             // Carregar plantões pré-definidos
@@ -2238,14 +2240,12 @@
             
             // Limpar todos os dados (eventos e notas)
             function clearAllData() {
-                if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+                if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode be desfeita.')) {
                     localStorage.removeItem('notes');
                     localStorage.removeItem('calendarEvents');
                     renderNotes([]);
                     updateNotesCount(0);
                     generateCalendar();
-                    calculateShiftStats();
-                    calculateYearStats(parseInt(yearSelect.value));
                     showToast('Todos os dados foram limpos!');
                     closeSettingsModal();
                 }
@@ -2313,8 +2313,6 @@
                             // Atualizar interface
                             generateCalendar();
                             loadNotes();
-                            calculateShiftStats();
-                            calculateYearStats(parseInt(yearSelect.value));
                             renderSettingsShiftsList();
                             renderShiftsSelector();
                             
@@ -2491,8 +2489,8 @@
                 return eventData;
             }
             
-            // Criar eventos em dias alternados
-            function createAlternateDayEvents(startDate, eventData, alternateType) {
+            // Criar eventos em dias alternados - VERSÃO CORRIGIDA
+            function createAlternateDayEvents(startDate, eventData, scaleType) {
                 const events = loadEvents();
                 const start = new Date(startDate);
                 const year = start.getFullYear();
@@ -2503,34 +2501,51 @@
                 const lastDay = new Date(year, month + 1, 0).getDate();
                 
                 let createdCount = 0;
-                
-                // Determinar o padrão de dias alternados com base na data de início
                 let dayPattern = [];
-                switch(alternateType) {
+                
+                // Determinar o padrão de dias com base no tipo de escala
+                switch(scaleType) {
+                    case '12x24':
+                        // Plantão a cada 36 horas (12h trabalho + 24h descanso)
+                        // Isso resulta em plantões a cada 1.5 dias, mas vamos arredondar para dias completos
+                        for (let day = startDay; day <= lastDay; day += 2) {
+                            dayPattern.push(day);
+                        }
+                        break;
+                    case '12x36':
+                        // Plantão a cada 48 horas (12h trabalho + 36h descanso) = 2 dias
+                        for (let day = startDay; day <= lastDay; day += 2) {
+                            dayPattern.push(day);
+                        }
+                        break;
+                    case '24x72':
+                        // Plantão a cada 96 horas (24h trabalho + 72h descanso) = 4 dias
+                        for (let day = startDay; day <= lastDay; day += 4) {
+                            dayPattern.push(day);
+                        }
+                        break;
                     case 'odd':
-                        // Dias ímpares: começando do dia de início, pegar todos os dias ímpares
-                        // Se o dia de início for ímpar, comece por ele, senão comece pelo próximo ímpar
+                        // Dias ímpares
                         let firstOdd = startDay % 2 === 1 ? startDay : startDay + 1;
                         for (let day = firstOdd; day <= lastDay; day += 2) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'even':
-                        // Dias pares: começando do dia de início, pegar todos os dias pares
-                        // Se o dia de início for par, comece por ele, senão comece pelo próximo par
+                        // Dias pares
                         let firstEven = startDay % 2 === 0 ? startDay : startDay + 1;
                         for (let day = firstEven; day <= lastDay; day += 2) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'every3':
-                        // A cada 3 dias: começando do dia de início
+                        // A cada 3 dias
                         for (let day = startDay; day <= lastDay; day += 3) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'every4':
-                        // A cada 4 dias: começando do dia de início
+                        // A cada 4 dias
                         for (let day = startDay; day <= lastDay; day += 4) {
                             dayPattern.push(day);
                         }
@@ -2585,6 +2600,13 @@
                     }
                 });
                 selectedEventColor = 'blue';
+                
+                // Resetar seleção de escala
+                scaleOptions.forEach(option => {
+                    option.classList.remove('selected');
+                });
+                selectedScaleType = null;
+                customDaysSelector.style.display = 'none';
                 
                 alternateDayOptions.forEach(option => {
                     option.classList.remove('selected');
@@ -2641,7 +2663,7 @@
                     }
                 } else {
                     // Modo de criação
-                    modalTitle.textContent = `Adicionar Plantão - ${formattedDate}`;
+                    modalTitle.textContent = `Adicionar Plantão - ${formulatedDate}`;
                     eventIdInput.value = '';
                     eventDatePickerInput.value = dateString;
                     eventTitleInput.value = '';
@@ -2682,6 +2704,13 @@
                     }
                 });
                 selectedEventColor = 'blue';
+                
+                // Resetar seleção de escala
+                scaleOptions.forEach(option => {
+                    option.classList.remove('selected');
+                });
+                selectedScaleType = null;
+                customDaysSelector.style.display = 'none';
                 
                 alternateDayOptions.forEach(option => {
                     option.classList.remove('selected');
@@ -2763,8 +2792,6 @@
                             deleteEvent(dateString, event.id);
                             generateCalendar();
                             loadDayEvents(dateString);
-                            calculateShiftStats();
-                            calculateYearStats(parseInt(yearSelect.value));
                             showToast('Evento excluído com sucesso!');
                         }
                     });
@@ -2875,354 +2902,257 @@
                 });
             }
             
-            // Calcular e exibir estatísticas de plantões
-            function calculateShiftStats() {
+            // Função para analisar os eventos e extrair dados para os gráficos
+            function analyzeEvents() {
                 const events = loadEvents();
                 const shifts = loadShifts();
                 
-                // Filtrar apenas eventos do mês atual
-                const currentMonthEvents = {};
-                
-                // Iterar sobre todos os eventos
-                Object.keys(events).forEach(dateString => {
-                    const eventDate = new Date(dateString);
-                    const eventYear = eventDate.getFullYear();
-                    const eventMonth = eventDate.getMonth();
-                    
-                    // Comparar apenas ano e mês, ignorando o dia e hora
-                    if (eventYear === currentYear && eventMonth === currentMonth) {
-                        currentMonthEvents[dateString] = events[dateString];
-                    }
-                });
-                
-                // Contar plantões por tipo e calcular valores
-                const shiftCounts = {};
-                const shiftValues = {};
-                
-                // Inicializar contadores para cada tipo de plantão
-                shifts.forEach(shift => {
-                    shiftCounts[shift.name] = 0;
-                    shiftValues[shift.name] = 0;
-                });
-                
-                // Contar eventos
-                Object.values(currentMonthEvents).forEach(dayEvents => {
-                    dayEvents.forEach(event => {
-                        // Verificar se o evento corresponde a algum plantão pelo horário
-                        let matchingShift = null;
+                // Inicializar estruturas de dados para análise
+                const analysisData = {
+                    byType: {},
+                    byMonth: {},
+                    byWeekday: Array(7).fill(0),
+                    valuesByMonth: {},
+                    totalValue: 0,
+                    totalShifts: 0,
+                    averageValue: 0
+                };
+
+                // Processar cada data com eventos
+                for (const dateStr in events) {
+                    if (events.hasOwnProperty(dateStr)) {
+                        const date = new Date(dateStr);
+                        const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+                        const weekday = date.getDay(); // 0 = Domingo, 1 = Segunda, etc.
                         
-                        // Primeiro tenta encontrar pelo nome e horário exato
-                        matchingShift = shifts.find(shift => 
-                            shift.name === event.title && 
-                            shift.startTime === event.time
-                        );
-                        
-                        // Se não encontrar, tenta encontrar apenas pelo horário
-                        if (!matchingShift) {
-                            matchingShift = shifts.find(shift => shift.startTime === event.time);
-                        }
-                        
-                        if (matchingShift) {
-                            shiftCounts[matchingShift.name]++;
-                            // Converter valor para número e somar
-                            const value = parseFloat(matchingShift.value.replace(',', '.'));
-                            shiftValues[matchingShift.name] += value;
-                        }
-                    });
-                });
-                
-                // Calcular totais
-                let totalShifts = 0;
-                let totalValue = 0;
-                
-                Object.values(shiftCounts).forEach(count => {
-                    totalShifts += count;
-                });
-                
-                Object.values(shiftValues).forEach(value => {
-                    totalValue += value;
-                });
-                
-                // Atualizar interface
-                totalShiftsElement.textContent = totalShifts;
-                totalValueElement.textContent = formatCurrency(totalValue);
-                
-                // Preencher lista de detalhes
-                shiftsDetailsList.innerHTML = '';
-                
-                shifts.forEach(shift => {
-                    const count = shiftCounts[shift.name] || 0;
-                    const value = shiftValues[shift.name] || 0;
-                    
-                    const detailItem = document.createElement('div');
-                    detailItem.className = 'shift-detail-item';
-                    
-                    const detailName = document.createElement('div');
-                    detailName.className = 'shift-detail-name';
-                    detailName.textContent = shift.name;
-                    
-                    const detailCount = document.createElement('div');
-                    detailCount.className = 'shift-detail-count';
-                    detailCount.textContent = `${count} plantão${count !== 1 ? 'ões' : ''}`;
-                    
-                    const detailValue = document.createElement('div');
-                    detailValue.className = 'shift-detail-value';
-                    detailValue.textContent = formatCurrency(value);
-                    
-                    detailItem.appendChild(detailName);
-                    detailItem.appendChild(detailCount);
-                    detailItem.appendChild(detailValue);
-                    
-                    shiftsDetailsList.appendChild(detailItem);
-                });
-                
-                // Criar gráfico simples
-                createShiftsChart(shiftCounts);
-            }
-            
-            // Criar gráfico de plantões
-            function createShiftsChart(shiftCounts) {
-                const canvas = shiftsChart;
-                const ctx = canvas.getContext('2d');
-                
-                // Limpar gráfico anterior
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // Definir dimensões do canvas
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
-                
-                // Obter dados para o gráfico
-                const labels = Object.keys(shiftCounts);
-                const data = Object.values(shiftCounts);
-                
-                if (labels.length === 0 || data.every(value => value === 0)) {
-                    // Não há dados para exibir
-                    ctx.font = '14px Arial';
-                    ctx.fillStyle = '#7f8c8d';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('Nenhum plantão neste mês', canvas.width / 2, canvas.height / 2);
-                    return;
-                }
-                
-                // Configurar gráfico
-                const barWidth = canvas.width / (labels.length * 2);
-                const maxValue = Math.max(...data);
-                const scale = (canvas.height - 40) / maxValue;
-                
-                // Desenhar barras
-                labels.forEach((label, index) => {
-                    const value = data[index];
-                    const barHeight = value * scale;
-                    const x = (index * 2 + 0.5) * barWidth;
-                    const y = canvas.height - barHeight - 20;
-                    
-                    // Cor da barra
-                    const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
-                    ctx.fillStyle = colors[index % colors.length];
-                    
-                    // Desenhar barra
-                    ctx.fillRect(x, y, barWidth, barHeight);
-                    
-                    // Desenhar rótulo
-                    ctx.fillStyle = '#333';
-                    ctx.font = '12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(label, x + barWidth / 2, canvas.height - 5);
-                    
-                    // Desenhar valor
-                    ctx.fillText(value.toString(), x + barWidth / 2, y - 5);
-                });
-            }
-            
-            // Função para preencher o seletor de anos
-            function populateYearSelector() {
-                const currentYear = new Date().getFullYear();
-                const startYear = 2024; // Ano inicial, pode ser ajustado
-                yearSelect.innerHTML = '';
-                
-                for (let year = startYear; year <= currentYear + 1; year++) {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = year;
-                    if (year === currentYear) {
-                        option.selected = true;
-                    }
-                    yearSelect.appendChild(option);
-                }
-            }
-            
-            // Função para calcular estatísticas anuais
-            function calculateYearStats(year) {
-                const events = loadEvents();
-                const shifts = loadShifts();
-                
-                // Inicializar arrays para cada mês
-                const monthlyShifts = new Array(12).fill(0);
-                const monthlyValues = new Array(12).fill(0);
-                
-                // Contadores totais
-                let totalShifts = 0;
-                let totalValue = 0;
-                
-                // Iterar sobre todos os eventos
-                Object.keys(events).forEach(dateString => {
-                    const eventDate = new Date(dateString);
-                    if (eventDate.getFullYear() === year) {
-                        const month = eventDate.getMonth();
-                        
-                        events[dateString].forEach(event => {
-                            // Encontrar o plantão correspondente
-                            let matchingShift = null;
+                        events[dateStr].forEach(event => {
+                            analysisData.totalShifts++;
                             
-                            // Primeiro tenta encontrar pelo nome e horário exato
-                            matchingShift = shifts.find(shift => 
-                                shift.name === event.title && 
-                                shift.startTime === event.time
-                            );
+                            // Contar por tipo de plantão
+                            if (!analysisData.byType[event.title]) {
+                                analysisData.byType[event.title] = 0;
+                            }
+                            analysisData.byType[event.title]++;
                             
-                            // Se não encontrar, tenta encontrar apenas pelo horário
-                            if (!matchingShift) {
-                                matchingShift = shifts.find(shift => shift.startTime === event.time);
+                            // Contar por mês
+                            if (!analysisData.byMonth[monthYear]) {
+                                analysisData.byMonth[monthYear] = 0;
+                            }
+                            analysisData.byMonth[monthYear]++;
+                            
+                            // Contar por dia da semana
+                            analysisData.byWeekday[weekday]++;
+                            
+                            // Calcular valores (se disponível)
+                            let shiftValue = 0;
+                            
+                            // Tentar encontrar o valor no plantão pré-definido
+                            const predefinedShift = shifts.find(s => s.name === event.title);
+                            if (predefinedShift && predefinedShift.value) {
+                                shiftValue = parseFloat(predefinedShift.value.replace(',', '.'));
                             }
                             
-                            if (matchingShift) {
-                                monthlyShifts[month]++;
-                                // Converter valor para número e somar
-                                const value = parseFloat(matchingShift.value.replace(',', '.'));
-                                monthlyValues[month] += value;
-                                
-                                totalShifts++;
-                                totalValue += value;
+                            // Adicionar ao total
+                            analysisData.totalValue += shiftValue;
+                            
+                            // Adicionar ao valor por mês
+                            if (!analysisData.valuesByMonth[monthYear]) {
+                                analysisData.valuesByMonth[monthYear] = 0;
                             }
+                            analysisData.valuesByMonth[monthYear] += shiftValue;
                         });
                     }
+                }
+                
+                // Calcular valor médio
+                analysisData.averageValue = analysisData.totalShifts > 0 
+                    ? analysisData.totalValue / analysisData.totalShifts 
+                    : 0;
+                
+                return analysisData;
+            }
+
+            // Função para atualizar o resumo com os dados analisados
+            function updateSummary(analysisData) {
+                analyticsSummary.innerHTML = `
+                    <div class="summary-card">
+                        <div class="summary-label">Total de Plantões</div>
+                        <div class="summary-value">${analysisData.totalShifts}</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Valor Total</div>
+                        <div class="summary-value">R$ ${analysisData.totalValue.toFixed(2)}</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Valor Médio</div>
+                        <div class="summary-value">R$ ${analysisData.averageValue.toFixed(2)}</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Período</div>
+                        <div class="summary-value">${periodFilter.options[periodFilter.selectedIndex].text}</div>
+                    </div>
+                `;
+            }
+
+            // Função para gerar os gráficos
+            function generateCharts(analysisData) {
+                // Destruir gráficos existentes
+                destroyCharts();
+                
+                // Obter o tipo de gráfico selecionado
+                const chartType = chartTypeFilter.value;
+                
+                // 1. Gráfico de Plantões por Tipo
+                const shiftsByTypeCtx = document.getElementById('shifts-by-type-chart').getContext('2d');
+                shiftsByTypeChart = new Chart(shiftsByTypeCtx, {
+                    type: chartType === 'pie' ? 'pie' : 'bar',
+                    data: {
+                        labels: Object.keys(analysisData.byType),
+                        datasets: [{
+                            label: 'Plantões por Tipo',
+                            data: Object.values(analysisData.byType),
+                            backgroundColor: [
+                                '#3498db', '#2ecc71', '#e74c3c', '#f39c12', 
+                                '#9b59b6', '#1abc9c', '#34495e', '#d35400'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Plantões por Tipo'
+                            }
+                        }
+                    }
                 });
                 
-                // Atualizar interface
-                totalYearShiftsElement.textContent = totalShifts;
-                totalYearValueElement.textContent = formatCurrency(totalValue);
+                // 2. Gráfico de Valores por Mês
+                const valuesByMonthCtx = document.getElementById('values-by-month-chart').getContext('2d');
+                valuesByMonthChart = new Chart(valuesByMonthCtx, {
+                    type: chartType === 'pie' ? 'pie' : 'bar',
+                    data: {
+                        labels: Object.keys(analysisData.valuesByMonth),
+                        datasets: [{
+                            label: 'Valor (R$)',
+                            data: Object.values(analysisData.valuesByMonth),
+                            backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Valores por Mês'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            }
+                        }
+                    }
+                });
                 
-                // Preencher lista de detalhes por mês
-                yearShiftsDetailsList.innerHTML = '';
-                const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                // 3. Gráfico de Distribuição por Dia da Semana
+                const weekdays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+                const shiftsByWeekdayCtx = document.getElementById('shifts-by-weekday-chart').getContext('2d');
+                shiftsByWeekdayChart = new Chart(shiftsByWeekdayCtx, {
+                    type: chartType === 'pie' ? 'pie' : 'bar',
+                    data: {
+                        labels: weekdays,
+                        datasets: [{
+                            label: 'Plantões',
+                            data: analysisData.byWeekday,
+                            backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Distribuição por Dia da Semana'
+                            }
+                        }
+                    }
+                });
                 
-                for (let i = 0; i < 12; i++) {
-                    const detailItem = document.createElement('div');
-                    detailItem.className = 'shift-detail-item';
-                    
-                    const detailName = document.createElement('div');
-                    detailName.className = 'shift-detail-name';
-                    detailName.textContent = monthNames[i];
-                    
-                    const detailCount = document.createElement('div');
-                    detailCount.className = 'shift-detail-count';
-                    detailCount.textContent = `${monthlyShifts[i]} plantão${monthlyShifts[i] !== 1 ? 'ões' : ''}`;
-                    
-                    const detailValue = document.createElement('div');
-                    detailValue.className = 'shift-detail-value';
-                    detailValue.textContent = formatCurrency(monthlyValues[i]);
-                    
-                    detailItem.appendChild(detailName);
-                    detailItem.appendChild(detailCount);
-                    detailItem.appendChild(detailValue);
-                    
-                    yearShiftsDetailsList.appendChild(detailItem);
-                }
+                // 4. Gráfico de Evolução de Valores (linha)
+                const valuesEvolutionCtx = document.getElementById('values-evolution-chart').getContext('2d');
                 
-                // Criar gráfico anual
-                createYearChart(year, monthlyShifts, monthlyValues);
+                // Preparar dados para a evolução (ordenar por mês)
+                const sortedMonths = Object.keys(analysisData.valuesByMonth).sort((a, b) => {
+                    const [monthA, yearA] = a.split('/').map(Number);
+                    const [monthB, yearB] = b.split('/').map(Number);
+                    return yearA - yearB || monthA - monthB;
+                });
+                
+                const valuesByMonthSorted = sortedMonths.map(month => analysisData.valuesByMonth[month]);
+                
+                valuesEvolutionChart = new Chart(valuesEvolutionCtx, {
+                    type: 'line',
+                    data: {
+                        labels: sortedMonths,
+                        datasets: [{
+                            label: 'Evolução de Valores (R$)',
+                            data: valuesByMonthSorted,
+                            backgroundColor: 'rgba(241, 196, 15, 0.2)',
+                            borderColor: 'rgba(241, 196, 15, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(241, 196, 15, 1)',
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Evolução de Valores por Mês'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            }
+                        }
+                    }
+                });
             }
-            
-            // Função para criar o gráfico anual
-            function createYearChart(year, monthlyShifts, monthlyValues) {
-                const canvas = yearShiftsChart;
-                const ctx = canvas.getContext('2d');
-                
-                // Limpar gráfico anterior
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // Definir dimensões do canvas
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
-                
-                // Configurar gráfico
-                const padding = 40;
-                const chartWidth = canvas.width - padding * 2;
-                const chartHeight = canvas.height - padding * 2;
-                const barWidth = chartWidth / 12;
-                
-                // Encontrar o valor máximo para escala
-                const maxShifts = Math.max(...monthlyShifts);
-                const maxValue = Math.max(...monthlyValues);
-                const shiftScale = maxShifts > 0 ? chartHeight / maxShifts : 0;
-                const valueScale = maxValue > 0 ? chartHeight / maxValue : 0;
-                
-                // Desenhar eixos
-                ctx.beginPath();
-                ctx.moveTo(padding, padding);
-                ctx.lineTo(padding, canvas.height - padding);
-                ctx.lineTo(canvas.width - padding, canvas.height - padding);
-                ctx.strokeStyle = '#ddd';
-                ctx.stroke();
-                
-                // Desenhar barras e linha
-                for (let i = 0; i < 12; i++) {
-                    const x = padding + i * barWidth + barWidth / 2;
-                    
-                    // Desenhar barra de plantões
-                    const barHeight = monthlyShifts[i] * shiftScale;
-                    ctx.fillStyle = '#3498db';
-                    ctx.fillRect(x - barWidth / 4, canvas.height - padding - barHeight, barWidth / 2, barHeight);
-                    
-                    // Desenhar linha de valor
-                    if (i > 0) {
-                        const prevX = padding + (i - 1) * barWidth + barWidth / 2;
-                        const prevY = canvas.height - padding - monthlyValues[i - 1] * valueScale;
-                        const currY = canvas.height - padding - monthlyValues[i] * valueScale;
-                        
-                        ctx.beginPath();
-                        ctx.moveTo(prevX, prevY);
-                        ctx.lineTo(x, currY);
-                        ctx.strokeStyle = '#e74c3c';
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                    }
-                    
-                    // Desenhar ponto no valor atual
-                    const pointY = canvas.height - padding - monthlyValues[i] * valueScale;
-                    ctx.beginPath();
-                    ctx.arc(x, pointY, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = '#e74c3c';
-                    ctx.fill();
-                    
-                    // Desenhar rótulo do mês
-                    ctx.fillStyle = '#333';
-                    ctx.font = '10px Arial';
-                    ctx.textAlign = 'center';
-                    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-                    ctx.fillText(monthNames[i], x, canvas.height - padding + 20);
-                    
-                    // Desenhar valor do plantão se houver
-                    if (monthlyShifts[i] > 0) {
-                        ctx.fillText(monthlyShifts[i].toString(), x, canvas.height - padding - barHeight - 5);
-                    }
-                }
-                
-                // Desenhar legenda
-                ctx.fillStyle = '#3498db';
-                ctx.fillRect(canvas.width - 150, 20, 15, 15);
-                ctx.fillStyle = '#333';
-                ctx.font = '12px Arial';
-                ctx.textAlign = 'left';
-                ctx.fillText('Plantões', canvas.width - 130, 32);
-                
-                ctx.fillStyle = '#e74c3c';
-                ctx.beginPath();
-                ctx.arc(canvas.width - 150, 55, 4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#333';
-                ctx.fillText('Valor (R$)', canvas.width - 130, 60);
+
+            // Função principal para gerar toda a análise
+            function generateAnalytics() {
+                const analysisData = analyzeEvents();
+                updateSummary(analysisData);
+                generateCharts(analysisData);
             }
             
             // Event listeners
@@ -3233,7 +3163,6 @@
                     currentYear--;
                 }
                 generateCalendar();
-                calculateShiftStats();
             });
             
             nextMonthBtn.addEventListener('click', function() {
@@ -3243,7 +3172,6 @@
                     currentYear++;
                 }
                 generateCalendar();
-                calculateShiftStats();
             });
             
             // Botão flutuante e menu
@@ -3288,15 +3216,24 @@
                 fabBtn.textContent = '👆🏻';
             });
             
+            analyticsBtn.addEventListener('click', function() {
+                // Rolar até a seção de análise
+                document.getElementById('analytics-section').scrollIntoView({ behavior: 'smooth' });
+                // Mostrar a seção se estiver oculta
+                if (analyticsSection.classList.contains('section-hidden')) {
+                    toggleAnalyticsSection();
+                }
+                fabMenu.classList.remove('show');
+                fabBtn.textContent = '👆🏻';
+            });
+            
             clearNotesBtn.addEventListener('click', function() {
                 clearAllNotes();
             });
             
             // Event listeners para alternar seções
             toggleNotesBtn.addEventListener('click', toggleNotesSection);
-            toggleStatsBtn.addEventListener('click', toggleStatsSection);
-            toggleYearStatsBtn.addEventListener('click', toggleYearStatsSection);
-            showAllBtn.addEventListener('click', showAllSections);
+            toggleAnalyticsBtn.addEventListener('click', toggleAnalyticsSection);
             
             // Event listeners para o seletor de cores de eventos
             eventColorOptions.forEach(option => {
@@ -3333,6 +3270,25 @@
                 });
             });
             
+            // Event listeners para o seletor de escala
+            scaleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    scaleOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedScaleType = this.dataset.type;
+                    
+                    // Mostrar/ocultar seletor de dias personalizados
+                    if (selectedScaleType === 'custom') {
+                        customDaysSelector.style.display = 'block';
+                    } else {
+                        customDaysSelector.style.display = 'none';
+                        // Desselecionar dias alternados quando não for custom
+                        alternateDayOptions.forEach(opt => opt.classList.remove('selected'));
+                        selectedAlternateDaysType = null;
+                    }
+                });
+            });
+            
             // Event listeners para o modal de eventos
             eventForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -3348,21 +3304,37 @@
                     color: selectedEventColor
                 };
                 
-                if (selectedAlternateDaysType) {
+                // Verificar se há um padrão de escala selecionado
+                let scaleType = null;
+                if (selectedScaleType === 'custom' && selectedAlternateDaysType) {
+                    scaleType = selectedAlternateDaysType;
+                } else if (selectedScaleType && selectedScaleType !== 'custom') {
+                    scaleType = selectedScaleType;
+                }
+                
+                if (scaleType) {
                     // Criar eventos em dias alternados
-                    const createdCount = createAlternateDayEvents(dateString, eventData, selectedAlternateDaysType);
+                    const createdCount = createAlternateDayEvents(dateString, eventData, scaleType);
                     generateCalendar();
                     loadDayEvents(dateString);
-                    calculateShiftStats();
-                    calculateYearStats(parseInt(yearSelect.value));
-                    showToast(`${createdCount} eventos criados em dias alternados!`);
+                    
+                    let scaleName = '';
+                    switch(scaleType) {
+                        case '12x24': scaleName = '12x24'; break;
+                        case '12x36': scaleName = '12x36'; break;
+                        case '24x72': scaleName = '24x72'; break;
+                        case 'odd': scaleName = 'dias ímpares'; break;
+                        case 'even': scaleName = 'dias pares'; break;
+                        case 'every3': scaleName = 'a cada 3 dias'; break;
+                        case 'every4': scaleName = 'a cada 4 dias'; break;
+                    }
+                    
+                    showToast(`${createdCount} eventos criados no padrão ${scaleName}!`);
                 } else {
                     // Salvar evento único
                     saveEvent(dateString, eventData);
                     generateCalendar();
                     loadDayEvents(dateString);
-                    calculateShiftStats();
-                    calculateYearStats(parseInt(yearSelect.value));
                     if (eventId) {
                         showToast('Plantão atualizado com sucesso!');
                     } else {
@@ -3381,8 +3353,6 @@
                     deleteEvent(dateString, eventId);
                     generateCalendar();
                     loadDayEvents(dateString);
-                    calculateShiftStats();
-                    calculateYearStats(parseInt(yearSelect.value));
                     showToast('Plantão excluído com sucesso!');
                     closeEventModal();
                 }
@@ -3490,8 +3460,6 @@
                     if (confirm('Tem certeza que deseja excluir este plantão?')) {
                         deleteEvent(currentViewingEventDate, currentViewingEvent.id);
                         generateCalendar();
-                        calculateShiftStats();
-                        calculateYearStats(parseInt(yearSelect.value));
                         closeEventViewModal();
                         showToast('Plantão excluído com sucesso!');
                     }
@@ -3567,20 +3535,19 @@
                 addNewShiftBtn.style.display = 'block';
             });
             
-            // Event listener para mudança de ano
-            yearSelect.addEventListener('change', function() {
-                const selectedYear = parseInt(this.value);
-                calculateYearStats(selectedYear);
-            });
+            // Event listeners para a seção de análise
+            applyFiltersBtn.addEventListener('click', generateAnalytics);
             
             // Inicializar
-            populateYearSelector();
             generateCalendar();
             loadNotes();
             renderSettingsShiftsList();
-            calculateShiftStats();
-            calculateYearStats(new Date().getFullYear());
             loadSectionPreferences();
+            
+            // Inicializar a análise se a seção estiver visível
+            if (!analyticsSection.classList.contains('section-hidden')) {
+                generateAnalytics();
+            }
         });
     </script>
 </body>
