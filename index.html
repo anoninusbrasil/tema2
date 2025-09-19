@@ -2882,13 +2882,15 @@
                 
                 // Filtrar apenas eventos do mês atual
                 const currentMonthEvents = {};
-                const monthStart = new Date(currentYear, currentMonth, 1);
-                const monthEnd = new Date(currentYear, currentMonth + 1, 0);
                 
                 // Iterar sobre todos os eventos
                 Object.keys(events).forEach(dateString => {
                     const eventDate = new Date(dateString);
-                    if (eventDate >= monthStart && eventDate <= monthEnd) {
+                    const eventYear = eventDate.getFullYear();
+                    const eventMonth = eventDate.getMonth();
+                    
+                    // Comparar apenas ano e mês, ignorando o dia e hora
+                    if (eventYear === currentYear && eventMonth === currentMonth) {
                         currentMonthEvents[dateString] = events[dateString];
                     }
                 });
