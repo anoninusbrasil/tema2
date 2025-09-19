@@ -171,7 +171,7 @@
             border-collapse: collapse;
         }
         #calendar th, #calendar td {
-            padding: 4px 2px;
+            padding: 2px 2px;
             text-align: center;
             border: 1px solid #eee;
         }
@@ -322,7 +322,7 @@
         .note-yellow {
             background-color: #FFEB3B;
         }
-        .note-pink {
+        .note-brown {
             background-color: #9e6f39;
         }
         .note-blue {
@@ -1298,7 +1298,7 @@
         </div>
         <div class="notes-section" id="notes-section">
             <div class="section-header">
-                <h2>Minhas Notas</h2>
+                <h4>Minhas Notas</h4>
                 <button class="toggle-section" id="toggle-notes" title="Ocultar/Mostrar seção">👁️</button>
             </div>
             <div class="section-content">
@@ -1313,7 +1313,7 @@
         </div>
         <div class="stats-section" id="stats-section">
             <div class="section-header">
-                <h2>Estatísticas de Plantões</h2>
+                <h4>Estatísticas de Plantões</h4>
                 <button class="toggle-section" id="toggle-stats" title="Ocultar/Mostrar seção">👁️</button>
             </div>
             <div class="section-content">
@@ -1342,7 +1342,7 @@
         </div>
         <div class="stats-section" id="year-stats-section">
             <div class="section-header">
-                <h2>Estatísticas Anuais de Plantões</h2>
+                <h4>Estatísticas Anuais de Plantões</h4>
                 <button class="toggle-section" id="toggle-year-stats" title="Ocultar/Mostrar seção">👁️</button>
             </div>
             <div class="section-content">
@@ -1496,7 +1496,7 @@
                     <label>Cor da Nota</label>
                     <div class="color-selector">
                         <div class="color-option color-yellow selected" data-color="yellow"></div>
-                        <div class="color-option color-pink" data-color="pink"></div>
+                        <div class="color-option color-brown" data-color="brown"></div>
                         <div class="color-option color-blue" data-color="blue"></div>
                         <div class="color-option color-green" data-color="green"></div>
                         <div class="color-option color-purple" data-color="purple"></div>
@@ -1579,29 +1579,29 @@
                     <div class="add-shift-form" id="add-shift-form" style="display: none;">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="new-shift-name">Nome do Plantão</label>
-                                <input type="text" id="new-shift-name" class="form-control" placeholder="Ex: Plantão DN">
+                                <label for="new-shift-name">🏥 Nome do Plantão</label>
+                                <input type="text" id="new-shift-name" class="form-control" placeholder="Ex: 🚑 HRL DN">
                             </div>
                             <div class="form-group">
-                                <label for="new-shift-start">Horário de Entrada</label>
+                                <label for="new-shift-start">⏰ Horário de Entrada</label>
                                 <input type="time" id="new-shift-start" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="new-shift-end">Horário de Saída</label>
+                                <label for="new-shift-end">⏰ Horário de Saída</label>
                                 <input type="time" id="new-shift-end" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="new-shift-value">Valor (R$)</label>
+                                <label for="new-shift-value">💰 Valor (R$)</label>
                                 <input type="text" id="new-shift-value" class="form-control" placeholder="Ex: 100,00">
                             </div>
                         </div>
                         <div class="modal-actions">
-                            <button type="button" class="btn btn-save" id="save-new-shift">Salvar Plantão</button>
-                            <button type="button" class="btn btn-clear" id="cancel-new-shift">Cancelar</button>
+                            <button type="button" class="btn btn-save" id="save-new-shift">✅ Salvar Plantão</button>
+                            <button type="button" class="btn btn-clear" id="cancel-new-shift">❌ Cancelar</button>
                         </div>
                     </div>
                     
-                    <button class="btn btn-save" id="add-new-shift-btn" style="margin-top: 10px;">Adicionar Novo Plantão</button>
+                    <button class="btn btn-save" id="add-new-shift-btn" style="margin-top: 10px;">🚑 Adicionar Novo Plantão</button>
                 </div>
                 
                 <div class="form-group" style="margin-top: 20px;">
@@ -1916,9 +1916,9 @@
                 } else {
                     // Plantões padrão se não houver nenhum salvo
                     return [
-                        { id: '1', name: 'DN', startTime: '00:00', endTime: '23:59', value: '200,00' },
-                        { id: '2', name: 'SD', startTime: '07:00', endTime: '19:00', value: '100,00' },
-                        { id: '3', name: 'SN', startTime: '19:00', endTime: '07:00', value: '100,00' }
+                        { id: '1', name: 'DN 24hs', startTime: '07:00', endTime: '07:00', value: '200,00' },
+                        { id: '2', name: 'SD 12hs', startTime: '07:00', endTime: '19:00', value: '100,00' },
+                        { id: '3', name: 'SN 12hs', startTime: '19:00', endTime: '07:00', value: '100,00' }
                     ];
                 }
             }
