@@ -1407,36 +1407,36 @@
     <div class="modal" id="event-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Adicionar Plantão</h3>
+                <h3 class="modal-title" id="modal-title">🚑 Adicionar Plantão</h3>
                 <button class="close-modal" id="close-modal">&times;</button>
             </div>
             <form id="event-form">
                 <input type="hidden" id="event-date">
                 <input type="hidden" id="event-id">
                 <div class="form-group">
-                    <label for="event-date-picker">Data do Plantão</label>
+                    <label for="event-date-picker">📆 Data do Plantão</label>
                     <input type="date" id="event-date-picker" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="event-title">Título do Plantão</label>
+                    <label for="event-title">🏥 Título do Plantão</label>
                     <input type="text" id="event-title" class="form-control" maxlength="10" placeholder="Máx. 10 caracteres" required>
                 </div>
                 <div class="form-group">
-                    <label>Selecione um Plantão Pré-definido</label>
+                    <label>✔️ Selecione um Plantão Pré-definido</label>
                     <div class="shifts-selector" id="shifts-selector">
                         <!-- Plantões pré-definidos serão listados aqui -->
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="event-description">Descrição</label>
+                    <label for="event-description">📝 Descrição</label>
                     <textarea id="event-description" class="form-control" rows="2"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="event-time">Hora (opcional)</label>
+                    <label for="event-time">⏰ Hora (opcional)</label>
                     <input type="time" id="event-time" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label>Cor do Evento</label>
+                    <label>🎨 Cor do Evento</label>
                     <div class="color-selector">
                         <div class="color-option color-blue selected" data-color="blue"></div>
                         <div class="color-option color-green" data-color="green"></div>
@@ -1457,17 +1457,17 @@
                 </div>
                 <div class="modal-actions">
                     <div>
-                        <button type="button" class="btn btn-delete" id="delete-event" style="display: none;">Excluir</button>
+                        <button type="button" class="btn btn-delete" id="delete-event" style="display: none;">❌ Excluir</button>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-save">Salvar</button>
+                        <button type="submit" class="btn btn-save">✅ Salvar</button>
                     </div>
                 </div>
             </form>
             
             <!-- Lista de eventos do dia -->
             <div class="day-events" id="day-events">
-                <h4 class="day-events-title">Eventos deste dia</h4>
+                <h4 class="day-events-title">🗒️ Eventos deste dia</h4>
                 <div class="event-list" id="event-list">
                     <!-- Eventos do dia serão listados aqui -->
                 </div>
@@ -1479,21 +1479,21 @@
     <div class="note-modal" id="note-modal">
         <div class="note-modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="note-modal-title">Adicionar Nota</h3>
+                <h3 class="modal-title" id="note-modal-title">📝 Adicionar Nota</h3>
                 <button class="close-modal" id="close-note-modal">&times;</button>
             </div>
             <form id="note-form">
                 <input type="hidden" id="note-id">
                 <div class="form-group">
-                    <label for="note-title">Título da Nota</label>
+                    <label for="note-title">✏️ Título da Nota</label>
                     <input type="text" id="note-title" class="form-control" placeholder="Título da nota" required>
                 </div>
                 <div class="form-group">
-                    <label for="note-content">Conteúdo da Nota</label>
+                    <label for="note-content">📝 Conteúdo da Nota</label>
                     <textarea id="note-content" class="form-control" rows="5" placeholder="Escreva sua nota aqui..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Cor da Nota</label>
+                    <label>🎨 Cor da Nota</label>
                     <div class="color-selector">
                         <div class="color-option color-yellow selected" data-color="yellow"></div>
                         <div class="color-option color-brown" data-color="brown"></div>
@@ -1504,7 +1504,7 @@
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button type="submit" class="btn btn-save">Salvar</button>
+                    <button type="submit" class="btn btn-save">✅ Salvar</button>
                 </div>
             </form>
         </div>
@@ -1514,19 +1514,19 @@
     <div class="note-view-modal" id="note-view-modal">
         <div class="note-view-content">
             <div class="note-view-header">
-                <h3 class="note-view-title" id="note-view-title">Título da Nota</h3>
+                <h3 class="note-view-title" id="note-view-title">✏️ Título da Nota</h3>
                 <button class="close-modal" id="close-note-view-modal">&times;</button>
             </div>
             <div class="note-view-body">
                 <div class="note-view-content-text" id="note-view-content-text">
-                    Conteúdo da nota
+                    📝 Conteúdo da nota
                 </div>
             </div>
             <div class="note-view-footer">
-                <div class="note-view-date" id="note-view-date">Data da nota</div>
+                <div class="note-view-date" id="note-view-date">📆 Data da nota</div>
                 <div class="note-view-actions">
-                    <button class="btn-view btn-edit-view" id="edit-note-view-btn">Editar</button>
-                    <button class="btn-view btn-delete-view" id="delete-note-view-btn">Excluir</button>
+                    <button class="btn-view btn-edit-view" id="edit-note-view-btn">✏️ Editar</button>
+                    <button class="btn-view btn-delete-view" id="delete-note-view-btn">❌ Excluir</button>
                 </div>
             </div>
         </div>
@@ -1536,24 +1536,24 @@
     <div class="event-view-modal" id="event-view-modal">
         <div class="event-view-content">
             <div class="event-view-header">
-                <h3 class="event-view-title" id="event-view-title">Título do Plantão</h3>
+                <h3 class="event-view-title" id="event-view-title">✏️ Título do Plantão</h3>
                 <button class="close-modal" id="close-event-view-modal">&times;</button>
             </div>
             <div class="event-view-body">
                 <div class="event-view-time" id="event-view-time">
                     <span class="event-view-color" id="event-view-color"></span>
-                    <span id="event-view-time-text">Hora do evento</span>
+                    <span id="event-view-time-text">⏰ Hora do evento</span>
                 </div>
                 <div class="event-view-description" id="event-view-description">
-                    Descrição do evento
+                    📝 Descrição do evento
                 </div>
             </div>
             <div class="event-view-footer">
-                <div class="event-view-date" id="event-view-date">Data do evento</div>
+                <div class="event-view-date" id="event-view-date">📆 Data do evento</div>
                 <div class="event-view-actions">
-                    <button class="btn-view btn-new-view" id="new-event-view-btn">Novo</button>
-                    <button class="btn-view btn-edit-view" id="edit-event-view-btn">Editar</button>
-                    <button class="btn-view btn-delete-view" id="delete-event-view-btn">Excluir</button>
+                    <button class="btn-view btn-new-view" id="new-event-view-btn">🗒️ Novo</button>
+                    <button class="btn-view btn-edit-view" id="edit-event-view-btn">📝 Editar</button>
+                    <button class="btn-view btn-delete-view" id="delete-event-view-btn">❌ Excluir</button>
                 </div>
             </div>
         </div>
@@ -1563,14 +1563,14 @@
     <div class="modal" id="settings-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Configurações</h3>
+                <h3 class="modal-title">⚙️ Configurações</h3>
                 <button class="close-modal" id="close-settings-modal">&times;</button>
             </div>
             
             <div class="settings-content">
                 <div class="form-group">
-                    <label>Gerenciar Plantões Pré-definidos</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">Adicione, edite ou remova plantões pré-definidos para uso rápido.</p>
+                    <label>📱 Gerenciar Plantões Pré-definidos</label>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Adicione, edite ou remova plantões pré-definidos para uso rápido.</p>
                     
                     <div class="shifts-list" id="settings-shifts-list">
                         <!-- Lista de plantões pré-definidos -->
@@ -1605,22 +1605,22 @@
                 </div>
                 
                 <div class="form-group" style="margin-top: 20px;">
-                    <label>Exportar Dados</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">Exporte todos os seus eventos e notas para um arquivo JSON.</p>
-                    <button class="btn btn-save" id="export-data">Exportar Dados</button>
+                    <label>📁 Exportar Dados</label>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Exporte todos os seus eventos e notas para um arquivo JSON.</p>
+                    <button class="btn btn-save" id="export-data">📁 Exportar Dados</button>
                 </div>
                 
                 <div class="form-group">
-                    <label>Importar Dados</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">Importe eventos e notas de um arquivo JSON.</p>
+                    <label>🗂️ Importar Dados</label>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Importe eventos e notas de um arquivo JSON.</p>
                     <input type="file" id="import-file" accept=".json" style="display: none;">
-                    <button class="btn btn-save" id="import-data">Importar Dados</button>
+                    <button class="btn btn-save" id="import-data">🗂️ Importar Dados</button>
                 </div>
                 
                 <div class="form-group">
-                    <label>Limpar todos os dados</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">Esta ação irá apagar todos os eventos e notas permanentemente.</p>
-                    <button class="btn btn-clear" id="clear-all-data">Limpar Tudo</button>
+                    <label>❌ Limpar todos os dados</label>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Esta ação irá apagar todos os eventos e notas permanentemente.</p>
+                    <button class="btn btn-clear" id="clear-all-data">🧹 Limpar Tudo</button>
                 </div>
             </div>
         </div>
