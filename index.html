@@ -36,6 +36,7 @@
             text-align: center;
             margin-bottom: 15px;
             width: 100%;
+            position: relative;
         }
         h1 {
             color: #2c3e50;
@@ -47,17 +48,84 @@
             color: #7f8c8d;
             font-size: 0.9rem;
         }
+        
+        /* Botão Desocultar Tudo */
+        .show-all-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s;
+            display: none;
+        }
+        .show-all-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        .show-all-btn.show {
+            display: block;
+        }
+        
         .calendar-section, .notes-section, .stats-section {
             width: 100%;
             background: white;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            padding: 15px;
             transition: transform 0.3s ease;
         }
         .calendar-section:hover, .notes-section:hover, .stats-section:hover {
             transform: translateY(-5px);
         }
+        
+        /* Estilos para o cabeçalho das seções com botão de ocultar */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .section-header h2 {
+            margin: 0;
+            color: #2c3e50;
+            flex: 1;
+        }
+        .toggle-section {
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+        .toggle-section:hover {
+            background-color: #f0f0f0;
+            color: #3498db;
+        }
+        
+        /* Classe para seções ocultas */
+        .section-hidden .section-content {
+            display: none;
+        }
+        .section-hidden {
+            padding-bottom: 15px;
+        }
+        
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -187,13 +255,6 @@
             color: white;
         }
         
-        .notes-section h2, .stats-section h2 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 8px;
-        }
-        
         /* Mosaico de notas coloridas */
         .notes-mosaic {
             display: grid;
@@ -262,7 +323,7 @@
             background-color: #FFEB3B;
         }
         .note-pink {
-            background-color: #FF80AB;
+            background-color: #9e6f39;
         }
         .note-blue {
             background-color: #80D8FF;
@@ -1132,6 +1193,10 @@
             .stat-card {
                 margin-bottom: 10px;
             }
+            .show-all-btn {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
         }
         
         /* Para telas muito pequenas */
@@ -1192,6 +1257,10 @@
             .chart-container {
                 height: 150px;
             }
+            .show-all-btn {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
         }
     </style>
 </head>
@@ -1199,6 +1268,7 @@
     <header>
         <h1>Bloco de Notas Calendário</h1>
         <p class="subtitle">Organize suas tarefas e anotações com este bloco de notas interativo</p>
+        <button class="show-all-btn" id="show-all-btn">Desocultar Tudo</button>
     </header>
     <div class="container">
         <div class="calendar-section">
@@ -1226,66 +1296,81 @@
                 </tbody>
             </table>
         </div>
-        <div class="notes-section">
-            <h2>Minhas Notas</h2>
-            <div class="notes-mosaic" id="notes-mosaic">
-                <!-- Notas serão geradas aqui via JavaScript -->
+        <div class="notes-section" id="notes-section">
+            <div class="section-header">
+                <h2>Minhas Notas</h2>
+                <button class="toggle-section" id="toggle-notes" title="Ocultar/Mostrar seção">👁️</button>
             </div>
-            <div class="notes-actions">
-                <div class="notes-count" id="notes-count">0 notas</div>
-                <button class="btn btn-clear" id="clear-notes">Limpar</button>
-            </div>
-        </div>
-        <div class="stats-section">
-            <h2>Estatísticas de Plantões</h2>
-            <div class="stats-container">
-                <div class="stats-summary">
-                    <div class="stat-card">
-                        <h3>Total de Plantões</h3>
-                        <div class="stat-value" id="total-shifts">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Valor Total</h3>
-                        <div class="stat-value" id="total-value">R$ 0,00</div>
-                    </div>
+            <div class="section-content">
+                <div class="notes-mosaic" id="notes-mosaic">
+                    <!-- Notas serão geradas aqui via JavaScript -->
                 </div>
-                <div class="chart-container">
-                    <canvas id="shifts-chart"></canvas>
-                </div>
-                <div class="shifts-details">
-                    <h3>Detalhes por Tipo</h3>
-                    <div id="shifts-details-list">
-                        <!-- Lista será preenchida via JavaScript -->
-                    </div>
+                <div class="notes-actions">
+                    <div class="notes-count" id="notes-count">0 notas</div>
+                    <button class="btn btn-clear" id="clear-notes">Limpar</button>
                 </div>
             </div>
         </div>
-        <div class="stats-section">
-            <h2>Estatísticas Anuais de Plantões</h2>
-            <div class="stats-container">
-                <div class="year-selector">
-                    <label for="year-select">Ano:</label>
-                    <select id="year-select" class="form-control" style="width: auto; display: inline-block;">
-                        <!-- Opções de ano serão preenchidas via JavaScript -->
-                    </select>
-                </div>
-                <div class="stats-summary">
-                    <div class="stat-card">
-                        <h3>Total de Plantões no Ano</h3>
-                        <div class="stat-value" id="total-year-shifts">0</div>
+        <div class="stats-section" id="stats-section">
+            <div class="section-header">
+                <h2>Estatísticas de Plantões</h2>
+                <button class="toggle-section" id="toggle-stats" title="Ocultar/Mostrar seção">👁️</button>
+            </div>
+            <div class="section-content">
+                <div class="stats-container">
+                    <div class="stats-summary">
+                        <div class="stat-card">
+                            <h3>Total de Plantões</h3>
+                            <div class="stat-value" id="total-shifts">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Valor Total</h3>
+                            <div class="stat-value" id="total-value">R$ 0,00</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Valor Total no Ano</h3>
-                        <div class="stat-value" id="total-year-value">R$ 0,00</div>
+                    <div class="chart-container">
+                        <canvas id="shifts-chart"></canvas>
+                    </div>
+                    <div class="shifts-details">
+                        <h3>Detalhes por Tipo</h3>
+                        <div id="shifts-details-list">
+                            <!-- Lista será preenchida via JavaScript -->
+                        </div>
                     </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="year-shifts-chart"></canvas>
-                </div>
-                <div class="shifts-details">
-                    <h3>Detalhes por Mês</h3>
-                    <div id="year-shifts-details-list">
-                        <!-- Lista será preenchida via JavaScript -->
+            </div>
+        </div>
+        <div class="stats-section" id="year-stats-section">
+            <div class="section-header">
+                <h2>Estatísticas Anuais de Plantões</h2>
+                <button class="toggle-section" id="toggle-year-stats" title="Ocultar/Mostrar seção">👁️</button>
+            </div>
+            <div class="section-content">
+                <div class="stats-container">
+                    <div class="year-selector">
+                        <label for="year-select">Ano:</label>
+                        <select id="year-select" class="form-control" style="width: auto; display: inline-block;">
+                            <!-- Opções de ano serão preenchidas via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="stats-summary">
+                        <div class="stat-card">
+                            <h3>Total de Plantões no Ano</h3>
+                            <div class="stat-value" id="total-year-shifts">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Valor Total no Ano</h3>
+                            <div class="stat-value" id="total-year-value">R$ 0,00</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="year-shifts-chart"></canvas>
+                    </div>
+                    <div class="shifts-details">
+                        <h3>Detalhes por Mês</h3>
+                        <div id="year-shifts-details-list">
+                            <!-- Lista será preenchida via JavaScript -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1681,6 +1766,15 @@
             const yearShiftsChart = document.getElementById('year-shifts-chart');
             const yearShiftsDetailsList = document.getElementById('year-shifts-details-list');
             
+            // Elementos para ocultar/mostrar seções
+            const notesSection = document.getElementById('notes-section');
+            const statsSection = document.getElementById('stats-section');
+            const yearStatsSection = document.getElementById('year-stats-section');
+            const toggleNotesBtn = document.getElementById('toggle-notes');
+            const toggleStatsBtn = document.getElementById('toggle-stats');
+            const toggleYearStatsBtn = document.getElementById('toggle-year-stats');
+            const showAllBtn = document.getElementById('show-all-btn');
+            
             // Variáveis para armazenar os itens atuais em visualização
             let currentViewingNote = null;
             let currentViewingEvent = null;
@@ -1704,6 +1798,114 @@
                 setTimeout(() => {
                     toast.classList.remove('show');
                 }, duration);
+            }
+            
+            // Carregar preferências de seções visíveis
+            function loadSectionPreferences() {
+                const savedPreferences = localStorage.getItem('sectionPreferences');
+                if (savedPreferences) {
+                    const preferences = JSON.parse(savedPreferences);
+                    
+                    // Aplicar preferências
+                    if (preferences.notesHidden) {
+                        notesSection.classList.add('section-hidden');
+                        toggleNotesBtn.textContent = '👁️‍🗨️';
+                    } else {
+                        notesSection.classList.remove('section-hidden');
+                        toggleNotesBtn.textContent = '👁️';
+                    }
+                    
+                    if (preferences.statsHidden) {
+                        statsSection.classList.add('section-hidden');
+                        toggleStatsBtn.textContent = '👁️‍🗨️';
+                    } else {
+                        statsSection.classList.remove('section-hidden');
+                        toggleStatsBtn.textContent = '👁️';
+                    }
+                    
+                    if (preferences.yearStatsHidden) {
+                        yearStatsSection.classList.add('section-hidden');
+                        toggleYearStatsBtn.textContent = '👁️‍🗨️';
+                    } else {
+                        yearStatsSection.classList.remove('section-hidden');
+                        toggleYearStatsBtn.textContent = '👁️';
+                    }
+                }
+                
+                // Verificar se o botão "Desocultar Tudo" deve ser exibido
+                updateShowAllButtonVisibility();
+            }
+            
+            // Salvar preferências de seções visíveis
+            function saveSectionPreferences() {
+                const preferences = {
+                    notesHidden: notesSection.classList.contains('section-hidden'),
+                    statsHidden: statsSection.classList.contains('section-hidden'),
+                    yearStatsHidden: yearStatsSection.classList.contains('section-hidden')
+                };
+                
+                localStorage.setItem('sectionPreferences', JSON.stringify(preferences));
+                
+                // Atualizar visibilidade do botão "Desocultar Tudo"
+                updateShowAllButtonVisibility();
+            }
+            
+            // Atualizar visibilidade do botão "Desocultar Tudo"
+            function updateShowAllButtonVisibility() {
+                const hasHiddenSections = notesSection.classList.contains('section-hidden') ||
+                                      statsSection.classList.contains('section-hidden') ||
+                                      yearStatsSection.classList.contains('section-hidden');
+                
+                if (hasHiddenSections) {
+                    showAllBtn.classList.add('show');
+                } else {
+                    showAllBtn.classList.remove('show');
+                }
+            }
+            
+            // Funções para alternar visibilidade das seções
+            function toggleNotesSection() {
+                notesSection.classList.toggle('section-hidden');
+                if (notesSection.classList.contains('section-hidden')) {
+                    toggleNotesBtn.textContent = '👁️‍🗨️';
+                } else {
+                    toggleNotesBtn.textContent = '👁️';
+                }
+                saveSectionPreferences();
+            }
+            
+            function toggleStatsSection() {
+                statsSection.classList.toggle('section-hidden');
+                if (statsSection.classList.contains('section-hidden')) {
+                    toggleStatsBtn.textContent = '👁️‍🗨️';
+                } else {
+                    toggleStatsBtn.textContent = '👁️';
+                }
+                saveSectionPreferences();
+            }
+            
+            function toggleYearStatsSection() {
+                yearStatsSection.classList.toggle('section-hidden');
+                if (yearStatsSection.classList.contains('section-hidden')) {
+                    toggleYearStatsBtn.textContent = '👁️‍🗨️';
+                } else {
+                    toggleYearStatsBtn.textContent = '👁️';
+                }
+                saveSectionPreferences();
+            }
+            
+            // Função para mostrar todas as seções
+            function showAllSections() {
+                notesSection.classList.remove('section-hidden');
+                statsSection.classList.remove('section-hidden');
+                yearStatsSection.classList.remove('section-hidden');
+                
+                toggleNotesBtn.textContent = '👁️';
+                toggleStatsBtn.textContent = '👁️';
+                toggleYearStatsBtn.textContent = '👁️';
+                
+                saveSectionPreferences();
+                showToast('Todas as seções foram restauradas!');
             }
             
             // Carregar plantões pré-definidos
@@ -3088,6 +3290,12 @@
                 clearAllNotes();
             });
             
+            // Event listeners para alternar seções
+            toggleNotesBtn.addEventListener('click', toggleNotesSection);
+            toggleStatsBtn.addEventListener('click', toggleStatsSection);
+            toggleYearStatsBtn.addEventListener('click', toggleYearStatsSection);
+            showAllBtn.addEventListener('click', showAllSections);
+            
             // Event listeners para o seletor de cores de eventos
             eventColorOptions.forEach(option => {
                 option.addEventListener('click', function() {
@@ -3370,6 +3578,7 @@
             renderSettingsShiftsList();
             calculateShiftStats();
             calculateYearStats(new Date().getFullYear());
+            loadSectionPreferences();
         });
     </script>
 </body>
