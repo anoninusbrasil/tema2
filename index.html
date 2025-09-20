@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloco de Notas com Análise de Plantões</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
+        /* Seus estilos CSS permanecem iguais */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -60,7 +62,6 @@
             transform: translateY(-5px);
         }
         
-        /* Estilos para o cabeçalho das seções com botão de ocultar */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -94,7 +95,6 @@
             color: #3498db;
         }
         
-        /* Classe para seções ocultas */
         .section-hidden .section-content {
             display: none;
         }
@@ -142,6 +142,57 @@
         .calendar-control:active {
             transform: scale(0.95);
         }
+        
+        .search-container {
+            margin-bottom: 15px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: #f9f9f9;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .calendar-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .pagination-info {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+        }
+        .pagination-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .pagination-btn:hover {
+            background: #e0e0e0;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         #calendar {
             width: 100%;
             border-collapse: collapse;
@@ -187,7 +238,7 @@
             margin-bottom: 2px;
             font-size: 0.8rem;
         }
-        .event {
+        .plantao {
             border-radius: 4px;
             padding: 1px;
             font-size: 0.65rem;
@@ -199,39 +250,81 @@
             cursor: pointer;
             max-width: 100%;
         }
-        .event:hover {
+        .plantao:hover {
             opacity: 0.8;
         }
-        .event:active {
+        .plantao:active {
             opacity: 0.7;
         }
-        /* Cores mais vivas para eventos */
-        .event-blue {
+        .plantao-blue {
             background-color: #2196F3;
             color: white;
         }
-        .event-green {
+        .plantao-green {
             background-color: #4CAF50;
             color: white;
         }
-        .event-red {
+        .plantao-red {
             background-color: #F44336;
             color: white;
         }
-        .event-yellow {
+        .plantao-yellow {
             background-color: #FFEB3B;
             color: #333;
         }
-        .event-purple {
+        .plantao-purple {
             background-color: #9C27B0;
             color: white;
         }
-        .event-orange {
+        .plantao-orange {
             background-color: #FF9800;
             color: white;
         }
         
-        /* Mosaico de notas coloridas */
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .notes-search {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .notes-search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .notes-search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        .sort-options {
+            display: flex;
+            gap: 5px;
+        }
+        .sort-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .sort-btn:hover {
+            background: #e0e0e0;
+        }
+        .sort-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
         .notes-mosaic {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -253,6 +346,10 @@
         .note-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .note-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
         }
         .note-title {
             font-weight: bold;
@@ -294,7 +391,6 @@
         .note-card:hover .note-delete {
             opacity: 1;
         }
-        /* Cores para as notas */
         .note-yellow {
             background-color: #FFEB3B;
         }
@@ -314,7 +410,6 @@
             background-color: #FFD180;
         }
         
-        /* Botão flutuante oval */
         .fab-container {
             position: fixed;
             bottom: 20px;
@@ -432,10 +527,9 @@
             color: #7f8c8d;
             font-size: 0.8rem;
             width: 100%;
-            padding-bottom: 70px; /* Espaço para o botão flutuante */
+            padding-bottom: 70px;
         }
         
-        /* Modal para adicionar/editar eventos */
         .modal {
             display: none;
             position: fixed;
@@ -537,7 +631,6 @@
             background-color: #a93226;
         }
         
-        /* Seletor de cores */
         .color-selector {
             display: flex;
             gap: 8px;
@@ -578,22 +671,21 @@
             background-color: #FF9800;
         }
         
-        /* Lista de eventos do dia */
-        .day-events {
+        .day-plantoes {
             margin-top: 12px;
             border-top: 1px solid #eee;
             padding-top: 12px;
         }
-        .day-events-title {
+        .day-plantoes-title {
             font-size: 0.95rem;
             margin-bottom: 8px;
             color: #2c3e50;
         }
-        .event-list {
+        .plantao-list {
             max-height: 200px;
             overflow-y: auto;
         }
-        .event-item {
+        .plantao-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -603,26 +695,26 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .event-item:hover {
+        .plantao-item:hover {
             transform: translateX(5px);
         }
-        .event-info {
+        .plantao-info {
             flex: 1;
         }
-        .event-title {
+        .plantao-title {
             font-weight: 600;
             margin-bottom: 2px;
             font-size: 0.85rem;
         }
-        .event-time {
+        .plantao-time {
             font-size: 0.75rem;
             opacity: 0.8;
         }
-        .event-actions {
+        .plantao-actions {
             display: flex;
             gap: 4px;
         }
-        .event-action {
+        .plantao-action {
             background: none;
             border: none;
             cursor: pointer;
@@ -636,11 +728,10 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        .event-action:hover {
+        .plantao-action:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
         
-        /* Modal para notas */
         .note-modal {
             display: none;
             position: fixed;
@@ -667,7 +758,6 @@
             box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
         }
         
-        /* Seletor de padrões de escala */
         .scale-selector {
             display: flex;
             flex-wrap: wrap;
@@ -701,7 +791,6 @@
             margin-top: 4px;
         }
         
-        /* Seletor de dias alternados */
         .alternate-days-selector {
             display: flex;
             flex-wrap: wrap;
@@ -730,7 +819,6 @@
             border-color: #3498db;
         }
         
-        /* Notificação toast para feedback em dispositivos móveis */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -753,7 +841,6 @@
             opacity: 1;
         }
         
-        /* Modal de visualização de notas */
         .note-view-modal {
             display: none;
             position: fixed;
@@ -838,8 +925,7 @@
             background-color: #c0392b;
         }
         
-        /* Modal de visualização de eventos */
-        .event-view-modal {
+        .plantao-view-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -852,7 +938,7 @@
             align-items: center;
             padding: 10px;
         }
-        .event-view-content {
+        .plantao-view-content {
             background-color: white;
             padding: 15px;
             border-radius: 12px;
@@ -862,7 +948,7 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        .event-view-header {
+        .plantao-view-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -870,15 +956,15 @@
             padding-bottom: 8px;
             border-bottom: 1px solid #eee;
         }
-        .event-view-title {
+        .plantao-view-title {
             font-size: 1.2rem;
             color: #2c3e50;
             font-weight: bold;
         }
-        .event-view-body {
+        .plantao-view-body {
             margin-bottom: 15px;
         }
-        .event-view-description {
+        .plantao-view-description {
             white-space: pre-wrap;
             word-break: break-word;
             font-size: 0.9rem;
@@ -886,12 +972,12 @@
             color: #333;
             margin-bottom: 10px;
         }
-        .event-view-time {
+        .plantao-view-time {
             font-size: 0.85rem;
             color: #7f8c8d;
             margin-bottom: 10px;
         }
-        .event-view-color {
+        .plantao-view-color {
             display: inline-block;
             width: 16px;
             height: 16px;
@@ -899,7 +985,7 @@
             margin-right: 8px;
             vertical-align: middle;
         }
-        .event-view-footer {
+        .plantao-view-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -909,7 +995,7 @@
             font-size: 0.8rem;
             color: #7f8c8d;
         }
-        .event-view-actions {
+        .plantao-view-actions {
             display: flex;
             gap: 8px;
         }
@@ -921,14 +1007,12 @@
             background-color: #45a049;
         }
         
-        /* Modal de configurações */
         .settings-content {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
         
-        /* Estilos para a lista de plantões pré-definidos */
         .shifts-list {
             margin-top: 10px;
             max-height: 200px;
@@ -1007,7 +1091,6 @@
             min-width: 120px;
         }
         
-        /* Lista de plantões no modal de eventos */
         .shifts-selector {
             margin-top: 8px;
             max-height: 150px;
@@ -1053,7 +1136,6 @@
             font-weight: 600;
         }
         
-        /* Novos estilos para a seção de análise */
         .analytics-filters {
             display: flex;
             gap: 10px;
@@ -1136,7 +1218,7 @@
                 height: 36px;
                 font-size: 1.1rem;
             }
-            .modal-content, .note-modal-content, .note-view-content, .event-view-content {
+            .modal-content, .note-modal-content, .note-view-content, .plantao-view-content {
                 width: 100%;
                 padding: 12px;
             }
@@ -1157,7 +1239,7 @@
                 height: 24px;
                 font-size: 0.8rem;
             }
-            .event {
+            .plantao {
                 font-size: 0.6rem;
             }
             .btn {
@@ -1199,9 +1281,20 @@
             .analytics-filters {
                 flex-direction: column;
             }
+            .notes-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .notes-search {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .sort-options {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
         
-        /* Para telas muito pequenas */
         @media (max-width: 480px) {
             body {
                 padding: 8px;
@@ -1225,7 +1318,7 @@
             .day-number {
                 font-size: 0.75rem;
             }
-            .event {
+            .plantao {
                 font-size: 0.55rem;
             }
             .modal-title {
@@ -1262,12 +1355,19 @@
             .summary-value {
                 font-size: 1.2rem;
             }
+            .sort-options {
+                flex-wrap: wrap;
+            }
+            .sort-btn {
+                flex: 1;
+                min-width: 60px;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Bloco de Notas Calendário</h1>
+        <h1>Bloco de Notas com Análise de Plantões</h1>
         <p class="subtitle">Organize suas tarefas e anotações.</p>
     </header>
     <div class="container">
@@ -1279,6 +1379,11 @@
                     <button class="calendar-control" id="next-month">👉🏻</button>
                 </div>
             </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" id="plantao-search" placeholder="🔍 Buscar plantões por título...">
+            </div>
+            
             <table id="calendar">
                 <thead>
                     <tr>
@@ -1292,9 +1397,16 @@
                     </tr>
                 </thead>
                 <tbody id="calendar-body">
-                    <!-- Calendário será gerado aqui via JavaScript -->
                 </tbody>
             </table>
+            
+            <div class="calendar-pagination">
+                <div class="pagination-info" id="pagination-info">Mostrando 1-30 de 30 dias</div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn" id="prev-page" disabled>Anterior</button>
+                    <button class="pagination-btn" id="next-page" disabled>Próxima</button>
+                </div>
+            </div>
         </div>
         <div class="notes-section" id="notes-section">
             <div class="section-header">
@@ -1302,8 +1414,18 @@
                 <button class="toggle-section" id="toggle-notes" title="Ocultar/Mostrar seção">👁️</button>
             </div>
             <div class="section-content">
+                <div class="notes-header">
+                    <div class="notes-search">
+                        <input type="text" class="notes-search-input" id="notes-search" placeholder="🔍 Buscar notas...">
+                    </div>
+                    <div class="sort-options">
+                        <button class="sort-btn active" id="sort-date" data-sort="date">Data</button>
+                        <button class="sort-btn" id="sort-title" data-sort="title">Título</button>
+                        <button class="sort-btn" id="sort-color" data-sort="color">Cor</button>
+                    </div>
+                </div>
+                
                 <div class="notes-mosaic" id="notes-mosaic">
-                    <!-- Notas serão geradas aqui via JavaScript -->
                 </div>
                 <div class="notes-actions">
                     <div class="notes-count" id="notes-count">0 notas</div>
@@ -1312,7 +1434,6 @@
             </div>
         </div>
 
-        <!-- Nova seção de análise -->
         <div class="analytics-section" id="analytics-section">
             <div class="section-header">
                 <h4>📊 Análise de Plantões</h4>
@@ -1351,10 +1472,13 @@
                         <label>&nbsp;</label>
                         <button class="btn btn-save" id="apply-filters">Aplicar</button>
                     </div>
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-save" id="recalculate-values">Recalcular</button>
+                    </div>
                 </div>
 
                 <div class="analytics-summary" id="analytics-summary">
-                    <!-- Resumo será preenchido via JavaScript -->
                 </div>
 
                 <div class="charts-container">
@@ -1382,14 +1506,13 @@
         <p>&copy; 2025 Bloco de Notas Interativo | Feito com HTML, CSS e JavaScript</p>
     </footer>
 
-    <!-- Botão flutuante -->
     <div class="fab-container">
         <div class="fab-menu" id="fab-menu">
             <div class="fab-menu-item" id="home-btn">
                 <span class="fab-menu-icon">🏠</span>
                 <span class="fab-menu-text">Início</span>
             </div>
-            <div class="fab-menu-item" id="add-shift-btn">
+            <div class="fab-menu-item" id="add-plantao-btn">
                 <span class="fab-menu-icon">📅</span>
                 <span class="fab-menu-text">Plantão</span>
             </div>
@@ -1409,40 +1532,38 @@
         <button class="fab" id="fab-btn">👆🏻</button>
     </div>
 
-    <!-- Modal para adicionar/editar eventos -->
-    <div class="modal" id="event-modal">
+    <div class="modal" id="plantao-modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">🚑 Adicionar Plantão</h3>
                 <button class="close-modal" id="close-modal">&times;</button>
             </div>
-            <form id="event-form">
-                <input type="hidden" id="event-date">
-                <input type="hidden" id="event-id">
+            <form id="plantao-form">
+                <input type="hidden" id="plantao-date">
+                <input type="hidden" id="plantao-id">
                 <div class="form-group">
-                    <label for="event-date-picker">📆 Data do Plantão</label>
-                    <input type="date" id="event-date-picker" class="form-control" required>
+                    <label for="plantao-date-picker">📆 Data do Plantão</label>
+                    <input type="date" id="plantao-date-picker" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="event-title">🏥 Título do Plantão</label>
-                    <input type="text" id="event-title" class="form-control" maxlength="10" placeholder="Máx. 10 caracteres" required>
+                    <label for="plantao-title">🏥 Título do Plantão</label>
+                    <input type="text" id="plantao-title" class="form-control" maxlength="10" placeholder="Máx. 10 caracteres" required>
                 </div>
                 <div class="form-group">
                     <label>✔️ Selecione um Plantão Pré-definido</label>
                     <div class="shifts-selector" id="shifts-selector">
-                        <!-- Plantões pré-definidos serão listados aqui -->
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="event-description">📝 Descrição</label>
-                    <textarea id="event-description" class="form-control" rows="2"></textarea>
+                    <label for="plantao-description">📝 Descrição</label>
+                    <textarea id="plantao-description" class="form-control" rows="2"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="event-time">⏰ Hora (opcional)</label>
-                    <input type="time" id="event-time" class="form-control">
+                    <label for="plantao-time">⏰ Hora (opcional)</label>
+                    <input type="time" id="plantao-time" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label>🎨 Cor do Evento</label>
+                    <label>🎨 Cor do Plantão</label>
                     <div class="color-selector">
                         <div class="color-option color-blue selected" data-color="blue"></div>
                         <div class="color-option color-green" data-color="green"></div>
@@ -1484,7 +1605,7 @@
                 </div>
                 <div class="modal-actions">
                     <div>
-                        <button type="button" class="btn btn-delete" id="delete-event" style="display: none;">❌ Excluir</button>
+                        <button type="button" class="btn btn-delete" id="delete-plantao" style="display: none;">❌ Excluir</button>
                     </div>
                     <div>
                         <button type="submit" class="btn btn-save">✅ Salvar</button>
@@ -1492,17 +1613,14 @@
                 </div>
             </form>
             
-            <!-- Lista de eventos do dia -->
-            <div class="day-events" id="day-events">
-                <h4 class="day-events-title">🗒️ Eventos deste dia</h4>
-                <div class="event-list" id="event-list">
-                    <!-- Eventos do dia serão listados aqui -->
+            <div class="day-plantoes" id="day-plantoes">
+                <h4 class="day-plantoes-title">🗒️ Plantões deste dia</h4>
+                <div class="plantao-list" id="plantao-list">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para adicionar/editar notas -->
     <div class="note-modal" id="note-modal">
         <div class="note-modal-content">
             <div class="modal-header">
@@ -1537,7 +1655,6 @@
         </div>
     </div>
 
-    <!-- Modal de visualização de notas -->
     <div class="note-view-modal" id="note-view-modal">
         <div class="note-view-content">
             <div class="note-view-header">
@@ -1546,11 +1663,10 @@
             </div>
             <div class="note-view-body">
                 <div class="note-view-content-text" id="note-view-content-text">
-                    📝 Conteúdo da nota
                 </div>
             </div>
             <div class="note-view-footer">
-                <div class="note-view-date" id="note-view-date">📆 Data da nota</div>
+                <div class="note-view-date" id="note-view-date"></div>
                 <div class="note-view-actions">
                     <button class="btn-view btn-edit-view" id="edit-note-view-btn">✏️ Editar</button>
                     <button class="btn-view btn-delete-view" id="delete-note-view-btn">❌ Excluir</button>
@@ -1559,34 +1675,31 @@
         </div>
     </div>
 
-    <!-- Modal de visualização de eventos -->
-    <div class="event-view-modal" id="event-view-modal">
-        <div class="event-view-content">
-            <div class="event-view-header">
-                <h3 class="event-view-title" id="event-view-title">✏️ Título do Plantão</h3>
-                <button class="close-modal" id="close-event-view-modal">&times;</button>
+    <div class="plantao-view-modal" id="plantao-view-modal">
+        <div class="plantao-view-content">
+            <div class="plantao-view-header">
+                <h3 class="plantao-view-title" id="plantao-view-title">✏️ Título do Plantão</h3>
+                <button class="close-modal" id="close-plantao-view-modal">&times;</button>
             </div>
-            <div class="event-view-body">
-                <div class="event-view-time" id="event-view-time">
-                    <span class="event-view-color" id="event-view-color"></span>
-                    <span id="event-view-time-text">⏰ Hora do evento</span>
+            <div class="plantao-view-body">
+                <div class="plantao-view-time" id="plantao-view-time">
+                    <span class="plantao-view-color" id="plantao-view-color"></span>
+                    <span id="plantao-view-time-text">⏰ Hora do plantão</span>
                 </div>
-                <div class="event-view-description" id="event-view-description">
-                    📝 Descrição do evento
+                <div class="plantao-view-description" id="plantao-view-description">
                 </div>
             </div>
-            <div class="event-view-footer">
-                <div class="event-view-date" id="event-view-date">📆 Data do evento</div>
-                <div class="event-view-actions">
-                    <button class="btn-view btn-new-view" id="new-event-view-btn">🗒️ Novo</button>
-                    <button class="btn-view btn-edit-view" id="edit-event-view-btn">📝 Editar</button>
-                    <button class="btn-view btn-delete-view" id="delete-event-view-btn">❌ Excluir</button>
+            <div class="plantao-view-footer">
+                <div class="plantao-view-date" id="plantao-view-date"></div>
+                <div class="plantao-view-actions">
+                    <button class="btn-view btn-new-view" id="new-plantao-view-btn">🗒️ Novo</button>
+                    <button class="btn-view btn-edit-view" id="edit-plantao-view-btn">📝 Editar</button>
+                    <button class="btn-view btn-delete-view" id="delete-plantao-view-btn">❌ Excluir</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de configurações -->
     <div class="modal" id="settings-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1600,7 +1713,6 @@
                     <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Adicione, edite ou remova plantões pré-definidos para uso rápido.</p>
                     
                     <div class="shifts-list" id="settings-shifts-list">
-                        <!-- Lista de plantões pré-definidos -->
                     </div>
                     
                     <div class="add-shift-form" id="add-shift-form" style="display: none;">
@@ -1633,27 +1745,26 @@
                 
                 <div class="form-group" style="margin-top: 20px;">
                     <label>📁 Exportar Dados</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Exporte todos os seus eventos e notas para um arquivo JSON.</p>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Exporte todos os seus plantões e notas para um arquivo JSON.</p>
                     <button class="btn btn-save" id="export-data">📁 Exportar Dados</button>
                 </div>
                 
                 <div class="form-group">
                     <label>🗂️ Importar Dados</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Importe eventos e notas de um arquivo JSON.</p>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Importe plantões e notas de um arquivo JSON.</p>
                     <input type="file" id="import-file" accept=".json" style="display: none;">
                     <button class="btn btn-save" id="import-data">🗂️ Importar Dados</button>
                 </div>
                 
                 <div class="form-group">
                     <label>❌ Limpar todos os dados</label>
-                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Esta ação irá apagar todos os eventos e notas permanentemente.</p>
+                    <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">🤔 Esta ação irá apagar todos os plantões e notas permanentemente.</p>
                     <button class="btn btn-clear" id="clear-all-data">🧹 Limpar Tudo</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Notificação toast -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -1663,26 +1774,38 @@
             let currentYear = new Date().getFullYear();
             const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             
-            // Função para formatar valores monetários no padrão brasileiro
+            // Variáveis para paginação do calendário
+            let currentPage = 1;
+            const daysPerPage = 30;
+            let totalDays = 0;
+            let filteredPlantoes = {};
+            
+            // Variáveis para ordenação de notas
+            let currentSort = 'date';
+            let sortOrder = 'desc';
+            
+            // Função para formatar valores monetários
             function formatCurrency(value) {
-                // Garantir que o valor seja uma string e substituir vírgula por ponto
                 const stringValue = String(value).replace(',', '.');
                 const numValue = parseFloat(stringValue);
                 if (isNaN(numValue)) return "R$ 0,00";
                 
-                // Formatar com duas casas decimais
                 const formattedValue = numValue.toFixed(2);
-                
-                // Separar parte inteira da decimal
                 const parts = formattedValue.split('.');
                 let integerPart = parts[0];
                 const decimalPart = parts[1];
                 
-                // Adicionar separador de milhar
                 integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 
-                // Juntar as partes com vírgula como separador decimal
                 return `R$ ${integerPart},${decimalPart}`;
+            }
+            
+            // Função para converter valores monetários
+            function parseCurrency(value) {
+                if (!value) return 0;
+                const cleanValue = value.replace(/[^\d.,]/g, '');
+                const numericValue = cleanValue.replace(',', '.');
+                return parseFloat(numericValue) || 0;
             }
             
             // Elementos do DOM
@@ -1691,34 +1814,46 @@
             const prevMonthBtn = document.getElementById('prev-month');
             const nextMonthBtn = document.getElementById('next-month');
             
+            // Elementos de busca e paginação
+            const plantaoSearchInput = document.getElementById('plantao-search');
+            const paginationInfo = document.getElementById('pagination-info');
+            const prevPageBtn = document.getElementById('prev-page');
+            const nextPageBtn = document.getElementById('next-page');
+            
             // Elementos do mosaico de notas
             const notesMosaic = document.getElementById('notes-mosaic');
             const clearNotesBtn = document.getElementById('clear-notes');
             const notesCount = document.getElementById('notes-count');
             
+            // Elementos de busca e ordenação de notas
+            const notesSearchInput = document.getElementById('notes-search');
+            const sortDateBtn = document.getElementById('sort-date');
+            const sortTitleBtn = document.getElementById('sort-title');
+            const sortColorBtn = document.getElementById('sort-color');
+            
             // Elementos do botão flutuante
             const fabBtn = document.getElementById('fab-btn');
             const fabMenu = document.getElementById('fab-menu');
             const homeBtn = document.getElementById('home-btn');
-            const addShiftBtn = document.getElementById('add-shift-btn');
+            const addPlantaoBtn = document.getElementById('add-plantao-btn');
             const addNoteBtn = document.getElementById('add-note-btn');
             const settingsBtn = document.getElementById('settings-btn');
             const analyticsBtn = document.getElementById('analytics-btn');
             
-            // Elementos do modal de eventos
-            const eventModal = document.getElementById('event-modal');
+            // Elementos do modal de plantões
+            const plantaoModal = document.getElementById('plantao-modal');
             const modalTitle = document.getElementById('modal-title');
-            const eventForm = document.getElementById('event-form');
-            const eventDateInput = document.getElementById('event-date');
-            const eventIdInput = document.getElementById('event-id');
-            const eventDatePickerInput = document.getElementById('event-date-picker');
-            const eventTitleInput = document.getElementById('event-title');
-            const eventDescriptionInput = document.getElementById('event-description');
-            const eventTimeInput = document.getElementById('event-time');
-            const deleteEventBtn = document.getElementById('delete-event');
+            const plantaoForm = document.getElementById('plantao-form');
+            const plantaoDateInput = document.getElementById('plantao-date');
+            const plantaoIdInput = document.getElementById('plantao-id');
+            const plantaoDatePickerInput = document.getElementById('plantao-date-picker');
+            const plantaoTitleInput = document.getElementById('plantao-title');
+            const plantaoDescriptionInput = document.getElementById('plantao-description');
+            const plantaoTimeInput = document.getElementById('plantao-time');
+            const deletePlantaoBtn = document.getElementById('delete-plantao');
             const closeModalBtn = document.getElementById('close-modal');
-            const dayEventsSection = document.getElementById('day-events');
-            const eventList = document.getElementById('event-list');
+            const dayPlantoesSection = document.getElementById('day-plantoes');
+            const plantaoList = document.getElementById('plantao-list');
             const shiftsSelector = document.getElementById('shifts-selector');
             
             // Elementos do modal de notas
@@ -1739,17 +1874,17 @@
             const editNoteViewBtn = document.getElementById('edit-note-view-btn');
             const deleteNoteViewBtn = document.getElementById('delete-note-view-btn');
             
-            // Elementos do modal de visualização de eventos
-            const eventViewModal = document.getElementById('event-view-modal');
-            const eventViewTitle = document.getElementById('event-view-title');
-            const eventViewDescription = document.getElementById('event-view-description');
-            const eventViewTimeText = document.getElementById('event-view-time-text');
-            const eventViewColor = document.getElementById('event-view-color');
-            const eventViewDate = document.getElementById('event-view-date');
-            const closeEventViewModalBtn = document.getElementById('close-event-view-modal');
-            const newEventViewBtn = document.getElementById('new-event-view-btn');
-            const editEventViewBtn = document.getElementById('edit-event-view-btn');
-            const deleteEventViewBtn = document.getElementById('delete-event-view-btn');
+            // Elementos do modal de visualização de plantões
+            const plantaoViewModal = document.getElementById('plantao-view-modal');
+            const plantaoViewTitle = document.getElementById('plantao-view-title');
+            const plantaoViewDescription = document.getElementById('plantao-view-description');
+            const plantaoViewTimeText = document.getElementById('plantao-view-time-text');
+            const plantaoViewColor = document.getElementById('plantao-view-color');
+            const plantaoViewDate = document.getElementById('plantao-view-date');
+            const closePlantaoViewModalBtn = document.getElementById('close-plantao-view-modal');
+            const newPlantaoViewBtn = document.getElementById('new-plantao-view-btn');
+            const editPlantaoViewBtn = document.getElementById('edit-plantao-view-btn');
+            const deletePlantaoViewBtn = document.getElementById('delete-plantao-view-btn');
             
             // Elementos do modal de configurações
             const settingsModal = document.getElementById('settings-modal');
@@ -1769,9 +1904,9 @@
             const newShiftValue = document.getElementById('new-shift-value');
             
             // Elementos do seletor de cores
-            const eventColorOptions = document.querySelectorAll('#event-modal .color-option');
+            const plantaoColorOptions = document.querySelectorAll('#plantao-modal .color-option');
             const noteColorOptions = document.querySelectorAll('#note-modal .color-option');
-            let selectedEventColor = 'blue';
+            let selectedPlantaoColor = 'blue';
             let selectedNoteColor = 'yellow';
             
             // Elementos do seletor de dias alternados
@@ -1794,6 +1929,7 @@
             const analyticsSection = document.getElementById('analytics-section');
             const toggleAnalyticsBtn = document.getElementById('toggle-analytics');
             const applyFiltersBtn = document.getElementById('apply-filters');
+            const recalculateBtn = document.getElementById('recalculate-values');
             const periodFilter = document.getElementById('period-filter');
             const chartTypeFilter = document.getElementById('chart-type-filter');
             const groupByFilter = document.getElementById('group-by-filter');
@@ -1807,12 +1943,12 @@
             
             // Variáveis para armazenar os itens atuais em visualização
             let currentViewingNote = null;
-            let currentViewingEvent = null;
-            let currentViewingEventDate = null;
+            let currentViewingPlantao = null;
+            let currentViewingPlantaoDate = null;
             let selectedShift = null;
             let editingShiftId = null;
             
-            // Função para formatar data como YYYY-MM-DD sem problemas de fuso horário
+            // Função para formatar data como YYYY-MM-DD
             function formatDateToYYYYMMDD(date) {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1836,7 +1972,6 @@
                 if (savedPreferences) {
                     const preferences = JSON.parse(savedPreferences);
                     
-                    // Aplicar preferências
                     if (preferences.notesHidden) {
                         notesSection.classList.add('section-hidden');
                         toggleNotesBtn.textContent = '👁️‍🗨️';
@@ -1880,11 +2015,9 @@
                 analyticsSection.classList.toggle('section-hidden');
                 if (analyticsSection.classList.contains('section-hidden')) {
                     toggleAnalyticsBtn.textContent = '👁️‍🗨️';
-                    // Destruir gráficos quando a seção estiver oculta para economizar recursos
                     destroyCharts();
                 } else {
                     toggleAnalyticsBtn.textContent = '👁️';
-                    // Gerar gráficos quando a seção for mostrada
                     generateAnalytics();
                 }
                 saveSectionPreferences();
@@ -1910,17 +2043,19 @@
                 }
             }
             
-            // Carregar plantões pré-definidos
+            // Carregar plantões pré-definidos - CORRIGIDO
             function loadShifts() {
                 const savedShifts = localStorage.getItem('predefinedShifts');
                 if (savedShifts) {
                     return JSON.parse(savedShifts);
                 } else {
-                    // Plantões padrão se não houver nenhum salvo
                     return [
-                        { id: '1', name: 'DN 24hs', startTime: '07:00', endTime: '07:00', value: '200,00' },
-                        { id: '2', name: 'SD 12hs', startTime: '07:00', endTime: '19:00', value: '100,00' },
-                        { id: '3', name: 'SN 12hs', startTime: '19:00', endTime: '07:00', value: '100,00' }
+                        { id: '1', name: 'HRL DN', startTime: '07:00', endTime: '07:00', value: '200,00' },
+                        { id: '2', name: 'HTO SD', startTime: '07:00', endTime: '19:00', value: '100,00' },
+                        { id: '3', name: 'HCM SN', startTime: '19:00', endTime: '07:00', value: '100,00' },
+                        { id: '4', name: 'EXT DN', startTime: '07:00', endTime: '07:00', value: '200,00' },
+                        { id: '5', name: 'EXT SD', startTime: '07:00', endTime: '19:00', value: '100,00' },
+                        { id: '6', name: 'EXT SN', startTime: '19:00', endTime: '07:00', value: '100,00' }
                     ];
                 }
             }
@@ -1995,7 +2130,7 @@
                 });
             }
             
-            // Renderizar lista de plantões no modal de eventos
+            // Renderizar lista de plantões no modal de plantões
             function renderShiftsSelector() {
                 const shifts = loadShifts();
                 shiftsSelector.innerHTML = '';
@@ -2034,21 +2169,16 @@
                     shiftOption.appendChild(shiftOptionInfo);
                     
                     shiftOption.addEventListener('click', () => {
-                        // Remover seleção de todos os plantões
                         document.querySelectorAll('.shift-option').forEach(opt => {
                             opt.classList.remove('selected');
                         });
                         
-                        // Adicionar seleção ao plantão clicado
                         shiftOption.classList.add('selected');
-                        
-                        // Definir plantão selecionado
                         selectedShift = shift;
                         
-                        // Preencher campos do formulário com os dados do plantão
-                        eventTitleInput.value = shift.name;
-                        eventTimeInput.value = shift.startTime;
-                        eventDescriptionInput.value = `Plantão ${shift.name}: ${shift.startTime} - ${shift.endTime}`;
+                        plantaoTitleInput.value = shift.name;
+                        plantaoTimeInput.value = shift.startTime;
+                        plantaoDescriptionInput.value = `Plantão ${shift.name}: ${shift.startTime} - ${shift.endTime}`;
                     });
                     
                     shiftsSelector.appendChild(shiftOption);
@@ -2121,12 +2251,12 @@
                     return;
                 }
                 
-                // Ordenar notas por data (mais recentes primeiro)
-                notes.sort((a, b) => new Date(b.date) - new Date(a.date));
+                notes = sortNotes(notes, currentSort, sortOrder);
                 
                 notes.forEach(note => {
                     const noteCard = document.createElement('div');
                     noteCard.className = `note-card note-${note.color}`;
+                    noteCard.dataset.noteId = note.id;
                     
                     const noteTitle = document.createElement('div');
                     noteTitle.className = 'note-title';
@@ -2154,12 +2284,79 @@
                     noteCard.appendChild(noteDelete);
                     
                     noteCard.addEventListener('click', () => {
-                        // Abrir diretamente em modo de edição
                         openNoteModal(note);
                     });
                     
                     notesMosaic.appendChild(noteCard);
                 });
+                
+                initializeSortable();
+            }
+            
+            // Função para ordenar notas
+            function sortNotes(notes, sortBy, order) {
+                const sortedNotes = [...notes];
+                
+                sortedNotes.sort((a, b) => {
+                    let valueA, valueB;
+                    
+                    switch(sortBy) {
+                        case 'date':
+                            valueA = new Date(a.date);
+                            valueB = new Date(b.date);
+                            break;
+                        case 'title':
+                            valueA = a.title.toLowerCase();
+                            valueB = b.title.toLowerCase();
+                            break;
+                        case 'color':
+                            valueA = a.color;
+                            valueB = b.color;
+                            break;
+                        default:
+                            valueA = new Date(a.date);
+                            valueB = new Date(b.date);
+                    }
+                    
+                    if (valueA < valueB) return order === 'asc' ? -1 : 1;
+                    if (valueA > valueB) return order === 'asc' ? 1 : -1;
+                    return 0;
+                });
+                
+                return sortedNotes;
+            }
+            
+            // Inicializar arrastar e soltar para notas
+            function initializeSortable() {
+                if (typeof Sortable !== 'undefined') {
+                    new Sortable(notesMosaic, {
+                        animation: 150,
+                        ghostClass: 'dragging',
+                        onEnd: function(evt) {
+                            const noteCards = notesMosaic.querySelectorAll('.note-card');
+                            const newOrder = [];
+                            
+                            noteCards.forEach(card => {
+                                const noteId = card.dataset.noteId;
+                                newOrder.push(noteId);
+                            });
+                            
+                            saveNotesOrder(newOrder);
+                            showToast('Ordem das notas atualizada!');
+                        }
+                    });
+                }
+            }
+            
+            // Salvar ordem das notas
+            function saveNotesOrder(order) {
+                localStorage.setItem('notesOrder', JSON.stringify(order));
+            }
+            
+            // Carregar ordem das notas
+            function loadNotesOrder() {
+                const savedOrder = localStorage.getItem('notesOrder');
+                return savedOrder ? JSON.parse(savedOrder) : null;
             }
             
             // Formatar data para exibição
@@ -2182,7 +2379,6 @@
             function addNote(title, content, color) {
                 const notes = JSON.parse(localStorage.getItem('notes') || '[]');
                 
-                // Adicionar uma única nota
                 const newNote = {
                     id: Date.now().toString(),
                     title: title,
@@ -2238,11 +2434,11 @@
                 }
             }
             
-            // Limpar todos os dados (eventos e notas)
+            // Limpar todos os dados (plantões e notas)
             function clearAllData() {
                 if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode be desfeita.')) {
                     localStorage.removeItem('notes');
-                    localStorage.removeItem('calendarEvents');
+                    localStorage.removeItem('calendarPlantoes');
                     renderNotes([]);
                     updateNotesCount(0);
                     generateCalendar();
@@ -2253,12 +2449,12 @@
             
             // Função para exportar dados
             function exportData() {
-                const events = loadEvents();
+                const plantoes = loadPlantoes();
                 const notes = JSON.parse(localStorage.getItem('notes') || '[]');
                 const shifts = loadShifts();
                 
                 const data = {
-                    events: events,
+                    plantoes: plantoes,
                     notes: notes,
                     shifts: shifts,
                     exportDate: new Date().toISOString()
@@ -2292,25 +2488,18 @@
                     try {
                         const data = JSON.parse(e.target.result);
                         
-                        // Validar estrutura básica
-                        if (!data.events || !data.notes) {
+                        if (!data.plantoes || !data.notes) {
                             throw new Error('Formato de arquivo inválido');
                         }
                         
-                        // Confirmar substituição
                         if (confirm('Isso substituirá todos os seus dados atuais. Deseja continuar?')) {
-                            // Salvar eventos
-                            saveEvents(data.events);
-                            
-                            // Salvar notas
+                            savePlantoes(data.plantoes);
                             localStorage.setItem('notes', JSON.stringify(data.notes));
                             
-                            // Salvar plantões se existirem
                             if (data.shifts) {
                                 saveShifts(data.shifts);
                             }
                             
-                            // Atualizar interface
                             generateCalendar();
                             loadNotes();
                             renderSettingsShiftsList();
@@ -2325,7 +2514,6 @@
                 
                 reader.readAsText(file);
                 
-                // Limpar o input para permitir importar o mesmo arquivo novamente
                 event.target.value = '';
             }
             
@@ -2347,7 +2535,6 @@
             
             // Abrir modal para adicionar/editar nota
             function openNoteModal(note = null) {
-                // Resetar seleção de cor
                 noteColorOptions.forEach(option => {
                     option.classList.remove('selected');
                     if (option.dataset.color === 'yellow') {
@@ -2357,16 +2544,13 @@
                 selectedNoteColor = 'yellow';
                 
                 if (note) {
-                    // Modo de edição
                     noteModalTitle.textContent = 'Editar Nota';
                     noteIdInput.value = note.id;
                     noteTitleInput.value = note.title;
                     noteContentInput.value = note.content;
                     
-                    // Adicionar classe de modo de edição
                     noteModal.querySelector('.note-modal-content').classList.add('edit-mode');
                     
-                    // Definir cor selecionada
                     if (note.color) {
                         noteColorOptions.forEach(option => {
                             option.classList.remove('selected');
@@ -2377,19 +2561,16 @@
                         });
                     }
                 } else {
-                    // Modo de criação
                     noteModalTitle.textContent = 'Adicionar Nota';
                     noteIdInput.value = '';
                     noteTitleInput.value = '';
                     noteContentInput.value = '';
                     
-                    // Remover classe de modo de edição
                     noteModal.querySelector('.note-modal-content').classList.remove('edit-mode');
                 }
                 
                 noteModal.style.display = 'flex';
                 
-                // Focar no campo de título ao abrir o modal
                 setTimeout(() => {
                     noteTitleInput.focus();
                 }, 300);
@@ -2406,23 +2587,22 @@
                 currentViewingNote = null;
             }
             
-            // Abrir modal para visualizar evento
-            function openEventViewModal(event, dateString) {
-                currentViewingEvent = event;
-                currentViewingEventDate = dateString;
+            // Abrir modal para visualizar plantão
+            function openPlantaoViewModal(plantao, dateString) {
+                currentViewingPlantao = plantao;
+                currentViewingPlantaoDate = dateString;
                 
                 const date = new Date(dateString);
                 const formattedDate = date.toLocaleDateString('pt-BR');
                 
-                eventViewTitle.textContent = event.title;
-                eventViewDescription.textContent = event.description || 'Sem descrição';
-                eventViewTimeText.textContent = event.time || 'Todo o dia';
-                eventViewDate.textContent = formattedDate;
+                plantaoViewTitle.textContent = plantao.title;
+                plantaoViewDescription.textContent = plantao.description || 'Sem descrição';
+                plantaoViewTimeText.textContent = plantao.time || 'Todo o dia';
+                plantaoViewDate.textContent = formattedDate;
                 
-                // Definir cor do evento
-                eventViewColor.className = `event-view-color event-${event.color || 'blue'}`;
+                plantaoViewColor.className = `plantao-view-color plantao-${plantao.color || 'blue'}`;
                 
-                eventViewModal.style.display = 'flex';
+                plantaoViewModal.style.display = 'flex';
             }
             
             // Abrir modal de configurações
@@ -2436,172 +2616,154 @@
                 settingsModal.style.display = 'none';
             }
             
-            // Carregar eventos salvos
-            function loadEvents() {
-                const savedEvents = localStorage.getItem('calendarEvents');
-                return savedEvents ? JSON.parse(savedEvents) : {};
+            // Carregar plantões salvos - CORRIGIDO
+            function loadPlantoes() {
+                const savedPlantoes = localStorage.getItem('calendarPlantoes');
+                return savedPlantoes ? JSON.parse(savedPlantoes) : {};
             }
             
-            // Salvar eventos
-            function saveEvents(events) {
-                localStorage.setItem('calendarEvents', JSON.stringify(events));
+            // Salvar plantões - CORRIGIDO
+            function savePlantoes(plantoes) {
+                localStorage.setItem('calendarPlantoes', JSON.stringify(plantoes));
             }
             
-            // Gerar ID único para eventos
-            function generateEventId() {
+            // Gerar ID único para plantões
+            function generatePlantaoId() {
                 return Date.now().toString(36) + Math.random().toString(36).substr(2);
             }
             
-            // Obter eventos para uma data específica
-            function getEventsForDate(dateString) {
-                const events = loadEvents();
-                return events[dateString] || [];
+            // Obter plantões para uma data específica
+            function getPlantoesForDate(dateString) {
+                const plantoes = loadPlantoes();
+                return plantoes[dateString] || [];
             }
             
-            // Adicionar ou atualizar evento
-            function saveEvent(dateString, eventData) {
-                const events = loadEvents();
-                if (!events[dateString]) {
-                    events[dateString] = [];
+            // Adicionar ou atualizar plantão
+            function savePlantao(dateString, plantaoData) {
+                const plantoes = loadPlantoes();
+                if (!plantoes[dateString]) {
+                    plantoes[dateString] = [];
                 }
                 
-                if (eventData.id) {
-                    // Atualizar evento existente
-                    const index = events[dateString].findIndex(e => e.id === eventData.id);
+                if (plantaoData.id) {
+                    const index = plantoes[dateString].findIndex(p => p.id === plantaoData.id);
                     if (index !== -1) {
-                        events[dateString][index] = eventData;
+                        plantoes[dateString][index] = plantaoData;
                     }
                 } else {
-                    // Adicionar novo evento
-                    eventData.id = generateEventId();
-                    events[dateString].push(eventData);
+                    plantaoData.id = generatePlantaoId();
+                    plantoes[dateString].push(plantaoData);
                 }
                 
-                // Ordenar eventos por hora
-                events[dateString].sort((a, b) => {
+                plantoes[dateString].sort((a, b) => {
                     if (a.time && b.time) {
                         return a.time.localeCompare(b.time);
                     }
                     return 0;
                 });
                 
-                saveEvents(events);
-                return eventData;
+                savePlantoes(plantoes);
+                return plantaoData;
             }
             
-            // Criar eventos em dias alternados - VERSÃO CORRIGIDA
-            function createAlternateDayEvents(startDate, eventData, scaleType) {
-                const events = loadEvents();
+            // Criar plantões em dias alternados
+            function createAlternateDayPlantoes(startDate, plantaoData, scaleType) {
+                const plantoes = loadPlantoes();
                 const start = new Date(startDate);
                 const year = start.getFullYear();
                 const month = start.getMonth();
                 const startDay = start.getDate();
                 
-                // Obter o último dia do mês
                 const lastDay = new Date(year, month + 1, 0).getDate();
                 
                 let createdCount = 0;
                 let dayPattern = [];
                 
-                // Determinar o padrão de dias com base no tipo de escala
                 switch(scaleType) {
                     case '12x24':
-                        // Plantão a cada 36 horas (12h trabalho + 24h descanso)
-                        // Isso resulta em plantões a cada 1.5 dias, mas vamos arredondar para dias completos
                         for (let day = startDay; day <= lastDay; day += 2) {
                             dayPattern.push(day);
                         }
                         break;
                     case '12x36':
-                        // Plantão a cada 48 horas (12h trabalho + 36h descanso) = 2 dias
                         for (let day = startDay; day <= lastDay; day += 2) {
                             dayPattern.push(day);
                         }
                         break;
                     case '24x72':
-                        // Plantão a cada 96 horas (24h trabalho + 72h descanso) = 4 dias
                         for (let day = startDay; day <= lastDay; day += 4) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'odd':
-                        // Dias ímpares
                         let firstOdd = startDay % 2 === 1 ? startDay : startDay + 1;
                         for (let day = firstOdd; day <= lastDay; day += 2) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'even':
-                        // Dias pares
                         let firstEven = startDay % 2 === 0 ? startDay : startDay + 1;
                         for (let day = firstEven; day <= lastDay; day += 2) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'every3':
-                        // A cada 3 dias
                         for (let day = startDay; day <= lastDay; day += 3) {
                             dayPattern.push(day);
                         }
                         break;
                     case 'every4':
-                        // A cada 4 dias
                         for (let day = startDay; day <= lastDay; day += 4) {
                             dayPattern.push(day);
                         }
                         break;
                 }
                 
-                // Criar eventos para cada dia no padrão
                 dayPattern.forEach(day => {
                     const date = new Date(year, month, day);
                     const dateString = formatDateToYYYYMMDD(date);
                     
-                    // Criar uma cópia do eventData para cada dia
-                    const dayEventData = {
-                        ...eventData,
-                        id: generateEventId()
+                    const dayPlantaoData = {
+                        ...plantaoData,
+                        id: generatePlantaoId()
                     };
                     
-                    // Salvar o evento para este dia
-                    if (!events[dateString]) {
-                        events[dateString] = [];
+                    if (!plantoes[dateString]) {
+                        plantoes[dateString] = [];
                     }
-                    events[dateString].push(dayEventData);
+                    plantoes[dateString].push(dayPlantaoData);
                     createdCount++;
                 });
                 
-                saveEvents(events);
+                savePlantoes(plantoes);
                 return createdCount;
             }
             
-            // Excluir evento
-            function deleteEvent(dateString, eventId) {
-                const events = loadEvents();
-                if (events[dateString]) {
-                    events[dateString] = events[dateString].filter(e => e.id !== eventId);
-                    if (events[dateString].length === 0) {
-                        delete events[dateString];
+            // Excluir plantão
+            function deletePlantao(dateString, plantaoId) {
+                const plantoes = loadPlantoes();
+                if (plantoes[dateString]) {
+                    plantoes[dateString] = plantoes[dateString].filter(p => p.id !== plantaoId);
+                    if (plantoes[dateString].length === 0) {
+                        delete plantoes[dateString];
                     }
-                    saveEvents(events);
+                    savePlantoes(plantoes);
                 }
             }
             
-            // Abrir modal para adicionar/editar evento
-            function openEventModal(dateString, event = null) {
+            // Abrir modal para adicionar/editar plantão
+            function openPlantaoModal(dateString, plantao = null) {
                 const date = new Date(dateString);
                 const formattedDate = date.toLocaleDateString('pt-BR');
                 
-                // Resetar seleção de cor e dias alternados
-                eventColorOptions.forEach(option => {
+                plantaoColorOptions.forEach(option => {
                     option.classList.remove('selected');
                     if (option.dataset.color === 'blue') {
                         option.classList.add('selected');
                     }
                 });
-                selectedEventColor = 'blue';
+                selectedPlantaoColor = 'blue';
                 
-                // Resetar seleção de escala
                 scaleOptions.forEach(option => {
                     option.classList.remove('selected');
                 });
@@ -2613,43 +2775,37 @@
                 });
                 selectedAlternateDaysType = null;
                 
-                // Resetar seleção de plantão
                 selectedShift = null;
                 
-                if (event) {
-                    // Modo de edição
+                if (plantao) {
                     modalTitle.textContent = `Editar Plantão - ${formattedDate}`;
-                    eventIdInput.value = event.id;
-                    eventDatePickerInput.value = dateString;
-                    eventTitleInput.value = event.title;
-                    eventDescriptionInput.value = event.description || '';
-                    eventTimeInput.value = event.time || '';
-                    deleteEventBtn.style.display = 'block';
+                    plantaoIdInput.value = plantao.id;
+                    plantaoDatePickerInput.value = dateString;
+                    plantaoTitleInput.value = plantao.title;
+                    plantaoDescriptionInput.value = plantao.description || '';
+                    plantaoTimeInput.value = plantao.time || '';
+                    deletePlantaoBtn.style.display = 'block';
                     
-                    // Adicionar classe de modo de edição
-                    eventModal.querySelector('.modal-content').classList.add('edit-mode');
+                    plantaoModal.querySelector('.modal-content').classList.add('edit-mode');
                     
-                    // Definir cor selecionada
-                    if (event.color) {
-                        eventColorOptions.forEach(option => {
+                    if (plantao.color) {
+                        plantaoColorOptions.forEach(option => {
                             option.classList.remove('selected');
-                            if (option.dataset.color === event.color) {
+                            if (option.dataset.color === plantao.color) {
                                 option.classList.add('selected');
-                                selectedEventColor = event.color;
+                                selectedPlantaoColor = plantao.color;
                             }
                         });
                     }
                     
-                    // Verificar se o evento corresponde a algum plantão pré-definido
                     const shifts = loadShifts();
                     const matchingShift = shifts.find(shift => 
-                        shift.name === event.title && 
-                        shift.startTime === event.time
+                        shift.name === plantao.title && 
+                        shift.startTime === plantao.time
                     );
                     
                     if (matchingShift) {
                         selectedShift = matchingShift;
-                        // Atualizar a seleção visual na lista de plantões
                         setTimeout(() => {
                             document.querySelectorAll('.shift-option').forEach(option => {
                                 option.classList.remove('selected');
@@ -2662,50 +2818,41 @@
                         }, 300);
                     }
                 } else {
-                    // Modo de criação
                     modalTitle.textContent = `Adicionar Plantão - ${formattedDate}`;
-                    eventIdInput.value = '';
-                    eventDatePickerInput.value = dateString;
-                    eventTitleInput.value = '';
-                    eventDescriptionInput.value = '';
-                    eventTimeInput.value = '';
-                    deleteEventBtn.style.display = 'none';
+                    plantaoIdInput.value = '';
+                    plantaoDatePickerInput.value = dateString;
+                    plantaoTitleInput.value = '';
+                    plantaoDescriptionInput.value = '';
+                    plantaoTimeInput.value = '';
+                    deletePlantaoBtn.style.display = 'none';
                     
-                    // Remover classe de modo de edição
-                    eventModal.querySelector('.modal-content').classList.remove('edit-mode');
+                    plantaoModal.querySelector('.modal-content').classList.remove('edit-mode');
                 }
                 
-                eventDateInput.value = dateString;
-                eventModal.style.display = 'flex';
+                plantaoDateInput.value = dateString;
+                plantaoModal.style.display = 'flex';
                 
-                // Renderizar lista de plantões
                 renderShiftsSelector();
+                loadDayPlantoes(dateString);
                 
-                // Carregar eventos do dia
-                loadDayEvents(dateString);
-                
-                // Focar no campo de título ao abrir o modal
                 setTimeout(() => {
-                    eventTitleInput.focus();
+                    plantaoTitleInput.focus();
                 }, 300);
             }
             
             // Abrir modal para adicionar plantão
             function openShiftModal(dateString) {
-                // Abrir o modal de eventos com o título "Adicionar Plantão"
                 const date = new Date(dateString);
                 const formattedDate = date.toLocaleDateString('pt-BR');
                 
-                // Resetar seleção de cor e dias alternados
-                eventColorOptions.forEach(option => {
+                plantaoColorOptions.forEach(option => {
                     option.classList.remove('selected');
                     if (option.dataset.color === 'blue') {
                         option.classList.add('selected');
                     }
                 });
-                selectedEventColor = 'blue';
+                selectedPlantaoColor = 'blue';
                 
-                // Resetar seleção de escala
                 scaleOptions.forEach(option => {
                     option.classList.remove('selected');
                 });
@@ -2717,155 +2864,210 @@
                 });
                 selectedAlternateDaysType = null;
                 
-                // Resetar seleção de plantão
                 selectedShift = null;
                 
                 modalTitle.textContent = `Adicionar Plantão - ${formattedDate}`;
-                eventIdInput.value = '';
-                eventDatePickerInput.value = dateString;
-                eventTitleInput.value = '';
-                eventDescriptionInput.value = '';
-                eventTimeInput.value = '';
-                deleteEventBtn.style.display = 'none';
+                plantaoIdInput.value = '';
+                plantaoDatePickerInput.value = dateString;
+                plantaoTitleInput.value = '';
+                plantaoDescriptionInput.value = '';
+                plantaoTimeInput.value = '';
+                deletePlantaoBtn.style.display = 'none';
                 
-                // Remover classe de modo de edição
-                eventModal.querySelector('.modal-content').classList.remove('edit-mode');
+                plantaoModal.querySelector('.modal-content').classList.remove('edit-mode');
                 
-                eventDateInput.value = dateString;
-                eventModal.style.display = 'flex';
+                plantaoDateInput.value = dateString;
+                plantaoModal.style.display = 'flex';
                 
-                // Renderizar lista de plantões
                 renderShiftsSelector();
+                loadDayPlantoes(dateString);
                 
-                // Carregar eventos do dia
-                loadDayEvents(dateString);
-                
-                // Focar no campo de título ao abrir o modal
                 setTimeout(() => {
-                    eventTitleInput.focus();
+                    plantaoTitleInput.focus();
                 }, 300);
             }
             
-            // Carregar eventos do dia no modal
-            function loadDayEvents(dateString) {
-                const events = getEventsForDate(dateString);
-                eventList.innerHTML = '';
+            // Carregar plantões do dia no modal
+            function loadDayPlantoes(dateString) {
+                const plantoes = getPlantoesForDate(dateString);
+                plantaoList.innerHTML = '';
                 
-                if (events.length === 0) {
-                    eventList.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 10px;">Nenhum evento para este dia</p>';
+                if (plantoes.length === 0) {
+                    plantaoList.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 10px;">Nenhum plantão para este dia</p>';
                     return;
                 }
                 
-                events.forEach(event => {
-                    const eventItem = document.createElement('div');
-                    eventItem.className = `event-item event-${event.color || 'blue'}`;
+                plantoes.forEach(plantao => {
+                    const plantaoItem = document.createElement('div');
+                    plantaoItem.className = `plantao-item plantao-${plantao.color || 'blue'}`;
                     
-                    const eventInfo = document.createElement('div');
-                    eventInfo.className = 'event-info';
+                    const plantaoInfo = document.createElement('div');
+                    plantaoInfo.className = 'plantao-info';
                     
-                    const eventTitle = document.createElement('div');
-                    eventTitle.className = 'event-title';
-                    eventTitle.textContent = event.title;
+                    const plantaoTitle = document.createElement('div');
+                    plantaoTitle.className = 'plantao-title';
+                    plantaoTitle.textContent = plantao.title;
                     
-                    const eventTime = document.createElement('div');
-                    eventTime.className = 'event-time';
-                    eventTime.textContent = event.time || 'Todo o dia';
+                    const plantaoTime = document.createElement('div');
+                    plantaoTime.className = 'plantao-time';
+                    plantaoTime.textContent = plantao.time || 'Todo o dia';
                     
-                    eventInfo.appendChild(eventTitle);
-                    eventInfo.appendChild(eventTime);
+                    plantaoInfo.appendChild(plantaoTitle);
+                    plantaoInfo.appendChild(plantaoTime);
                     
-                    const eventActions = document.createElement('div');
-                    eventActions.className = 'event-actions';
+                    const plantaoActions = document.createElement('div');
+                    plantaoActions.className = 'plantao-actions';
                     
                     const editBtn = document.createElement('button');
-                    editBtn.className = 'event-action';
+                    editBtn.className = 'plantao-action';
                     editBtn.innerHTML = '✏️';
                     editBtn.addEventListener('click', () => {
-                        openEventModal(dateString, event);
+                        openPlantaoModal(dateString, plantao);
                     });
                     
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'event-action';
+                    deleteBtn.className = 'plantao-action';
                     deleteBtn.innerHTML = '🗑️';
                     deleteBtn.addEventListener('click', () => {
-                        if (confirm('Tem certeza que deseja excluir este evento?')) {
-                            deleteEvent(dateString, event.id);
+                        if (confirm('Tem certeza que deseja excluir este plantão?')) {
+                            deletePlantao(dateString, plantao.id);
                             generateCalendar();
-                            loadDayEvents(dateString);
-                            showToast('Evento excluído com sucesso!');
+                            loadDayPlantoes(dateString);
+                            showToast('Plantão excluído com sucesso!');
                         }
                     });
                     
-                    eventActions.appendChild(editBtn);
-                    eventActions.appendChild(deleteBtn);
+                    plantaoActions.appendChild(editBtn);
+                    plantaoActions.appendChild(deleteBtn);
                     
-                    eventItem.appendChild(eventInfo);
-                    eventItem.appendChild(eventActions);
+                    plantaoItem.appendChild(plantaoInfo);
+                    plantaoItem.appendChild(plantaoActions);
                     
-                    eventList.appendChild(eventItem);
+                    plantaoList.appendChild(plantaoItem);
                 });
             }
             
             // Fechar modal
-            function closeEventModal() {
-                eventModal.style.display = 'none';
+            function closePlantaoModal() {
+                plantaoModal.style.display = 'none';
             }
             
-            // Fechar modal de visualização de evento
-            function closeEventViewModal() {
-                eventViewModal.style.display = 'none';
-                currentViewingEvent = null;
-                currentViewingEventDate = null;
+            // Fechar modal de visualização de plantão
+            function closePlantaoViewModal() {
+                plantaoViewModal.style.display = 'none';
+                currentViewingPlantao = null;
+                currentViewingPlantaoDate = null;
             }
             
-            // Gerar calendário
+            // Filtrar plantões por termo de busca
+            function filterPlantoes(searchTerm) {
+                const allPlantoes = loadPlantoes();
+                const filtered = {};
+                
+                if (!searchTerm.trim()) {
+                    return allPlantoes;
+                }
+                
+                const term = searchTerm.toLowerCase();
+                
+                for (const dateStr in allPlantoes) {
+                    if (allPlantoes.hasOwnProperty(dateStr)) {
+                        const plantoesForDate = allPlantoes[dateStr];
+                        const filteredPlantoes = plantoesForDate.filter(plantao => 
+                            plantao.title.toLowerCase().includes(term) ||
+                            (plantao.description && plantao.description.toLowerCase().includes(term))
+                        );
+                        
+                        if (filteredPlantoes.length > 0) {
+                            filtered[dateStr] = filteredPlantoes;
+                        }
+                    }
+                }
+                
+                return filtered;
+            }
+            
+            // Filtrar notas por termo de busca
+            function filterNotes(notes, searchTerm) {
+                if (!searchTerm.trim()) {
+                    return notes;
+                }
+                
+                const term = searchTerm.toLowerCase();
+                
+                return notes.filter(note => 
+                    note.title.toLowerCase().includes(term) ||
+                    note.content.toLowerCase().includes(term)
+                );
+            }
+            
+            // Atualizar paginação
+            function updatePagination() {
+                const totalPages = Math.ceil(totalDays / daysPerPage);
+                const startDay = (currentPage - 1) * daysPerPage + 1;
+                const endDay = Math.min(currentPage * daysPerPage, totalDays);
+                
+                paginationInfo.textContent = `Mostrando ${startDay}-${endDay} de ${totalDays} dias`;
+                
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+            }
+            
+            // Gerar calendário com paginação
             function generateCalendar() {
                 calendarBody.innerHTML = '';
+                
                 const firstDay = new Date(currentYear, currentMonth, 1);
                 const lastDay = new Date(currentYear, currentMonth + 1, 0);
                 const daysInMonth = lastDay.getDate();
                 const firstDayOfWeek = firstDay.getDay();
                 
-                // Criar células vazias para os dias antes do início do mês
+                totalDays = daysInMonth;
+                filteredPlantoes = filterPlantoes(plantaoSearchInput.value);
+                
+                const startDay = (currentPage - 1) * daysPerPage + 1;
+                const endDay = Math.min(currentPage * daysPerPage, daysInMonth);
+                
                 let html = '';
                 for (let i = 0; i < firstDayOfWeek; i++) {
                     html += '<td></td>';
                 }
                 
-                // Preencher dias do mês
                 for (let day = 1; day <= daysInMonth; day++) {
-                    // Criar objeto Date para o dia atual
+                    if (day < startDay || day > endDay) {
+                        html += '<td></td>';
+                        
+                        if ((firstDayOfWeek + day) % 7 === 0) {
+                            html += '</tr><tr>';
+                        }
+                        continue;
+                    }
+                    
                     const date = new Date(currentYear, currentMonth, day);
-                    // Formatar a data como YYYY-MM-DD usando nossa função personalizada
                     const dateString = formatDateToYYYYMMDD(date);
                     const today = new Date();
                     const isToday = (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear());
                     
-                    // Obter eventos para este dia
-                    const dayEvents = getEventsForDate(dateString);
+                    const dayPlantoes = filteredPlantoes[dateString] || [];
                     
                     html += `<td data-date="${dateString}">
                         <div class="day-number ${isToday ? 'today' : ''}">${day}</div>`;
                     
-                    // Adicionar eventos (máximo de 3 para melhor visualização)
-                    dayEvents.slice(0, 3).forEach(event => {
-                        html += `<div class="event event-${event.color || 'blue'}" data-event-id="${event.id}">${event.title}</div>`;
+                    dayPlantoes.slice(0, 3).forEach(plantao => {
+                        html += `<div class="plantao plantao-${plantao.color || 'blue'}" data-plantao-id="${plantao.id}">${plantao.title}</div>`;
                     });
                     
-                    // Indicador se há mais eventos
-                    if (dayEvents.length > 3) {
-                        html += `<div class="event">+${dayEvents.length - 3}</div>`;
+                    if (dayPlantoes.length > 3) {
+                        html += `<div class="plantao">+${dayPlantoes.length - 3}</div>`;
                     }
                     
                     html += '</td>';
                     
-                    // Quebrar linha a cada 7 dias
                     if ((firstDayOfWeek + day) % 7 === 0) {
                         html += '</tr><tr>';
                     }
                 }
                 
-                // Preencher células vazias no final
                 const remainingCells = 7 - ((firstDayOfWeek + daysInMonth) % 7);
                 if (remainingCells < 7) {
                     for (let i = 0; i < remainingCells; i++) {
@@ -2873,41 +3075,133 @@
                     }
                 }
                 
-                // Atualizar título do calendário
                 calendarTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
                 
-                // Adicionar ao DOM
                 calendarBody.innerHTML = `<tr>${html}</tr>`;
                 
-                // Adicionar event listeners para os dias e eventos
+                updatePagination();
+                
                 document.querySelectorAll('#calendar td[data-date]').forEach(cell => {
                     cell.addEventListener('click', function(e) {
-                        // Verificar se o clique foi em um evento ou na célula do dia
-                        if (e.target.classList.contains('event')) {
-                            // Clicou em um evento existente - abrir diretamente em modo de edição
+                        if (e.target.classList.contains('plantao')) {
                             const dateString = this.getAttribute('data-date');
-                            const eventId = e.target.getAttribute('data-event-id');
-                            const events = getEventsForDate(dateString);
-                            const event = events.find(ev => ev.id === eventId);
+                            const plantaoId = e.target.getAttribute('data-plantao-id');
+                            const plantoes = getPlantoesForDate(dateString);
+                            const plantao = plantoes.find(p => p.id === plantaoId);
                             
-                            if (event) {
-                                openEventModal(dateString, event);
+                            if (plantao) {
+                                openPlantaoModal(dateString, plantao);
                             }
                         } else {
-                            // Clicou em um dia vazio - abrir em modo de criação
                             const dateString = this.getAttribute('data-date');
-                            openEventModal(dateString);
+                            openPlantaoModal(dateString);
                         }
                     });
                 });
             }
             
-            // Função para analisar os eventos e extrair dados para os gráficos
-            function analyzeEvents() {
-                const events = loadEvents();
+            // Função para filtrar plantões por período - CORRIGIDA
+            function filterPlantoesByPeriod(plantoes, period, month = null, year = null) {
+                const now = new Date();
+                let startDate, endDate;
+                
+                const useMonth = month !== null ? month : now.getMonth();
+                const useYear = year !== null ? year : now.getFullYear();
+                
+                switch(period) {
+                    case 'month':
+                        startDate = new Date(useYear, useMonth, 1);
+                        endDate = new Date(useYear, useMonth + 1, 0);
+                        endDate.setHours(23, 59, 59, 999);
+                        break;
+                    case 'last-month':
+                        startDate = new Date(useYear, useMonth - 1, 1);
+                        endDate = new Date(useYear, useMonth, 0);
+                        endDate.setHours(23, 59, 59, 999);
+                        break;
+                    case 'quarter':
+                        const quarterStartMonth = Math.floor(useMonth / 3) * 3;
+                        startDate = new Date(useYear, quarterStartMonth, 1);
+                        endDate = new Date(useYear, quarterStartMonth + 3, 0);
+                        endDate.setHours(23, 59, 59, 999);
+                        break;
+                    case 'semester':
+                        const semesterStartMonth = Math.floor(useMonth / 6) * 6;
+                        startDate = new Date(useYear, semesterStartMonth, 1);
+                        endDate = new Date(useYear, semesterStartMonth + 6, 0);
+                        endDate.setHours(23, 59, 59, 999);
+                        break;
+                    case 'year':
+                        startDate = new Date(useYear, 0, 1);
+                        endDate = new Date(useYear, 11, 31);
+                        endDate.setHours(23, 59, 59, 999);
+                        break;
+                    case 'all':
+                        return plantoes;
+                    default:
+                        startDate = new Date(useYear, useMonth, 1);
+                        endDate = new Date(useYear, useMonth + 1, 0);
+                        endDate.setHours(23, 59, 59, 999);
+                }
+                
+                console.log(`Filtrando plantões de ${startDate.toISOString()} até ${endDate.toISOString()}`);
+                
+                const filteredPlantoes = {};
+                for (const dateStr in plantoes) {
+                    if (plantoes.hasOwnProperty(dateStr)) {
+                        const plantaoDate = new Date(dateStr);
+                        if (plantaoDate >= startDate && plantaoDate <= endDate) {
+                            filteredPlantoes[dateStr] = plantoes[dateStr];
+                        }
+                    }
+                }
+                
+                return filteredPlantoes;
+            }
+            
+            // Função para validar valores dos plantões
+            function validateShiftValues() {
+                const shifts = loadShifts();
+                let invalidShifts = [];
+                
+                shifts.forEach(shift => {
+                    if (!shift.value || isNaN(parseCurrency(shift.value))) {
+                        invalidShifts.push(shift.name);
+                    }
+                });
+                
+                if (invalidShifts.length > 0) {
+                    showToast(`Valores inválidos nos plantões: ${invalidShifts.join(', ')}`, 5000);
+                    return false;
+                }
+                return true;
+            }
+            
+            // Função para analisar os plantões - CORRIGIDA
+            function analyzePlantoes() {
+                if (!validateShiftValues()) {
+                    return null;
+                }
+                
+                const allPlantoes = loadPlantoes();
                 const shifts = loadShifts();
                 
-                // Inicializar estruturas de dados para análise
+                // Obter o mês e ano atuais
+                const now = new Date();
+                let month = now.getMonth();
+                let year = now.getFullYear();
+                
+                // Ajustar mês e ano com base no período selecionado
+                if (periodFilter.value === 'last-month') {
+                    month--;
+                    if (month < 0) {
+                        month = 11;
+                        year--;
+                    }
+                }
+                
+                const plantoes = filterPlantoesByPeriod(allPlantoes, periodFilter.value, month, year);
+                
                 const analysisData = {
                     byType: {},
                     byMonth: {},
@@ -2917,45 +3211,41 @@
                     totalShifts: 0,
                     averageValue: 0
                 };
+                
+                console.log('Analisando plantões:', plantoes);
+                console.log('Mês/Ano do calendário:', currentMonth, currentYear);
 
-                // Processar cada data com eventos
-                for (const dateStr in events) {
-                    if (events.hasOwnProperty(dateStr)) {
+                for (const dateStr in plantoes) {
+                    if (plantoes.hasOwnProperty(dateStr)) {
                         const date = new Date(dateStr);
                         const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-                        const weekday = date.getDay(); // 0 = Domingo, 1 = Segunda, etc.
+                        const weekday = date.getDay();
                         
-                        events[dateStr].forEach(event => {
+                        plantoes[dateStr].forEach(plantao => {
                             analysisData.totalShifts++;
                             
-                            // Contar por tipo de plantão
-                            if (!analysisData.byType[event.title]) {
-                                analysisData.byType[event.title] = 0;
+                            if (!analysisData.byType[plantao.title]) {
+                                analysisData.byType[plantao.title] = 0;
                             }
-                            analysisData.byType[event.title]++;
+                            analysisData.byType[plantao.title]++;
                             
-                            // Contar por mês
                             if (!analysisData.byMonth[monthYear]) {
                                 analysisData.byMonth[monthYear] = 0;
                             }
                             analysisData.byMonth[monthYear]++;
                             
-                            // Contar por dia da semana
                             analysisData.byWeekday[weekday]++;
                             
-                            // Calcular valores (se disponível)
                             let shiftValue = 0;
                             
-                            // Tentar encontrar o valor no plantão pré-definido
-                            const predefinedShift = shifts.find(s => s.name === event.title);
+                            const predefinedShift = shifts.find(s => s.name === plantao.title);
                             if (predefinedShift && predefinedShift.value) {
-                                shiftValue = parseFloat(predefinedShift.value.replace(',', '.'));
+                                shiftValue = parseCurrency(predefinedShift.value);
+                                console.log(`Plantão: ${plantao.title}, Valor: ${shiftValue}`);
                             }
                             
-                            // Adicionar ao total
                             analysisData.totalValue += shiftValue;
                             
-                            // Adicionar ao valor por mês
                             if (!analysisData.valuesByMonth[monthYear]) {
                                 analysisData.valuesByMonth[monthYear] = 0;
                             }
@@ -2964,16 +3254,22 @@
                     }
                 }
                 
-                // Calcular valor médio
                 analysisData.averageValue = analysisData.totalShifts > 0 
                     ? analysisData.totalValue / analysisData.totalShifts 
                     : 0;
                 
+                console.log('Dados de análise:', analysisData);
+                
                 return analysisData;
             }
 
-            // Função para atualizar o resumo com os dados analisados
+            // Função para atualizar o resumo
             function updateSummary(analysisData) {
+                if (!analysisData) {
+                    analyticsSummary.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #e74c3c;">Erro ao calcular valores. Verifique os valores dos plantões.</p>';
+                    return;
+                }
+                
                 analyticsSummary.innerHTML = `
                     <div class="summary-card">
                         <div class="summary-label">Total de Plantões</div>
@@ -2981,11 +3277,11 @@
                     </div>
                     <div class="summary-card">
                         <div class="summary-label">Valor Total</div>
-                        <div class="summary-value">R$ ${analysisData.totalValue.toFixed(2)}</div>
+                        <div class="summary-value">${formatCurrency(analysisData.totalValue)}</div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-label">Valor Médio</div>
-                        <div class="summary-value">R$ ${analysisData.averageValue.toFixed(2)}</div>
+                        <div class="summary-value">${formatCurrency(analysisData.averageValue)}</div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-label">Período</div>
@@ -2996,13 +3292,14 @@
 
             // Função para gerar os gráficos
             function generateCharts(analysisData) {
-                // Destruir gráficos existentes
+                if (!analysisData) {
+                    return;
+                }
+                
                 destroyCharts();
                 
-                // Obter o tipo de gráfico selecionado
                 const chartType = chartTypeFilter.value;
                 
-                // 1. Gráfico de Plantões por Tipo
                 const shiftsByTypeCtx = document.getElementById('shifts-by-type-chart').getContext('2d');
                 shiftsByTypeChart = new Chart(shiftsByTypeCtx, {
                     type: chartType === 'pie' ? 'pie' : 'bar',
@@ -3032,7 +3329,6 @@
                     }
                 });
                 
-                // 2. Gráfico de Valores por Mês
                 const valuesByMonthCtx = document.getElementById('values-by-month-chart').getContext('2d');
                 valuesByMonthChart = new Chart(valuesByMonthCtx, {
                     type: chartType === 'pie' ? 'pie' : 'bar',
@@ -3069,7 +3365,6 @@
                     }
                 });
                 
-                // 3. Gráfico de Distribuição por Dia da Semana
                 const weekdays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
                 const shiftsByWeekdayCtx = document.getElementById('shifts-by-weekday-chart').getContext('2d');
                 shiftsByWeekdayChart = new Chart(shiftsByWeekdayCtx, {
@@ -3098,10 +3393,8 @@
                     }
                 });
                 
-                // 4. Gráfico de Evolução de Valores (linha)
                 const valuesEvolutionCtx = document.getElementById('values-evolution-chart').getContext('2d');
                 
-                // Preparar dados para a evolução (ordenar por mês)
                 const sortedMonths = Object.keys(analysisData.valuesByMonth).sort((a, b) => {
                     const [monthA, yearA] = a.split('/').map(Number);
                     const [monthB, yearB] = b.split('/').map(Number);
@@ -3150,7 +3443,7 @@
 
             // Função principal para gerar toda a análise
             function generateAnalytics() {
-                const analysisData = analyzeEvents();
+                const analysisData = analyzePlantoes();
                 updateSummary(analysisData);
                 generateCharts(analysisData);
             }
@@ -3162,6 +3455,7 @@
                     currentMonth = 11;
                     currentYear--;
                 }
+                currentPage = 1;
                 generateCalendar();
             });
             
@@ -3171,17 +3465,107 @@
                     currentMonth = 0;
                     currentYear++;
                 }
+                currentPage = 1;
                 generateCalendar();
             });
             
-            // Botão flutuante e menu
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    generateCalendar();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', function() {
+                const totalPages = Math.ceil(totalDays / daysPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    generateCalendar();
+                }
+            });
+            
+            plantaoSearchInput.addEventListener('input', function() {
+                currentPage = 1;
+                generateCalendar();
+            });
+            
+            notesSearchInput.addEventListener('input', function() {
+                const searchTerm = this.value;
+                const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+                const filteredNotes = filterNotes(notes, searchTerm);
+                renderNotes(filteredNotes);
+                updateNotesCount(filteredNotes.length);
+            });
+            
+            sortDateBtn.addEventListener('click', function() {
+                if (currentSort === 'date') {
+                    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = 'date';
+                    sortOrder = 'desc';
+                }
+                updateSortButtons();
+                const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+                renderNotes(notes);
+            });
+            
+            sortTitleBtn.addEventListener('click', function() {
+                if (currentSort === 'title') {
+                    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = 'title';
+                    sortOrder = 'asc';
+                }
+                updateSortButtons();
+                const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+                renderNotes(notes);
+            });
+            
+            sortColorBtn.addEventListener('click', function() {
+                if (currentSort === 'color') {
+                    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = 'color';
+                    sortOrder = 'asc';
+                }
+                updateSortButtons();
+                const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+                renderNotes(notes);
+            });
+            
+            function updateSortButtons() {
+                document.querySelectorAll('.sort-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                let activeBtn;
+                switch(currentSort) {
+                    case 'date':
+                        activeBtn = sortDateBtn;
+                        break;
+                    case 'title':
+                        activeBtn = sortTitleBtn;
+                        break;
+                    case 'color':
+                        activeBtn = sortColorBtn;
+                        break;
+                }
+                
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                    activeBtn.textContent = activeBtn.dataset.sort === 'date' ? 
+                        `Data ${sortOrder === 'asc' ? '↑' : '↓'}` :
+                        activeBtn.dataset.sort === 'title' ? 
+                        `Título ${sortOrder === 'asc' ? '↑' : '↓'}` :
+                        `Cor ${sortOrder === 'asc' ? '↑' : '↓'}`;
+                }
+            }
+            
             fabBtn.addEventListener('click', function() {
                 fabMenu.classList.toggle('show');
-                // Mudar o ícone do botão
                 this.textContent = fabMenu.classList.contains('show') ? '×' : '👆🏻';
             });
             
-            // Fechar o menu quando clicar fora
             document.addEventListener('click', function(e) {
                 if (!fabBtn.contains(e.target) && !fabMenu.contains(e.target)) {
                     fabMenu.classList.remove('show');
@@ -3189,15 +3573,13 @@
                 }
             });
             
-            // Ações do menu
             homeBtn.addEventListener('click', function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 fabMenu.classList.remove('show');
                 fabBtn.textContent = '👆🏻';
             });
             
-            addShiftBtn.addEventListener('click', function() {
-                // Abrir modal para adicionar plantão na data atual
+            addPlantaoBtn.addEventListener('click', function() {
                 const today = formatDateToYYYYMMDD(new Date());
                 openShiftModal(today);
                 fabMenu.classList.remove('show');
@@ -3217,9 +3599,7 @@
             });
             
             analyticsBtn.addEventListener('click', function() {
-                // Rolar até a seção de análise
                 document.getElementById('analytics-section').scrollIntoView({ behavior: 'smooth' });
-                // Mostrar a seção se estiver oculta
                 if (analyticsSection.classList.contains('section-hidden')) {
                     toggleAnalyticsSection();
                 }
@@ -3231,20 +3611,17 @@
                 clearAllNotes();
             });
             
-            // Event listeners para alternar seções
             toggleNotesBtn.addEventListener('click', toggleNotesSection);
             toggleAnalyticsBtn.addEventListener('click', toggleAnalyticsSection);
             
-            // Event listeners para o seletor de cores de eventos
-            eventColorOptions.forEach(option => {
+            plantaoColorOptions.forEach(option => {
                 option.addEventListener('click', function() {
-                    eventColorOptions.forEach(opt => opt.classList.remove('selected'));
+                    plantaoColorOptions.forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
-                    selectedEventColor = this.dataset.color;
+                    selectedPlantaoColor = this.dataset.color;
                 });
             });
             
-            // Event listeners para o seletor de cores de notas
             noteColorOptions.forEach(option => {
                 option.addEventListener('click', function() {
                     noteColorOptions.forEach(opt => opt.classList.remove('selected'));
@@ -3253,58 +3630,48 @@
                 });
             });
             
-            // Event listeners para o seletor de dias alternados
             alternateDayOptions.forEach(option => {
                 option.addEventListener('click', function() {
-                    // Se já estiver selecionado, desselecionar
                     if (this.classList.contains('selected')) {
                         this.classList.remove('selected');
                         selectedAlternateDaysType = null;
                     } else {
-                        // Desselecionar todos os outros
                         alternateDayOptions.forEach(opt => opt.classList.remove('selected'));
-                        // Selecionar este
                         this.classList.add('selected');
                         selectedAlternateDaysType = this.dataset.type;
                     }
                 });
             });
             
-            // Event listeners para o seletor de escala
             scaleOptions.forEach(option => {
                 option.addEventListener('click', function() {
                     scaleOptions.forEach(opt => opt.classList.remove('selected'));
                     this.classList.add('selected');
                     selectedScaleType = this.dataset.type;
                     
-                    // Mostrar/ocultar seletor de dias personalizados
                     if (selectedScaleType === 'custom') {
                         customDaysSelector.style.display = 'block';
                     } else {
                         customDaysSelector.style.display = 'none';
-                        // Desselecionar dias alternados quando não for custom
                         alternateDayOptions.forEach(opt => opt.classList.remove('selected'));
                         selectedAlternateDaysType = null;
                     }
                 });
             });
             
-            // Event listeners para o modal de eventos
-            eventForm.addEventListener('submit', function(e) {
+            plantaoForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Usar a data do campo de seleção de data
-                const dateString = eventDatePickerInput.value;
-                const eventId = eventIdInput.value;
-                const eventData = {
-                    id: eventId || null,
-                    title: eventTitleInput.value,
-                    description: eventDescriptionInput.value,
-                    time: eventTimeInput.value,
-                    color: selectedEventColor
+                const dateString = plantaoDatePickerInput.value;
+                const plantaoId = plantaoIdInput.value;
+                const plantaoData = {
+                    id: plantaoId || null,
+                    title: plantaoTitleInput.value,
+                    description: plantaoDescriptionInput.value,
+                    time: plantaoTimeInput.value,
+                    color: selectedPlantaoColor
                 };
                 
-                // Verificar se há um padrão de escala selecionado
                 let scaleType = null;
                 if (selectedScaleType === 'custom' && selectedAlternateDaysType) {
                     scaleType = selectedAlternateDaysType;
@@ -3313,10 +3680,9 @@
                 }
                 
                 if (scaleType) {
-                    // Criar eventos em dias alternados
-                    const createdCount = createAlternateDayEvents(dateString, eventData, scaleType);
+                    const createdCount = createAlternateDayPlantoes(dateString, plantaoData, scaleType);
                     generateCalendar();
-                    loadDayEvents(dateString);
+                    loadDayPlantoes(dateString);
                     
                     let scaleName = '';
                     switch(scaleType) {
@@ -3329,46 +3695,44 @@
                         case 'every4': scaleName = 'a cada 4 dias'; break;
                     }
                     
-                    showToast(`${createdCount} eventos criados no padrão ${scaleName}!`);
+                    showToast(`${createdCount} plantões criados no padrão ${scaleName}!`);
                 } else {
-                    // Salvar evento único
-                    saveEvent(dateString, eventData);
+                    savePlantao(dateString, plantaoData);
                     generateCalendar();
-                    loadDayEvents(dateString);
-                    if (eventId) {
+                    loadDayPlantoes(dateString);
+                    if (plantaoId) {
                         showToast('Plantão atualizado com sucesso!');
                     } else {
                         showToast('Plantão adicionado com sucesso!');
                     }
                 }
                 
-                closeEventModal();
+                closePlantaoModal();
             });
             
-            deleteEventBtn.addEventListener('click', function() {
+            deletePlantaoBtn.addEventListener('click', function() {
                 if (confirm('Tem certeza que deseja excluir este plantão?')) {
-                    const dateString = eventDatePickerInput.value;
-                    const eventId = eventIdInput.value;
+                    const dateString = plantaoDatePickerInput.value;
+                    const plantaoId = plantaoIdInput.value;
                     
-                    deleteEvent(dateString, eventId);
+                    deletePlantao(dateString, plantaoId);
                     generateCalendar();
-                    loadDayEvents(dateString);
+                    loadDayPlantoes(dateString);
                     showToast('Plantão excluído com sucesso!');
-                    closeEventModal();
+                    closePlantaoModal();
                 }
             });
             
             closeModalBtn.addEventListener('click', function() {
-                closeEventModal();
+                closePlantaoModal();
             });
             
-            eventModal.addEventListener('click', function(e) {
-                if (e.target === eventModal) {
-                    closeEventModal();
+            plantaoModal.addEventListener('click', function(e) {
+                if (e.target === plantaoModal) {
+                    closePlantaoModal();
                 }
             });
             
-            // Event listeners para o modal de notas
             noteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -3377,10 +3741,8 @@
                 const noteContent = noteContentInput.value;
                 
                 if (noteId) {
-                    // Atualizar nota existente
                     updateNote(noteId, noteTitle, noteContent, selectedNoteColor);
                 } else {
-                    // Adicionar nova nota
                     addNote(noteTitle, noteContent, selectedNoteColor);
                 }
                 
@@ -3397,7 +3759,6 @@
                 }
             });
             
-            // Event listeners para o modal de visualização de notas
             closeNoteViewModalBtn.addEventListener('click', function() {
                 closeNoteViewModal();
             });
@@ -3426,47 +3787,44 @@
                 }
             });
             
-            // Event listeners para o modal de visualização de eventos
-            closeEventViewModalBtn.addEventListener('click', function() {
-                closeEventViewModal();
+            closePlantaoViewModalBtn.addEventListener('click', function() {
+                closePlantaoViewModal();
             });
             
-            eventViewModal.addEventListener('click', function(e) {
-                if (e.target === eventViewModal) {
-                    closeEventViewModal();
+            plantaoViewModal.addEventListener('click', function(e) {
+                if (e.target === plantaoViewModal) {
+                    closePlantaoViewModal();
                 }
             });
             
-            newEventViewBtn.addEventListener('click', function() {
-                closeEventViewModal();
+            newPlantaoViewBtn.addEventListener('click', function() {
+                closePlantaoViewModal();
                 setTimeout(() => {
-                    // Abrir modal para adicionar novo evento na data atual
                     const today = formatDateToYYYYMMDD(new Date());
-                    openEventModal(today);
+                    openPlantaoModal(today);
                 }, 300);
             });
             
-            editEventViewBtn.addEventListener('click', function() {
-                if (currentViewingEvent && currentViewingEventDate) {
-                    closeEventViewModal();
+            editPlantaoViewBtn.addEventListener('click', function() {
+                if (currentViewingPlantao && currentViewingPlantaoDate) {
+                    closePlantaoViewModal();
                     setTimeout(() => {
-                        openEventModal(currentViewingEventDate, currentViewingEvent);
+                        openPlantaoModal(currentViewingPlantaoDate, currentViewingPlantao);
                     }, 300);
                 }
             });
             
-            deleteEventViewBtn.addEventListener('click', function() {
-                if (currentViewingEvent && currentViewingEventDate) {
+            deletePlantaoViewBtn.addEventListener('click', function() {
+                if (currentViewingPlantao && currentViewingPlantaoDate) {
                     if (confirm('Tem certeza que deseja excluir este plantão?')) {
-                        deleteEvent(currentViewingEventDate, currentViewingEvent.id);
+                        deletePlantao(currentViewingPlantaoDate, currentViewingPlantao.id);
                         generateCalendar();
-                        closeEventViewModal();
+                        closePlantaoViewModal();
                         showToast('Plantão excluído com sucesso!');
                     }
                 }
             });
             
-            // Event listeners para o modal de configurações
             closeSettingsModalBtn.addEventListener('click', function() {
                 closeSettingsModal();
             });
@@ -3493,7 +3851,6 @@
                 processImportedFile(e);
             });
             
-            // Event listeners para gerenciar plantões pré-definidos
             addNewShiftBtn.addEventListener('click', function() {
                 addShiftForm.style.display = 'block';
                 addNewShiftBtn.style.display = 'none';
@@ -3535,8 +3892,8 @@
                 addNewShiftBtn.style.display = 'block';
             });
             
-            // Event listeners para a seção de análise
             applyFiltersBtn.addEventListener('click', generateAnalytics);
+            recalculateBtn.addEventListener('click', generateAnalytics);
             
             // Inicializar
             generateCalendar();
@@ -3544,10 +3901,11 @@
             renderSettingsShiftsList();
             loadSectionPreferences();
             
-            // Inicializar a análise se a seção estiver visível
             if (!analyticsSection.classList.contains('section-hidden')) {
                 generateAnalytics();
             }
+            
+            updateSortButtons();
         });
     </script>
 </body>
