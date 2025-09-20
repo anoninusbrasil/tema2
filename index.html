@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
-        /* Seus estilos CSS permanecem iguais */
+        /* Estilos anteriores mantidos */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -680,6 +680,16 @@
             font-size: 0.95rem;
             margin-bottom: 8px;
             color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .day-plantoes-title .total-value {
+            font-size: 0.8rem;
+            background-color: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
         }
         .plantao-list {
             max-height: 200px;
@@ -694,9 +704,11 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
+            background-color: #f9f9f9;
         }
         .plantao-item:hover {
             transform: translateX(5px);
+            background-color: #f0f0f0;
         }
         .plantao-info {
             flex: 1;
@@ -709,6 +721,12 @@
         .plantao-time {
             font-size: 0.75rem;
             opacity: 0.8;
+        }
+        .plantao-value {
+            font-size: 0.75rem;
+            color: #27ae60;
+            font-weight: 600;
+            margin-top: 2px;
         }
         .plantao-actions {
             display: flex;
@@ -1198,6 +1216,48 @@
             font-size: 0.9rem;
             color: #7f8c8d;
         }
+        
+        /* Estilos para o contador de horas */
+        .hours-summary {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .hours-summary h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .hours-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid #3498db;
+        }
+        
+        .hours-type {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .hours-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
 
         @media (min-width: 992px) {
             .charts-container {
@@ -1293,6 +1353,9 @@
                 width: 100%;
                 justify-content: space-between;
             }
+            .hours-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
         }
         
         @media (max-width: 480px) {
@@ -1361,6 +1424,9 @@
             .sort-btn {
                 flex: 1;
                 min-width: 60px;
+            }
+            .hours-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1479,6 +1545,13 @@
                 </div>
 
                 <div class="analytics-summary" id="analytics-summary">
+                </div>
+
+                <!-- Seção de contador de horas -->
+                <div class="hours-summary" id="hours-counter-section">
+                    <h3>Total de Horas por Tipo de Plantão</h3>
+                    <div class="hours-grid" id="hours-grid">
+                    </div>
                 </div>
 
                 <div class="charts-container">
@@ -1935,6 +2008,9 @@
             const groupByFilter = document.getElementById('group-by-filter');
             const analyticsSummary = document.getElementById('analytics-summary');
             
+            // Elementos do contador de horas
+            const hoursGrid = document.getElementById('hours-grid');
+            
             // Referências para os gráficos
             let shiftsByTypeChart = null;
             let valuesByMonthChart = null;
@@ -2049,13 +2125,14 @@
                 if (savedShifts) {
                     return JSON.parse(savedShifts);
                 } else {
+                    // Valores padrão para plantões pré-definidos - AJUSTADOS
                     return [
-                        { id: '1', name: 'HRL DN', startTime: '07:00', endTime: '07:00', value: '200,00' },
+                        { id: '1', name: 'HRL DN', startTime: '07:00', endTime: '06:59', value: '200,00' },
                         { id: '2', name: 'HTO SD', startTime: '07:00', endTime: '19:00', value: '100,00' },
-                        { id: '3', name: 'HCM SN', startTime: '19:00', endTime: '07:00', value: '100,00' },
-                        { id: '4', name: 'EXT DN', startTime: '07:00', endTime: '07:00', value: '200,00' },
+                        { id: '3', name: 'HCM SN', startTime: '19:00', endTime: '06:59', value: '100,00' },
+                        { id: '4', name: 'EXT DN', startTime: '07:00', endTime: '06:59', value: '200,00' },
                         { id: '5', name: 'EXT SD', startTime: '07:00', endTime: '19:00', value: '100,00' },
-                        { id: '6', name: 'EXT SN', startTime: '19:00', endTime: '07:00', value: '100,00' }
+                        { id: '6', name: 'EXT SN', startTime: '19:00', endTime: '06:59', value: '100,00' }
                     ];
                 }
             }
@@ -2890,12 +2967,17 @@
             // Carregar plantões do dia no modal
             function loadDayPlantoes(dateString) {
                 const plantoes = getPlantoesForDate(dateString);
+                const shifts = loadShifts();
+                
                 plantaoList.innerHTML = '';
                 
                 if (plantoes.length === 0) {
                     plantaoList.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 10px;">Nenhum plantão para este dia</p>';
                     return;
                 }
+                
+                // Calcular o valor total do dia
+                let totalDayValue = 0;
                 
                 plantoes.forEach(plantao => {
                     const plantaoItem = document.createElement('div');
@@ -2912,8 +2994,21 @@
                     plantaoTime.className = 'plantao-time';
                     plantaoTime.textContent = plantao.time || 'Todo o dia';
                     
+                    // Calcular valor do plantão
+                    let plantaoValue = 0;
+                    const predefinedShift = shifts.find(s => s.name === plantao.title);
+                    if (predefinedShift && predefinedShift.value) {
+                        plantaoValue = parseCurrency(predefinedShift.value);
+                        totalDayValue += plantaoValue;
+                    }
+                    
+                    const plantaoValueEl = document.createElement('div');
+                    plantaoValueEl.className = 'plantao-value';
+                    plantaoValueEl.textContent = formatCurrency(plantaoValue);
+                    
                     plantaoInfo.appendChild(plantaoTitle);
                     plantaoInfo.appendChild(plantaoTime);
+                    plantaoInfo.appendChild(plantaoValueEl);
                     
                     const plantaoActions = document.createElement('div');
                     plantaoActions.className = 'plantao-actions';
@@ -2945,6 +3040,12 @@
                     
                     plantaoList.appendChild(plantaoItem);
                 });
+                
+                // Atualizar o título com o valor total
+                const dayPlantoesTitle = document.querySelector('.day-plantoes-title');
+                if (dayPlantoesTitle) {
+                    dayPlantoesTitle.innerHTML = `🗒️ Plantões deste dia <span class="total-value">${formatCurrency(totalDayValue)}</span>`;
+                }
             }
             
             // Fechar modal
@@ -3100,6 +3201,53 @@
                 });
             }
             
+            // Função para calcular horas por tipo de plantão - MELHORADA
+            function calculateHoursByType(plantoes) {
+                const shifts = loadShifts();
+                const hoursByType = {};
+                
+                for (const dateStr in plantoes) {
+                    if (plantoes.hasOwnProperty(dateStr)) {
+                        plantoes[dateStr].forEach(plantao => {
+                            let duration = 0;
+                            
+                            // Verificar se é um plantão pré-definido
+                            const predefinedShift = shifts.find(s => s.name === plantao.title);
+                            if (predefinedShift) {
+                                // Calcular duração baseado nos horários
+                                const start = new Date(`2000-01-01T${predefinedShift.startTime}:00`);
+                                let end = new Date(`2000-01-01T${predefinedShift.endTime}:00`);
+                                
+                                // Se o fim for menor que o início, significa que é no dia seguinte
+                                if (end < start) {
+                                    end.setDate(end.getDate() + 1);
+                                }
+                                
+                                const diffMs = end - start;
+                                duration = diffMs / (1000 * 60 * 60); // converter para horas
+                            } else {
+                                // Para plantões não pré-definidos, usar padrões baseados no título
+                                const titleUpper = plantao.title.toUpperCase();
+                                if (titleUpper.includes('DN')) {
+                                    duration = 24; // Plantão diurno/noturno
+                                } else if (titleUpper.includes('SD') || titleUpper.includes('SN')) {
+                                    duration = 12; // Plantão só diurno ou só noturno
+                                } else {
+                                    duration = 12; // Padrão para outros tipos
+                                }
+                            }
+                            
+                            if (!hoursByType[plantao.title]) {
+                                hoursByType[plantao.title] = 0;
+                            }
+                            hoursByType[plantao.title] += duration;
+                        });
+                    }
+                }
+                
+                return hoursByType;
+            }
+            
             // Função para filtrar plantões por período - CORRIGIDA
             function filterPlantoesByPeriod(plantoes, period, month = null, year = null) {
                 const now = new Date();
@@ -3143,8 +3291,6 @@
                         endDate = new Date(useYear, useMonth + 1, 0);
                         endDate.setHours(23, 59, 59, 999);
                 }
-                
-                console.log(`Filtrando plantões de ${startDate.toISOString()} até ${endDate.toISOString()}`);
                 
                 const filteredPlantoes = {};
                 for (const dateStr in plantoes) {
@@ -3212,9 +3358,6 @@
                     averageValue: 0
                 };
                 
-                console.log('Analisando plantões:', plantoes);
-                console.log('Mês/Ano do calendário:', currentMonth, currentYear);
-
                 for (const dateStr in plantoes) {
                     if (plantoes.hasOwnProperty(dateStr)) {
                         const date = new Date(dateStr);
@@ -3241,7 +3384,6 @@
                             const predefinedShift = shifts.find(s => s.name === plantao.title);
                             if (predefinedShift && predefinedShift.value) {
                                 shiftValue = parseCurrency(predefinedShift.value);
-                                console.log(`Plantão: ${plantao.title}, Valor: ${shiftValue}`);
                             }
                             
                             analysisData.totalValue += shiftValue;
@@ -3257,8 +3399,6 @@
                 analysisData.averageValue = analysisData.totalShifts > 0 
                     ? analysisData.totalValue / analysisData.totalShifts 
                     : 0;
-                
-                console.log('Dados de análise:', analysisData);
                 
                 return analysisData;
             }
@@ -3288,6 +3428,37 @@
                         <div class="summary-value">${periodFilter.options[periodFilter.selectedIndex].text}</div>
                     </div>
                 `;
+            }
+
+            // Função para atualizar o contador de horas
+            function updateHoursCounter(plantoes) {
+                const hoursByType = calculateHoursByType(plantoes);
+                
+                hoursGrid.innerHTML = '';
+                
+                // Adicionar cards para cada tipo de plantão
+                for (const [type, hours] of Object.entries(hoursByType)) {
+                    const hoursCard = document.createElement('div');
+                    hoursCard.className = 'hours-card';
+                    
+                    const hoursType = document.createElement('div');
+                    hoursType.className = 'hours-type';
+                    hoursType.textContent = type;
+                    
+                    const hoursValue = document.createElement('div');
+                    hoursValue.className = 'hours-value';
+                    hoursValue.textContent = `${hours.toFixed(1)} horas`;
+                    
+                    hoursCard.appendChild(hoursType);
+                    hoursCard.appendChild(hoursValue);
+                    
+                    hoursGrid.appendChild(hoursCard);
+                }
+                
+                // Se não houver plantões, exibir mensagem
+                if (Object.keys(hoursByType).length === 0) {
+                    hoursGrid.innerHTML = '<p style="text-align: center; color: #7f8c8d; grid-column: 1/-1;">Nenhum plantão encontrado para o período selecionado.</p>';
+                }
             }
 
             // Função para gerar os gráficos
@@ -3445,6 +3616,24 @@
             function generateAnalytics() {
                 const analysisData = analyzePlantoes();
                 updateSummary(analysisData);
+                
+                // Adicionar contador de horas por tipo de plantão
+                const allPlantoes = loadPlantoes();
+                const now = new Date();
+                let month = now.getMonth();
+                let year = now.getFullYear();
+                
+                if (periodFilter.value === 'last-month') {
+                    month--;
+                    if (month < 0) {
+                        month = 11;
+                        year--;
+                    }
+                }
+                
+                const plantoes = filterPlantoesByPeriod(allPlantoes, periodFilter.value, month, year);
+                updateHoursCounter(plantoes);
+                
                 generateCharts(analysisData);
             }
             
