@@ -71,69 +71,6 @@
             margin-bottom: 20px;
         }
         
-        /* --- Controles --- */
-        .controles {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .controles select, .controles button {
-            padding: 12px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--card-color);
-            font-size: 1rem;
-            color: var(--text-color);
-            transition: all 0.3s ease;
-            min-height: 44px;
-        }
-        
-        .controles select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236a40bf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 14px;
-            padding-right: 35px;
-            appearance: none;
-        }
-        
-        .controles button {
-            background-color: var(--primary-color);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-weight: 500;
-            min-width: 120px;
-        }
-        
-        .controles button:active {
-            background-color: #5835a0;
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(106, 64, 191, 0.2);
-        }
-        
-        .selectors-container {
-            display: flex;
-            width: 100%;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .mes-selector {
-            flex: 70%;
-        }
-        
-        .ano-selector {
-            flex: 30%;
-        }
-        
         /* --- Sistema de Abas --- */
         .tabs {
             display: flex;
@@ -212,7 +149,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            min-width: 800px; /* Aumentado de 600px para 800px */
+            min-width: 800px;
         }
         .calendario caption {
             font-size: 1.3rem;
@@ -223,7 +160,7 @@
         }
         .calendario th, .calendario td {
             border: 1px solid var(--border-color);
-            padding: 10px 6px; /* Aumentado o padding */
+            padding: 10px 6px;
             text-align: center;
             vertical-align: top;
         }
@@ -234,7 +171,7 @@
             color: var(--primary-color);
         }
         .calendario td {
-            height: 80px; /* Aumentado de 70px para 80px */
+            height: 80px;
             position: relative;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -275,7 +212,7 @@
             padding: 16px;
             border-radius: 8px;
             margin-bottom: 20px;
-            min-width: 700px; /* Adicionado largura mínima */
+            min-width: 700px;
         }
         #resumo h2 {
             color: var(--primary-color);
@@ -327,7 +264,7 @@
             background-color: var(--card-color);
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            min-width: 700px; /* Adicionado largura mínima */
+            min-width: 700px;
         }
         .legenda h2 {
             color: var(--primary-color);
@@ -368,6 +305,40 @@
             text-align: center;
             font-style: italic;
             color: var(--light-text);
+        }
+        
+        /* --- Controles --- */
+        .calendario-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(106, 64, 191, 0.05);
+            border-radius: 8px;
+        }
+        
+        .calendario-controls label {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .calendario-controls select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--card-color);
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            min-height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236a40bf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+            padding-right: 35px;
+            appearance: none;
         }
         
         /* Botão Flutuante */
@@ -449,7 +420,7 @@
             padding: 20px;
             border-radius: 12px;
             width: 100%;
-            max-width: 600px; /* Aumentado de 500px para 600px */
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -464,7 +435,7 @@
         
         .modal textarea {
             width: 100%;
-            height: 200px; /* Aumentado de 140px para 200px */
+            height: 200px;
             margin: 8px 0;
             padding: 12px;
             border: 1px solid var(--border-color);
@@ -540,15 +511,20 @@
         }
         
         /* Modal de valores dos plantões */
+        .valores-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
         .valor-input {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             margin-bottom: 12px;
-            flex-wrap: wrap;
         }
         
         .valor-input label {
-            width: 150px;
             font-weight: bold;
             color: var(--text-color);
             font-size: 0.9rem;
@@ -556,7 +532,6 @@
         }
         
         .valor-input input {
-            width: 100px;
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -565,15 +540,20 @@
         }
         
         /* Modal de nomes dos plantões */
+        .nomes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
         .nome-input {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             margin-bottom: 12px;
-            flex-wrap: wrap;
         }
         
         .nome-input label {
-            width: 150px;
             font-weight: bold;
             color: var(--text-color);
             font-size: 0.9rem;
@@ -581,7 +561,6 @@
         }
         
         .nome-input input {
-            width: 180px;
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -649,11 +628,11 @@
             }
             
             .calendario {
-                min-width: 600px; /* Reduzido para telas menores */
+                min-width: 600px;
             }
             
             #resumo {
-                min-width: auto; /* Removido largura mínima para telas menores */
+                min-width: auto;
             }
             
             .resumo-grid {
@@ -690,17 +669,9 @@
                 font-size: 1.1rem;
             }
             
-            .controles {
+            .calendario-controls {
                 flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .selectors-container {
-                flex-direction: column;
-            }
-            
-            .mes-selector, .ano-selector {
-                flex: 100%;
+                gap: 10px;
             }
             
             .floating-menu {
@@ -729,15 +700,8 @@
                 font-size: 1.3rem;
             }
             
-            .color-picker label,
-            .valor-input label,
-            .nome-input label {
-                width: 100%;
-                margin-bottom: 5px;
-            }
-            
-            .color-picker input[type="color"] {
-                margin-right: 8px;
+            .valores-grid, .nomes-grid {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -810,18 +774,6 @@
             .nome-input input {
                 width: 100%;
             }
-            
-            .controles select, .controles button {
-                font-size: 0.95rem;
-            }
-            
-            .legenda {
-                min-width: auto; /* Removido largura mínima para telas menores */
-            }
-            
-            .legenda-grid {
-                grid-template-columns: 1fr;
-            }
         }
         
         /* Notificação */
@@ -863,40 +815,38 @@
         </div>
         
         <div class="tab-content active" id="calendario-tab">
-            <div class="controles">
-                <div class="selectors-container">
-                    <select id="mes-selecionado" class="mes-selector">
-                        <option value="0">Janeiro</option>
-                        <option value="1">Fevereiro</option>
-                        <option value="2">Março</option>
-                        <option value="3">Abril</option>
-                        <option value="4">Maio</option>
-                        <option value="5" selected>Junho</option>
-                        <option value="6">Julho</option>
-                        <option value="7">Agosto</option>
-                        <option value="8">Setembro</option>
-                        <option value="9">Outubro</option>
-                        <option value="10">Novembro</option>
-                        <option value="11">Dezembro</option>
-                    </select>
-                    
-                    <select id="ano-selecionado" class="ano-selector">
-                        <option value="2024" selected>2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                        <option value="2029">2029</option>
-                        <option value="2030">2030</option>
-                    </select>
-                </div>
-                
-                <button id="btn-gerar">Gerar Calendário <i class="fas fa-sync-alt"></i></button>
-            </div>
-
             <section id="calendario-mes">
                 <!-- O calendário será gerado aqui pelo JavaScript -->
             </section>
+            
+            <div class="calendario-controls">
+                <label for="mes-selecionado">Mês:</label>
+                <select id="mes-selecionado">
+                    <option value="0">Janeiro</option>
+                    <option value="1">Fevereiro</option>
+                    <option value="2">Março</option>
+                    <option value="3">Abril</option>
+                    <option value="4">Maio</option>
+                    <option value="5" selected>Junho</option>
+                    <option value="6">Julho</option>
+                    <option value="7">Agosto</option>
+                    <option value="8">Setembro</option>
+                    <option value="9">Outubro</option>
+                    <option value="10">Novembro</option>
+                    <option value="11">Dezembro</option>
+                </select>
+                
+                <label for="ano-selecionado">Ano:</label>
+                <select id="ano-selecionado">
+                    <option value="2024" selected>2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>
+            </div>
         </div>
         
         <div class="tab-content" id="legenda-tab">
@@ -1126,49 +1076,51 @@
         <div class="modal-content">
             <h2><i class="fas fa-money-bill"></i> Alterar Valores dos Plantões</h2>
             
-            <div class="valor-input">
-                <label for="valor-sd">Plantão SD:</label>
-                <input type="number" id="valor-sd" value="100" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-sn">Plantão SN:</label>
-                <input type="number" id="valor-sn" value="100" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-dn">Plantão DN:</label>
-                <input type="number" id="valor-dn" value="200" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-extra-sd">Extra SD:</label>
-                <input type="number" id="valor-extra-sd" value="100" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-extra-sn">Extra SN:</label>
-                <input type="number" id="valor-extra-sn" value="100" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-extra-dn">Extra DN:</label>
-                <input type="number" id="valor-extra-dn" value="200" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-lefe-sd">Lefe Dia:</label>
-                <input type="number" id="valor-lefe-sd" value="100" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-lefe-sn">Lefe Noite:</label>
-                <input type="number" id="valor-lefe-sn" value="100" min="0" step="10">
-            </div>
-            
-            <div class="valor-input">
-                <label for="valor-lefe-dn">Lefe DN:</label>
-                <input type="number" id="valor-lefe-dn" value="250" min="0" step="10">
+            <div class="valores-grid">
+                <div class="valor-input">
+                    <label for="valor-sd">Plantão SD</label>
+                    <input type="number" id="valor-sd" value="100" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-sn">Plantão SN</label>
+                    <input type="number" id="valor-sn" value="100" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-dn">Plantão DN</label>
+                    <input type="number" id="valor-dn" value="200" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-extra-sd">Extra SD</label>
+                    <input type="number" id="valor-extra-sd" value="100" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-extra-sn">Extra SN</label>
+                    <input type="number" id="valor-extra-sn" value="100" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-extra-dn">Extra DN</label>
+                    <input type="number" id="valor-extra-dn" value="200" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-lefe-sd">Lefe Dia</label>
+                    <input type="number" id="valor-lefe-sd" value="100" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-lefe-sn">Lefe Noite</label>
+                    <input type="number" id="valor-lefe-sn" value="100" min="0" step="10">
+                </div>
+                
+                <div class="valor-input">
+                    <label for="valor-lefe-dn">Lefe DN</label>
+                    <input type="number" id="valor-lefe-dn" value="250" min="0" step="10">
+                </div>
             </div>
             
             <div class="modal-buttons">
@@ -1183,54 +1135,56 @@
         <div class="modal-content">
             <h2><i class="fas fa-font"></i> Alterar Nomes dos Plantões</h2>
             
-            <div class="nome-input">
-                <label for="nome-sd">Plantão SD:</label>
-                <input type="text" id="nome-sd" value="SD" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-sn">Plantão SN:</label>
-                <input type="text" id="nome-sn" value="SN" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-dn">Plantão DN:</label>
-                <input type="text" id="nome-dn" value="DN" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-extra-sd">Extra SD:</label>
-                <input type="text" id="nome-extra-sd" value="Extra SD" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-extra-sn">Extra SN:</label>
-                <input type="text" id="nome-extra-sn" value="Extra SN" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-extra-dn">Extra DN:</label>
-                <input type="text" id="nome-extra-dn" value="Extra DN" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-lefe-sd">Lefe Dia:</label>
-                <input type="text" id="nome-lefe-sd" value="Lefe Dia" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-lefe-sn">Lefe Noite:</label>
-                <input type="text" id="nome-lefe-sn" value="Lefe Noite" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-lefe-dn">Lefe DN:</label>
-                <input type="text" id="nome-lefe-dn" value="Lefe DN" maxlength="20">
-            </div>
-            
-            <div class="nome-input">
-                <label for="nome-folga">Folga:</label>
-                <input type="text" id="nome-folga" value="Folga" maxlength="20">
+            <div class="nomes-grid">
+                <div class="nome-input">
+                    <label for="nome-sd">Plantão SD</label>
+                    <input type="text" id="nome-sd" value="SD" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-sn">Plantão SN</label>
+                    <input type="text" id="nome-sn" value="SN" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-dn">Plantão DN</label>
+                    <input type="text" id="nome-dn" value="DN" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-extra-sd">Extra SD</label>
+                    <input type="text" id="nome-extra-sd" value="Extra SD" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-extra-sn">Extra SN</label>
+                    <input type="text" id="nome-extra-sn" value="Extra SN" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-extra-dn">Extra DN</label>
+                    <input type="text" id="nome-extra-dn" value="Extra DN" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-lefe-sd">Lefe Dia</label>
+                    <input type="text" id="nome-lefe-sd" value="Lefe Dia" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-lefe-sn">Lefe Noite</label>
+                    <input type="text" id="nome-lefe-sn" value="Lefe Noite" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-lefe-dn">Lefe DN</label>
+                    <input type="text" id="nome-lefe-dn" value="Lefe DN" maxlength="20">
+                </div>
+                
+                <div class="nome-input">
+                    <label for="nome-folga">Folga</label>
+                    <input type="text" id="nome-folga" value="Folga" maxlength="20">
+                </div>
             </div>
             
             <div class="modal-buttons">
@@ -1408,13 +1362,22 @@
     
     // Função para configurar todos os event listeners
     function configurarEventListeners() {
-        // Botão Gerar Calendário
-        const btnGerar = document.getElementById('btn-gerar');
-        if (btnGerar) {
-            btnGerar.addEventListener('click', function(e) {
-                e.preventDefault();
-                const mes = parseInt(document.getElementById('mes-selecionado').value);
+        // Seletores de mês e ano
+        const mesSelecionado = document.getElementById('mes-selecionado');
+        const anoSelecionado = document.getElementById('ano-selecionado');
+        
+        if (mesSelecionado) {
+            mesSelecionado.addEventListener('change', function() {
+                const mes = parseInt(this.value);
                 const ano = parseInt(document.getElementById('ano-selecionado').value);
+                gerarCalendario(mes, ano);
+            });
+        }
+        
+        if (anoSelecionado) {
+            anoSelecionado.addEventListener('change', function() {
+                const mes = parseInt(document.getElementById('mes-selecionado').value);
+                const ano = parseInt(this.value);
                 gerarCalendario(mes, ano);
             });
         }
