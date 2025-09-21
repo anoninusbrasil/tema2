@@ -629,13 +629,19 @@
         /* Lista de plantões no modal */
         .plantao-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
             padding: 10px;
             border-bottom: 1px solid var(--border-color);
             border-radius: 6px;
             margin-bottom: 6px;
             background-color: rgba(106, 64, 191, 0.05);
+        }
+        
+        .plantao-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
         
         .plantao-item button {
@@ -647,6 +653,14 @@
             cursor: pointer;
             font-size: 0.85rem;
             min-height: 36px;
+        }
+        
+        .plantao-legenda {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
         }
         
         /* Botões para adicionar plantão */
@@ -1375,6 +1389,11 @@
         console.log(`[DEBUG] ${message}`);
     }
 
+    // Função para formatar valores monetários
+    function formatarMoeda(valor) {
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
     // Função para mostrar notificação
     function showNotification(message, duration = 3000) {
         const notification = document.getElementById('notification');
@@ -1689,6 +1708,22 @@
                 removerPlantao(index);
             }
         });
+        
+        // Event listener para campos de legenda
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('plantao-legenda')) {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                const chave = `${mesSelecionado}-${anoSelecionado}`;
+                
+                if (!calendarioData[chave][diaSelecionado].legendas) {
+                    calendarioData[chave][diaSelecionado].legendas = [];
+                }
+                
+                calendarioData[chave][diaSelecionado].legendas[index] = e.target.value;
+                salvarDados();
+                gerarCalendario(mesSelecionado, anoSelecionado);
+            }
+        });
     }
     
     // Função para gerar o calendário
@@ -1751,6 +1786,7 @@
                 } else {
                     const diaInfo = calendarioData[chaveMes][dia] || { tipo: [] };
                     const tipos = diaInfo.tipo || [];
+                    const legendas = diaInfo.legendas || [];
                     
                     const isToday = (dia === diaAtual && mes === mesAtual && ano === anoAtual);
                     const todayClass = isToday ? ' today' : '';
@@ -1760,11 +1796,12 @@
                             <div class="day-number">${dia}</div>`;
                     
                     // Adicionar os plantões do dia
-                    tipos.forEach(tipo => {
+                    tipos.forEach((tipo, index) => {
                         if (tipo >= 0 && tipo < tiposPlantao.length) {
                             const classe = tiposPlantao[tipo];
                             const label = labelsPlantao[tiposPlantao[tipo]];
-                            tabelaHTML += `<span class="plantao-info ${classe}">${label}</span>`;
+                            const legenda = (legendas && legendas[index]) ? ` - ${legendas[index]}` : '';
+                            tabelaHTML += `<span class="plantao-info ${classe}">${label}${legenda}</span>`;
                         }
                     });
                     
@@ -1805,6 +1842,7 @@
                 const chave = `${mes}-${ano}`;
                 if (calendarioData[chave] && calendarioData[chave][dia]) {
                     calendarioData[chave][dia].tipo = [];
+                    calendarioData[chave][dia].legendas = [];
                     salvarDados();
                     gerarCalendario(mes, ano);
                     calcularTotais(mes, ano);
@@ -1848,18 +1886,23 @@
         const chave = `${mes}-${ano}`;
         const diaInfo = calendarioData[chave] && calendarioData[chave][dia];
         const tipos = diaInfo ? diaInfo.tipo : [];
+        const legendas = diaInfo && diaInfo.legendas ? diaInfo.legendas : [];
         
         if (tipos.length > 0) {
             tipos.forEach((tipoIndex, index) => {
                 if (tipoIndex >= 0 && tipoIndex < tiposPlantao.length) {
                     const tipo = tiposPlantao[tipoIndex];
                     const label = labelsPlantao[tipo];
+                    const legenda = legendas[index] || '';
                     
                     const plantaoItem = document.createElement('div');
                     plantaoItem.className = 'plantao-item';
                     plantaoItem.innerHTML = `
-                        <span>${label}</span>
-                        <button class="btn-remover-plantao" data-index="${index}"><i class="fas fa-trash"></i> Remover</button>
+                        <div class="plantao-item-header">
+                            <span>${label}</span>
+                            <button class="btn-remover-plantao" data-index="${index}"><i class="fas fa-trash"></i> Remover</button>
+                        </div>
+                        <input type="text" class="plantao-legenda" data-index="${index}" value="${legenda}" placeholder="Adicionar legenda personalizada...">
                     `;
                     listaPlantoes.appendChild(plantaoItem);
                 }
@@ -1895,12 +1938,13 @@
         }
         
         if (!calendarioData[chave][diaSelecionado]) {
-            calendarioData[chave][diaSelecionado] = { tipo: [] };
+            calendarioData[chave][diaSelecionado] = { tipo: [], legendas: [] };
         }
         
         // Adicionar o tipo se não existir
         if (!calendarioData[chave][diaSelecionado].tipo.includes(tipoIndex)) {
             calendarioData[chave][diaSelecionado].tipo.push(tipoIndex);
+            calendarioData[chave][diaSelecionado].legendas.push(''); // Legenda vazia inicialmente
             salvarDados();
             gerarCalendario(mesSelecionado, anoSelecionado);
             calcularTotais(mesSelecionado, anoSelecionado);
@@ -1925,6 +1969,12 @@
         if (calendarioData[chave] && calendarioData[chave][diaSelecionado]) {
             const tipoRemovido = calendarioData[chave][diaSelecionado].tipo[index];
             calendarioData[chave][diaSelecionado].tipo.splice(index, 1);
+            
+            // Remover legenda correspondente se existir
+            if (calendarioData[chave][diaSelecionado].legendas) {
+                calendarioData[chave][diaSelecionado].legendas.splice(index, 1);
+            }
+            
             salvarDados();
             
             // Atualizar a lista de plantões no modal
@@ -1945,6 +1995,7 @@
         const chave = `${mesSelecionado}-${anoSelecionado}`;
         if (calendarioData[chave] && calendarioData[chave][diaSelecionado]) {
             calendarioData[chave][diaSelecionado].tipo = [];
+            calendarioData[chave][diaSelecionado].legendas = [];
             salvarDados();
             gerarCalendario(mesSelecionado, anoSelecionado);
             calcularTotais(mesSelecionado, anoSelecionado);
@@ -2065,55 +2116,55 @@
         const totalSdElement = document.getElementById('total-sd');
         if (totalSdElement) {
             totalSdElement.innerHTML = 
-                `<strong>Total:</strong> ${countSD} &nbsp; (${countSD} x R$ ${valoresPlantao.sd.toFixed(2).replace('.', ',')} = <strong>R$ ${valorSD.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countSD} &nbsp; (${countSD} x ${formatarMoeda(valoresPlantao.sd)} = <strong>${formatarMoeda(valorSD)}</strong>)`;
         }
         
         const totalSnElement = document.getElementById('total-sn');
         if (totalSnElement) {
             totalSnElement.innerHTML = 
-                `<strong>Total:</strong> ${countSN} &nbsp; (${countSN} x R$ ${valoresPlantao.sn.toFixed(2).replace('.', ',')} = <strong>R$ ${valorSN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countSN} &nbsp; (${countSN} x ${formatarMoeda(valoresPlantao.sn)} = <strong>${formatarMoeda(valorSN)}</strong>)`;
         }
         
         const totalDnElement = document.getElementById('total-dn');
         if (totalDnElement) {
             totalDnElement.innerHTML = 
-                `<strong>Total:</strong> ${countDN} &nbsp; (${countDN} x R$ ${valoresPlantao.dn.toFixed(2).replace('.', ',')} = <strong>R$ ${valorDN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countDN} &nbsp; (${countDN} x ${formatarMoeda(valoresPlantao.dn)} = <strong>${formatarMoeda(valorDN)}</strong>)`;
         }
         
         const totalExtraSdElement = document.getElementById('total-extra-sd');
         if (totalExtraSdElement) {
             totalExtraSdElement.innerHTML = 
-                `<strong>Total:</strong> ${countExtraSD} &nbsp; (${countExtraSD} x R$ ${valoresPlantao['extra-sd'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraSD.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countExtraSD} &nbsp; (${countExtraSD} x ${formatarMoeda(valoresPlantao['extra-sd'])} = <strong>${formatarMoeda(valorExtraSD)}</strong>)`;
         }
         
         const totalExtraSnElement = document.getElementById('total-extra-sn');
         if (totalExtraSnElement) {
             totalExtraSnElement.innerHTML = 
-                `<strong>Total:</strong> ${countExtraSN} &nbsp; (${countExtraSN} x R$ ${valoresPlantao['extra-sn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraSN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countExtraSN} &nbsp; (${countExtraSN} x ${formatarMoeda(valoresPlantao['extra-sn'])} = <strong>${formatarMoeda(valorExtraSN)}</strong>)`;
         }
         
         const totalExtraDnElement = document.getElementById('total-extra-dn');
         if (totalExtraDnElement) {
             totalExtraDnElement.innerHTML = 
-                `<strong>Total:</strong> ${countExtraDN} &nbsp; (${countExtraDN} x R$ ${valoresPlantao['extra-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraDN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countExtraDN} &nbsp; (${countExtraDN} x ${formatarMoeda(valoresPlantao['extra-dn'])} = <strong>${formatarMoeda(valorExtraDN)}</strong>)`;
         }
         
         const totalLefeSdElement = document.getElementById('total-lefe-sd');
         if (totalLefeSdElement) {
             totalLefeSdElement.innerHTML = 
-                `<strong>Total:</strong> ${countLefeSD} &nbsp; (${countLefeSD} x R$ ${valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeSD.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countLefeSD} &nbsp; (${countLefeSD} x ${formatarMoeda(valoresPlantao['lefe-sd'])} = <strong>${formatarMoeda(valorLefeSD)}</strong>)`;
         }
         
         const totalLefeSnElement = document.getElementById('total-lefe-sn');
         if (totalLefeSnElement) {
             totalLefeSnElement.innerHTML = 
-                `<strong>Total:</strong> ${countLefeSN} &nbsp; (${countLefeSN} x R$ ${valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeSN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countLefeSN} &nbsp; (${countLefeSN} x ${formatarMoeda(valoresPlantao['lefe-sn'])} = <strong>${formatarMoeda(valorLefeSN)}</strong>)`;
         }
         
         const totalLefeDnElement = document.getElementById('total-lefe-dn');
         if (totalLefeDnElement) {
             totalLefeDnElement.innerHTML = 
-                `<strong>Total:</strong> ${countLefeDN} &nbsp; (${countLefeDN} x R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeDN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countLefeDN} &nbsp; (${countLefeDN} x ${formatarMoeda(valoresPlantao['lefe-dn'])} = <strong>${formatarMoeda(valorLefeDN)}</strong>)`;
         }
         
         // Atualizar o elemento HTML com o total do mês
@@ -2124,7 +2175,7 @@
                 "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
             ];
             totalGeralElement.innerHTML = 
-                `<i class="fas fa-money-bill-wave"></i> Valor Total a Receber (${nomesMeses[mes]} ${ano}): R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+                `<i class="fas fa-money-bill-wave"></i> Valor Total a Receber (${nomesMeses[mes]} ${ano}): ${formatarMoeda(totalGeral)}`;
         }
         
         // Calcular e atualizar o total acumulado
@@ -2139,7 +2190,7 @@
             const anoAnterior = mesAtual > 0 ? anoAtual : anoAtual - 1;
             
             totalAcumuladoElement.innerHTML = 
-                `<i class="fas fa-chart-line"></i> Valor Total Acumulado (até ${nomesMeses[mesAnterior]} ${anoAnterior}): R$ ${totalAcumulado.toFixed(2).replace('.', ',')}`;
+                `<i class="fas fa-chart-line"></i> Valor Total Acumulado (até ${nomesMeses[mesAnterior]} ${anoAnterior}): ${formatarMoeda(totalAcumulado)}`;
         }
         
         debugLog("Totais calculados com sucesso");
@@ -2494,45 +2545,45 @@
     function atualizarValoresExibidos() {
         // Atualizar os valores exibidos nos botões do modal de plantão
         document.querySelectorAll('.valor-sd').forEach(el => {
-            el.textContent = valoresPlantao.sd.toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao.sd);
         });
         document.querySelectorAll('.valor-sn').forEach(el => {
-            el.textContent = valoresPlantao.sn.toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao.sn);
         });
         document.querySelectorAll('.valor-dn').forEach(el => {
-            el.textContent = valoresPlantao.dn.toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao.dn);
         });
         document.querySelectorAll('.valor-extra-sd').forEach(el => {
-            el.textContent = valoresPlantao['extra-sd'].toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao['extra-sd']);
         });
         document.querySelectorAll('.valor-extra-sn').forEach(el => {
-            el.textContent = valoresPlantao['extra-sn'].toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao['extra-sn']);
         });
         document.querySelectorAll('.valor-extra-dn').forEach(el => {
-            el.textContent = valoresPlantao['extra-dn'].toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao['extra-dn']);
         });
         document.querySelectorAll('.valor-lefe-sd').forEach(el => {
-            el.textContent = valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao['lefe-sd']);
         });
         document.querySelectorAll('.valor-lefe-sn').forEach(el => {
-            el.textContent = valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao['lefe-sn']);
         });
         document.querySelectorAll('.valor-lefe-dn').forEach(el => {
-            el.textContent = valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',');
+            el.textContent = formatarMoeda(valoresPlantao['lefe-dn']);
         });
         
         // Atualizar a legenda
         const legendaItems = document.querySelectorAll('.legenda-item span');
         if (legendaItems.length >= 10) {
-            legendaItems[0].textContent = `Plantão Diurno (12h) - R$ ${valoresPlantao.sd.toFixed(2).replace('.', ',')}`;
-            legendaItems[1].textContent = `Plantão Noturno (12h) - R$ ${valoresPlantao.sn.toFixed(2).replace('.', ',')}`;
-            legendaItems[2].textContent = `Plantão Dia/Noite (24h) - R$ ${valoresPlantao.dn.toFixed(2).replace('.', ',')}`;
-            legendaItems[3].textContent = `Plantão Extra Diurno - R$ ${valoresPlantao['extra-sd'].toFixed(2).replace('.', ',')}`;
-            legendaItems[4].textContent = `Plantão Extra Noturno - R$ ${valoresPlantao['extra-sn'].toFixed(2).replace('.', ',')}`;
-            legendaItems[5].textContent = `Plantão Extra Dia/Noite - R$ ${valoresPlantao['extra-dn'].toFixed(2).replace('.', ',')}`;
-            legendaItems[6].textContent = `Plantão Lefe Diurno - R$ ${valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',')}`;
-            legendaItems[7].textContent = `Plantão Lefe Noturno - R$ ${valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',')}`;
-            legendaItems[8].textContent = `Plantão Lefe Dia/Noite - R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')}`;
+            legendaItems[0].textContent = `Plantão Diurno (12h) - ${formatarMoeda(valoresPlantao.sd)}`;
+            legendaItems[1].textContent = `Plantão Noturno (12h) - ${formatarMoeda(valoresPlantao.sn)}`;
+            legendaItems[2].textContent = `Plantão Dia/Noite (24h) - ${formatarMoeda(valoresPlantao.dn)}`;
+            legendaItems[3].textContent = `Plantão Extra Diurno - ${formatarMoeda(valoresPlantao['extra-sd'])}`;
+            legendaItems[4].textContent = `Plantão Extra Noturno - ${formatarMoeda(valoresPlantao['extra-sn'])}`;
+            legendaItems[5].textContent = `Plantão Extra Dia/Noite - ${formatarMoeda(valoresPlantao['extra-dn'])}`;
+            legendaItems[6].textContent = `Plantão Lefe Diurno - ${formatarMoeda(valoresPlantao['lefe-sd'])}`;
+            legendaItems[7].textContent = `Plantão Lefe Noturno - ${formatarMoeda(valoresPlantao['lefe-sn'])}`;
+            legendaItems[8].textContent = `Plantão Lefe Dia/Noite - ${formatarMoeda(valoresPlantao['lefe-dn'])}`;
         }
     }
     
@@ -2680,6 +2731,14 @@
             
             if (dados.calendario) {
                 calendarioData = dados.calendario;
+                // Garantir que cada entrada tenha o campo legendas
+                Object.keys(calendarioData).forEach(chave => {
+                    Object.keys(calendarioData[chave]).forEach(dia => {
+                        if (!calendarioData[chave][dia].legendas) {
+                            calendarioData[chave][dia].legendas = [];
+                        }
+                    });
+                });
             }
             
             if (dados.valores) {
