@@ -123,6 +123,7 @@
             display: flex;
             width: 100%;
             gap: 10px;
+            align-items: center;
         }
         
         .mes-selector {
@@ -211,7 +212,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            min-width: 600px;
+            min-width: 800px; /* Aumentado de 600px para 800px */
         }
         .calendario caption {
             font-size: 1.3rem;
@@ -222,7 +223,7 @@
         }
         .calendario th, .calendario td {
             border: 1px solid var(--border-color);
-            padding: 8px 4px;
+            padding: 10px 6px; /* Aumentado o padding */
             text-align: center;
             vertical-align: top;
         }
@@ -233,7 +234,7 @@
             color: var(--primary-color);
         }
         .calendario td {
-            height: 70px;
+            height: 80px; /* Aumentado de 70px para 80px */
             position: relative;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -274,18 +275,38 @@
             padding: 16px;
             border-radius: 8px;
             margin-bottom: 20px;
+            min-width: 700px; /* Adicionado largura mínima */
         }
         #resumo h2 {
             color: var(--primary-color);
             margin-bottom: 12px;
         }
-        #resumo p {
+        #resumo .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        #resumo .resumo-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        #resumo .resumo-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #resumo .resumo-item h3 {
+            color: var(--primary-color);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        #resumo .resumo-item p {
             font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 10px;
-            padding: 8px;
-            background-color: rgba(106, 64, 191, 0.05);
-            border-radius: 6px;
+            margin: 0;
         }
         #resumo .total-geral {
             font-size: 1.2rem;
@@ -293,9 +314,10 @@
             color: var(--accent-color);
             text-align: center;
             margin-top: 16px;
-            padding: 12px;
+            padding: 16px;
             background-color: rgba(71, 184, 129, 0.1);
             border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         
         /* --- Legenda --- */
@@ -305,35 +327,47 @@
             background-color: var(--card-color);
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            min-width: 700px; /* Adicionado largura mínima */
         }
         .legenda h2 {
             color: var(--primary-color);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            text-align: center;
         }
-        .legenda ul {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        .legenda-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 12px;
         }
-        .legenda li {
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            flex: 1 1 45%;
-            text-align: center;
-            padding: 8px;
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
             background-color: rgba(106, 64, 191, 0.05);
-            border-radius: 6px;
+            border-radius: 8px;
+            transition: transform 0.2s;
         }
-        .legenda li strong {
+        .legenda-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .legenda-item strong {
             display: inline-block;
-            padding: 5px 10px;
+            padding: 8px 12px;
             color: white;
-            border-radius: 5px;
-            margin-right: 6px;
-            min-width: 45px;
+            border-radius: 6px;
+            margin-right: 12px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .legenda-item span {
+            flex: 1;
+        }
+        .legenda-instrucoes {
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+            color: var(--light-text);
         }
         
         /* Botão Flutuante */
@@ -415,7 +449,7 @@
             padding: 20px;
             border-radius: 12px;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px; /* Aumentado de 500px para 600px */
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -430,13 +464,13 @@
         
         .modal textarea {
             width: 100%;
-            height: 140px;
+            height: 200px; /* Aumentado de 140px para 200px */
             margin: 8px 0;
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             resize: vertical;
-            font-family: inherit;
+            font-family: 'Courier New', monospace;
             font-size: 0.9rem;
         }
         
@@ -479,7 +513,7 @@
         }
         
         .color-picker label {
-            width: 100px;
+            width: 120px;
             font-weight: bold;
             color: var(--text-color);
             font-size: 0.9rem;
@@ -610,20 +644,20 @@
                 font-size: 1.6rem;
             }
             
-            .legenda ul {
-                flex-direction: column;
-                gap: 8px;
+            .legenda-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
             
-            .legenda li {
-                flex: 1 1 100%;
-                margin-bottom: 6px;
-                font-size: 0.85rem;
+            .calendario {
+                min-width: 600px; /* Reduzido para telas menores */
             }
             
-            .legenda li strong {
-                min-width: 40px;
-                padding: 4px 8px;
+            #resumo {
+                min-width: auto; /* Removido largura mínima para telas menores */
+            }
+            
+            .resumo-grid {
+                grid-template-columns: 1fr;
             }
             
             .calendario caption {
@@ -780,6 +814,40 @@
             .controles select, .controles button {
                 font-size: 0.95rem;
             }
+            
+            .legenda {
+                min-width: auto; /* Removido largura mínima para telas menores */
+            }
+            
+            .legenda-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Notificação */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -834,55 +902,114 @@
         <div class="tab-content" id="legenda-tab">
             <section class="legenda">
                 <h2><i class="fas fa-info-circle"></i> Legenda dos Plantões</h2>
-                <ul>
-                    <li><strong class="sd-bg">SD</strong>: Plantão Diurno (12h) - R$ 100,00</li>
-                    <li><strong class="sn-bg">SN</strong>: Plantão Noturno (12h) - R$ 100,00</li>
-                    <li><strong class="dn-bg">DN</strong>: Plantão Dia/Noite (24h) - R$ 200,00</li>
-                    <li><strong class="extra-sd-bg">Extra SD</strong>: Plantão Extra Diurno - R$ 100,00</li>
-                    <li><strong class="extra-sn-bg">Extra SN</strong>: Plantão Extra Noturno - R$ 100,00</li>
-                    <li><strong class="extra-dn-bg">Extra DN</strong>: Plantão Extra Dia/Noite - R$ 200,00</li>
-                    <li><strong class="lefe-sd-bg">Lefe Dia</strong>: Plantão Lefe Diurno - R$ 100,00</li>
-                    <li><strong class="lefe-sn-bg">Lefe Noite</strong>: Plantão Lefe Noturno - R$ 100,00</li>
-                    <li><strong class="lefe-dn-bg">Lefe DN</strong>: Plantão Lefe Dia/Noite - R$ 250,00</li>
-                    <li><strong class="folga-bg">Folga</strong>: Dia sem plantão</li>
-                </ul>
-                <p style="margin-top: 20px; text-align: center; font-style: italic;">
-                    <i class="fas fa-mouse-pointer"></i> Clique em um dia para adicionar/remover plantões<br>
-                    <i class="fas fa-mouse-pointer"></i> Clique com o botão direito para limpar todos os plantões do dia
-                </p>
+                <div class="legenda-grid">
+                    <div class="legenda-item">
+                        <strong class="sd-bg">SD</strong>
+                        <span>Plantão Diurno (12h) - R$ 100,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="sn-bg">SN</strong>
+                        <span>Plantão Noturno (12h) - R$ 100,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="dn-bg">DN</strong>
+                        <span>Plantão Dia/Noite (24h) - R$ 200,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="extra-sd-bg">Extra SD</strong>
+                        <span>Plantão Extra Diurno - R$ 100,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="extra-sn-bg">Extra SN</strong>
+                        <span>Plantão Extra Noturno - R$ 100,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="extra-dn-bg">Extra DN</strong>
+                        <span>Plantão Extra Dia/Noite - R$ 200,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="lefe-sd-bg">Lefe Dia</strong>
+                        <span>Plantão Lefe Diurno - R$ 100,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="lefe-sn-bg">Lefe Noite</strong>
+                        <span>Plantão Lefe Noturno - R$ 100,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="lefe-dn-bg">Lefe DN</strong>
+                        <span>Plantão Lefe Dia/Noite - R$ 250,00</span>
+                    </div>
+                    <div class="legenda-item">
+                        <strong class="folga-bg">Folga</strong>
+                        <span>Dia sem plantão</span>
+                    </div>
+                </div>
+                <div class="legenda-instrucoes">
+                    <p><i class="fas fa-mouse-pointer"></i> Clique em um dia para adicionar/remover plantões</p>
+                    <p><i class="fas fa-mouse-pointer"></i> Clique com o botão direito para limpar todos os plantões do dia</p>
+                </div>
             </section>
         </div>
         
         <div class="tab-content" id="resumo-tab">
             <section id="resumo">
                 <h2><i class="fas fa-calculator"></i> Resumo e Cálculo do Mês</h2>
-                <p id="total-sd">
-                    <strong>Total de Plantões SD:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-sn">
-                    <strong>Total de Plantões SN:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-dn">
-                    <strong>Total de Plantões DN:</strong> 0 &nbsp; (0 x R$ 200,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-extra-sd">
-                    <strong>Total de Plantões Extra SD:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-extra-sn">
-                    <strong>Total de Plantões Extra SN:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-extra-dn">
-                    <strong>Total de Plantões Extra DN:</strong> 0 &nbsp; (0 x R$ 200,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-lefe-sd">
-                    <strong>Total de Plantões Lefe Dia:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-lefe-sn">
-                    <strong>Total de Plantões Lefe Noite:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
-                </p>
-                <p id="total-lefe-dn">
-                    <strong>Total de Plantões Lefe DN:</strong> 0 &nbsp; (0 x R$ 250,00 = <strong>R$ 0,00</strong>)
-                </p>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <h3>Plantões SD</h3>
+                        <p id="total-sd">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões SN</h3>
+                        <p id="total-sn">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões DN</h3>
+                        <p id="total-dn">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 200,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões Extra SD</h3>
+                        <p id="total-extra-sd">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões Extra SN</h3>
+                        <p id="total-extra-sn">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões Extra DN</h3>
+                        <p id="total-extra-dn">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 200,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões Lefe Dia</h3>
+                        <p id="total-lefe-sd">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões Lefe Noite</h3>
+                        <p id="total-lefe-sn">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 100,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Plantões Lefe DN</h3>
+                        <p id="total-lefe-dn">
+                            <strong>Total:</strong> 0 &nbsp; (0 x R$ 250,00 = <strong>R$ 0,00</strong>)
+                        </p>
+                    </div>
+                </div>
                 <div class="total-geral" id="total-geral">
                     <i class="fas fa-money-bill-wave"></i> Valor Total a Receber: R$ 0,00
                 </div>
@@ -1146,10 +1273,29 @@
         </div>
     </div>
 
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-message">Operação realizada com sucesso!</span>
+    </div>
+
 <script>
     // Função de depuração
     function debugLog(message) {
         console.log(`[DEBUG] ${message}`);
+    }
+
+    // Função para mostrar notificação
+    function showNotification(message, duration = 3000) {
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notification-message');
+        
+        notificationMessage.textContent = message;
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, duration);
     }
 
     // Dados globais
@@ -1563,6 +1709,7 @@
                     salvarDados();
                     gerarCalendario(mes, ano);
                     calcularTotais(mes, ano);
+                    showNotification("Plantões do dia removidos com sucesso!");
                 }
             });
         });
@@ -1663,8 +1810,11 @@
             if (modalPlantao) {
                 modalPlantao.style.display = 'none';
             }
+            
+            showNotification(`Plantão ${labelsPlantao[tipo]} adicionado com sucesso!`);
         } else {
             debugLog(`Plantão do tipo ${tipo} já existe neste dia`);
+            showNotification(`Este plantão já está cadastrado para este dia!`, 4000);
         }
     }
     
@@ -1674,6 +1824,7 @@
         
         const chave = `${mesSelecionado}-${anoSelecionado}`;
         if (calendarioData[chave] && calendarioData[chave][diaSelecionado]) {
+            const tipoRemovido = calendarioData[chave][diaSelecionado].tipo[index];
             calendarioData[chave][diaSelecionado].tipo.splice(index, 1);
             salvarDados();
             
@@ -1683,6 +1834,8 @@
             // Atualizar o calendário and totais
             gerarCalendario(mesSelecionado, anoSelecionado);
             calcularTotais(mesSelecionado, anoSelecionado);
+            
+            showNotification(`Plantão ${labelsPlantao[tiposPlantao[tipoRemovido]]} removido com sucesso!`);
         }
     }
     
@@ -1701,6 +1854,8 @@
             if (modalPlantao) {
                 modalPlantao.style.display = 'none';
             }
+            
+            showNotification("Todos os plantões do dia foram removidos!");
         }
     }
     
@@ -1754,55 +1909,55 @@
         const totalSdElement = document.getElementById('total-sd');
         if (totalSdElement) {
             totalSdElement.innerHTML = 
-                `<strong>Total de Plantões SD:</strong> ${countSD} &nbsp; (${countSD} x R$ ${valoresPlantao.sd.toFixed(2).replace('.', ',')} = <strong>R$ ${valorSD.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countSD} &nbsp; (${countSD} x R$ ${valoresPlantao.sd.toFixed(2).replace('.', ',')} = <strong>R$ ${valorSD.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalSnElement = document.getElementById('total-sn');
         if (totalSnElement) {
             totalSnElement.innerHTML = 
-                `<strong>Total de Plantões SN:</strong> ${countSN} &nbsp; (${countSN} x R$ ${valoresPlantao.sn.toFixed(2).replace('.', ',')} = <strong>R$ ${valorSN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countSN} &nbsp; (${countSN} x R$ ${valoresPlantao.sn.toFixed(2).replace('.', ',')} = <strong>R$ ${valorSN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalDnElement = document.getElementById('total-dn');
         if (totalDnElement) {
             totalDnElement.innerHTML = 
-                `<strong>Total de Plantões DN:</strong> ${countDN} &nbsp; (${countDN} x R$ ${valoresPlantao.dn.toFixed(2).replace('.', ',')} = <strong>R$ ${valorDN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countDN} &nbsp; (${countDN} x R$ ${valoresPlantao.dn.toFixed(2).replace('.', ',')} = <strong>R$ ${valorDN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalExtraSdElement = document.getElementById('total-extra-sd');
         if (totalExtraSdElement) {
             totalExtraSdElement.innerHTML = 
-                `<strong>Total de Plantões Extra SD:</strong> ${countExtraSD} &nbsp; (${countExtraSD} x R$ ${valoresPlantao['extra-sd'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraSD.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countExtraSD} &nbsp; (${countExtraSD} x R$ ${valoresPlantao['extra-sd'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraSD.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalExtraSnElement = document.getElementById('total-extra-sn');
         if (totalExtraSnElement) {
             totalExtraSnElement.innerHTML = 
-                `<strong>Total de Plantões Extra SN:</strong> ${countExtraSN} &nbsp; (${countExtraSN} x R$ ${valoresPlantao['extra-sn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraSN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countExtraSN} &nbsp; (${countExtraSN} x R$ ${valoresPlantao['extra-sn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraSN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalExtraDnElement = document.getElementById('total-extra-dn');
         if (totalExtraDnElement) {
             totalExtraDnElement.innerHTML = 
-                `<strong>Total de Plantões Extra DN:</strong> ${countExtraDN} &nbsp; (${countExtraDN} x R$ ${valoresPlantao['extra-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraDN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countExtraDN} &nbsp; (${countExtraDN} x R$ ${valoresPlantao['extra-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorExtraDN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalLefeSdElement = document.getElementById('total-lefe-sd');
         if (totalLefeSdElement) {
             totalLefeSdElement.innerHTML = 
-                `<strong>Total de Plantões Lefe Dia:</strong> ${countLefeSD} &nbsp; (${countLefeSD} x R$ ${valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeSD.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countLefeSD} &nbsp; (${countLefeSD} x R$ ${valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeSD.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalLefeSnElement = document.getElementById('total-lefe-sn');
         if (totalLefeSnElement) {
             totalLefeSnElement.innerHTML = 
-                `<strong>Total de Plantões Lefe Noite:</strong> ${countLefeSN} &nbsp; (${countLefeSN} x R$ ${valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeSN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countLefeSN} &nbsp; (${countLefeSN} x R$ ${valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeSN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalLefeDnElement = document.getElementById('total-lefe-dn');
         if (totalLefeDnElement) {
             totalLefeDnElement.innerHTML = 
-                `<strong>Total de Plantões Lefe DN:</strong> ${countLefeDN} &nbsp; (${countLefeDN} x R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeDN.toFixed(2).replace('.', ',')}</strong>)`;
+                `<strong>Total:</strong> ${countLefeDN} &nbsp; (${countLefeDN} x R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeDN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
         const totalGeralElement = document.getElementById('total-geral');
@@ -1932,6 +2087,8 @@
         if (modalCores) {
             modalCores.style.display = 'none';
         }
+        
+        showNotification("Cores personalizadas aplicadas com sucesso!");
     }
     
     function carregarCoresPersonalizadas() {
@@ -2059,6 +2216,8 @@
         if (modalValores) {
             modalValores.style.display = 'none';
         }
+        
+        showNotification("Valores atualizados com sucesso!");
     }
     
     function carregarValoresPersonalizados() {
@@ -2148,6 +2307,8 @@
         if (modalNomes) {
             modalNomes.style.display = 'none';
         }
+        
+        showNotification("Nomes atualizados com sucesso!");
     }
     
     function carregarNomesPersonalizados() {
@@ -2185,26 +2346,17 @@
         });
         
         // Atualizar a legenda
-        const legendaItems = document.querySelectorAll('.legenda li');
+        const legendaItems = document.querySelectorAll('.legenda-item span');
         if (legendaItems.length >= 10) {
-            legendaItems[0].innerHTML = 
-                `<strong class="sd-bg">${labelsPlantao.sd}</strong>: Plantão Diurno (12h) - R$ ${valoresPlantao.sd.toFixed(2).replace('.', ',')}`;
-            legendaItems[1].innerHTML = 
-                `<strong class="sn-bg">${labelsPlantao.sn}</strong>: Plantão Noturno (12h) - R$ ${valoresPlantao.sn.toFixed(2).replace('.', ',')}`;
-            legendaItems[2].innerHTML = 
-                `<strong class="dn-bg">${labelsPlantao.dn}</strong>: Plantão Dia/Noite (24h) - R$ ${valoresPlantao.dn.toFixed(2).replace('.', ',')}`;
-            legendaItems[3].innerHTML = 
-                `<strong class="extra-sd-bg">${labelsPlantao['extra-sd']}</strong>: Plantão Extra Diurno - R$ ${valoresPlantao['extra-sd'].toFixed(2).replace('.', ',')}`;
-            legendaItems[4].innerHTML = 
-                `<strong class="extra-sn-bg">${labelsPlantao['extra-sn']}</strong>: Plantão Extra Noturno - R$ ${valoresPlantao['extra-sn'].toFixed(2).replace('.', ',')}`;
-            legendaItems[5].innerHTML = 
-                `<strong class="extra-dn-bg">${labelsPlantao['extra-dn']}</strong>: Plantão Extra Dia/Noite - R$ ${valoresPlantao['extra-dn'].toFixed(2).replace('.', ',')}`;
-            legendaItems[6].innerHTML = 
-                `<strong class="lefe-sd-bg">${labelsPlantao['lefe-sd']}</strong>: Plantão Lefe Diurno - R$ ${valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',')}`;
-            legendaItems[7].innerHTML = 
-                `<strong class="lefe-sn-bg">${labelsPlantao['lefe-sn']}</strong>: Plantão Lefe Noturno - R$ ${valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',')}`;
-            legendaItems[8].innerHTML = 
-                `<strong class="lefe-dn-bg">${labelsPlantao['lefe-dn']}</strong>: Plantão Lefe Dia/Noite - R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')}`;
+            legendaItems[0].textContent = `Plantão Diurno (12h) - R$ ${valoresPlantao.sd.toFixed(2).replace('.', ',')}`;
+            legendaItems[1].textContent = `Plantão Noturno (12h) - R$ ${valoresPlantao.sn.toFixed(2).replace('.', ',')}`;
+            legendaItems[2].textContent = `Plantão Dia/Noite (24h) - R$ ${valoresPlantao.dn.toFixed(2).replace('.', ',')}`;
+            legendaItems[3].textContent = `Plantão Extra Diurno - R$ ${valoresPlantao['extra-sd'].toFixed(2).replace('.', ',')}`;
+            legendaItems[4].textContent = `Plantão Extra Noturno - R$ ${valoresPlantao['extra-sn'].toFixed(2).replace('.', ',')}`;
+            legendaItems[5].textContent = `Plantão Extra Dia/Noite - R$ ${valoresPlantao['extra-dn'].toFixed(2).replace('.', ',')}`;
+            legendaItems[6].textContent = `Plantão Lefe Diurno - R$ ${valoresPlantao['lefe-sd'].toFixed(2).replace('.', ',')}`;
+            legendaItems[7].textContent = `Plantão Lefe Noturno - R$ ${valoresPlantao['lefe-sn'].toFixed(2).replace('.', ',')}`;
+            legendaItems[8].textContent = `Plantão Lefe Dia/Noite - R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')}`;
         }
     }
     
@@ -2237,12 +2389,26 @@
         document.querySelectorAll('.nome-lefe-dn').forEach(el => {
             el.textContent = labelsPlantao['lefe-dn'];
         });
+        
+        // Atualizar a legenda
+        const legendaItems = document.querySelectorAll('.legenda-item strong');
+        if (legendaItems.length >= 10) {
+            legendaItems[0].textContent = labelsPlantao.sd;
+            legendaItems[1].textContent = labelsPlantao.sn;
+            legendaItems[2].textContent = labelsPlantao.dn;
+            legendaItems[3].textContent = labelsPlantao['extra-sd'];
+            legendaItems[4].textContent = labelsPlantao['extra-sn'];
+            legendaItems[5].textContent = labelsPlantao['extra-dn'];
+            legendaItems[6].textContent = labelsPlantao['lefe-sd'];
+            legendaItems[7].textContent = labelsPlantao['lefe-sn'];
+            legendaItems[8].textContent = labelsPlantao['lefe-dn'];
+        }
     }
     
     // Funções para exportar e importar dados
     function exportarDados() {
         try {
-            const dadosTexto = JSON.stringify({
+            const dadosCompletos = {
                 calendario: calendarioData,
                 valores: valoresPlantao,
                 nomes: labelsPlantao,
@@ -2259,7 +2425,10 @@
                     folga: getComputedStyle(document.documentElement).getPropertyValue('--folga-color').trim(),
                     hoje: getComputedStyle(document.documentElement).getPropertyValue('--today-color').trim()
                 }
-            });
+            };
+            
+            // Formatar o JSON para melhor visualização
+            const dadosTexto = JSON.stringify(dadosCompletos, null, 2);
             
             const modalTitulo = document.getElementById('modal-titulo');
             if (modalTitulo) {
@@ -2287,6 +2456,7 @@
             }
         } catch (error) {
             console.error("Erro ao exportar dados:", error);
+            showNotification("Erro ao exportar dados!", 4000);
         }
     }
     
@@ -2326,6 +2496,11 @@
             
             const dados = JSON.parse(dadosTextoElement.value);
             
+            // Validar dados básicos
+            if (!dados || typeof dados !== 'object') {
+                throw new Error("Dados inválidos: formato incorreto");
+            }
+            
             if (dados.calendario) {
                 calendarioData = dados.calendario;
             }
@@ -2355,9 +2530,10 @@
             gerarCalendario(mes, ano);
             
             fecharModal();
+            showNotification("Dados importados com sucesso!");
         } catch (e) {
             console.error("Erro ao aplicar dados importados:", e);
-            alert('Dados inválidos. Por favor, verifique o formato.');
+            showNotification("Dados inválidos. Por favor, verifique o formato.", 4000);
         }
     }
     
@@ -2370,9 +2546,10 @@
             
             dadosTextoElement.select();
             document.execCommand('copy');
-            alert('Dados copiados para a área de transferência!');
+            showNotification('Dados copiados para a área de transferência!');
         } catch (error) {
             console.error("Erro ao copiar texto:", error);
+            showNotification("Erro ao copiar dados!", 4000);
         }
     }
     
