@@ -19,7 +19,7 @@
             --sd-color: #4BA0FF;
             --sn-color: #D5A755;
             --dn-color: #AC00FF;
-            --folga-color: #bdc3c7;
+            --folga-color: #A9FF00; /* Alterado para #A9FF00 */
             --extra-sd-color: #4BA0FF;
             --extra-sn-color: #D5A755;
             --extra-dn-color: #38B800;
@@ -45,7 +45,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            padding: 6px;
+            padding: 12px;
             touch-action: manipulation;
             overflow-x: hidden; /* Evita rolagem horizontal no body */
         }
@@ -54,28 +54,28 @@
             max-width: 1400px; /* Aumentado de 1000px para 1400px */
             margin: 0 auto;
             background-color: var(--card-color);
-            padding: 5px;
-            border-radius: 6px;
-            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
         h1, h2, h3 {
             color: var(--primary-color);
-            margin-bottom: 6px;
+            margin-bottom: 16px;
         }
         
         h1 {
             text-align: center;
             font-size: 1.8rem;
-            padding-bottom: 6px;
+            padding-bottom: 12px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 5px;
+            margin-bottom: 20px;
         }
         
         /* --- Sistema de Abas --- */
         .tabs {
             display: flex;
-            margin-bottom: 6px;
+            margin-bottom: 16px;
             border-bottom: 1px solid var(--border-color);
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -87,7 +87,7 @@
         }
         
         .tab {
-            padding: 5px 6px;
+            padding: 12px 16px;
             cursor: pointer;
             background: var(--tab-inactive);
             border-radius: 6px 6px 0 0;
@@ -108,7 +108,7 @@
         
         .tab-content {
             display: none;
-            padding: 6px;
+            padding: 16px;
             background: var(--card-color);
             border-radius: 0 0 8px 8px;
         }
@@ -156,21 +156,21 @@
         .calendario {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
             table-layout: fixed; /* Garante colunas de largura igual */
         }
         
         .calendario caption {
             font-size: 1.3rem;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 12px;
             color: var(--primary-color);
-            padding: 5px;
+            padding: 8px;
         }
         
         .calendario th, .calendario td {
             border: 1px solid var(--border-color);
-            padding: 6px 4px; /* Aumentado o padding horizontal */
+            padding: 12px 8px; /* Aumentado o padding horizontal */
             text-align: center;
             vertical-align: top;
             width: calc(100% / 7); /* Garante que todas as colunas tenham a mesma largura */
@@ -181,7 +181,7 @@
             font-weight: bold;
             font-size: 0.9rem; /* Aumentado o tamanho da fonte */
             color: var(--primary-color);
-            padding: 5px 5px;
+            padding: 10px 5px;
         }
         
         .calendario td {
@@ -283,6 +283,18 @@
             margin-top: 16px;
             padding: 16px;
             background-color: rgba(71, 184, 129, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        #resumo .total-acumulado {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            margin-top: 16px;
+            padding: 16px;
+            background-color: rgba(106, 64, 191, 0.1);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
@@ -741,7 +753,7 @@
                 font-size: 0.85rem;
             }
             
-            #resumo .total-geral {
+            #resumo .total-geral, #resumo .total-acumulado {
                 font-size: 1.1rem;
             }
             
@@ -1011,8 +1023,8 @@
                         <span>Plantão Lefe Dia/Noite - R$ 250,00</span>
                     </div>
                     <div class="legenda-item">
-                        <strong class="folga-bg">Folga</strong>
-                        <span>Dia sem plantão</span>
+                        <strong class="folga-bg">Troca</strong> <!-- Alterado de "Folga" para "Troca" -->
+                        <span>Plantão trocado</span>
                     </div>
                 </div>
                 <div class="legenda-instrucoes">
@@ -1083,6 +1095,9 @@
                 </div>
                 <div class="total-geral" id="total-geral">
                     <i class="fas fa-money-bill-wave"></i> Valor Total a Receber: R$ 0,00
+                </div>
+                <div class="total-acumulado" id="total-acumulado">
+                    <i class="fas fa-chart-line"></i> Valor Total Acumulado: R$ 0,00
                 </div>
             </section>
         </div>
@@ -1174,8 +1189,8 @@
             </div>
             
             <div class="color-picker">
-                <label for="cor-folga">Folga:</label>
-                <input type="color" id="cor-folga" value="#bdc3c7">
+                <label for="cor-folga">Troca:</label> <!-- Alterado de "Folga" para "Troca" -->
+                <input type="color" id="cor-folga" value="#A9FF00">
                 <button class="btn-cor-padrao" data-tipo="folga">Padrão</button>
             </div>
             
@@ -1303,8 +1318,8 @@
                 </div>
                 
                 <div class="nome-input">
-                    <label for="nome-folga">Folga</label>
-                    <input type="text" id="nome-folga" value="Folga" maxlength="20">
+                    <label for="nome-folga">Troca</label> <!-- Alterado de "Folga" para "Troca" -->
+                    <input type="text" id="nome-folga" value="Troca" maxlength="20">
                 </div>
             </div>
             
@@ -1337,7 +1352,7 @@
                     <button class="btn-tipo-plantao" data-tipo="lefe-sd">Lefe Dia (<span class="nome-lefe-sd">Lefe Dia</span>) - R$ <span class="valor-lefe-sd">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-sn">Lefe Noite (<span class="nome-lefe-sn">Lefe Noite</span>) - R$ <span class="valor-lefe-sn">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-dn">Lefe Dia/Noite (<span class="nome-lefe-dn">Lefe DN</span>) - R$ <span class="valor-lefe-dn">250,00</span></button>
-                    <button class="btn-tipo-plantao" data-tipo="folga">Folga (sem plantão)</button>
+                    <button class="btn-tipo-plantao" data-tipo="folga">Troca (sem plantão)</button> <!-- Alterado de "Folga" para "Troca" -->
                 </div>
             </div>
             
@@ -1383,7 +1398,7 @@
         'extra-sd': 'Extra SD',
         'extra-sn': 'Extra SN',
         'extra-dn': 'Extra DN',
-        'folga': 'Folga',
+        'folga': 'Troca', // Alterado de "Folga" para "Troca"
         'lefe-sd': 'Lefe Dia',
         'lefe-sn': 'Lefe Noite',
         'lefe-dn': 'Lefe DN'
@@ -1611,7 +1626,7 @@
                     'lefe-sd': '#4BA0FF',
                     'lefe-sn': '#D5A755',
                     'lefe-dn': '#FF0100',
-                    'folga': '#bdc3c7',
+                    'folga': '#A9FF00', // Alterado para #A9FF00
                     'hoje': '#ffeb3b'
                 }[tipo];
                 
@@ -1943,6 +1958,63 @@
         }
     }
     
+    // Função para calcular o total acumulado dos meses passados
+    function calcularTotalAcumulado() {
+        const mesAtual = new Date().getMonth();
+        const anoAtual = new Date().getFullYear();
+        let totalAcumulado = 0;
+        
+        // Iterar sobre todos os meses do ano atual até o mês anterior ao atual
+        for (let mes = 0; mes < mesAtual; mes++) {
+            const chaveMes = `${mes}-${anoAtual}`;
+            const dadosMes = calendarioData[chaveMes] || {};
+            
+            // Contadores para este mês
+            let countSD = 0;
+            let countSN = 0;
+            let countDN = 0;
+            let countExtraSD = 0;
+            let countExtraSN = 0;
+            let countExtraDN = 0;
+            let countLefeSD = 0;
+            let countLefeSN = 0;
+            let countLefeDN = 0;
+            
+            // Contar plantões deste mês
+            Object.keys(dadosMes).forEach(dia => {
+                const tipos = dadosMes[dia].tipo || [];
+                
+                tipos.forEach(tipo => {
+                    if (tipo === 0) countSD++;           
+                    else if (tipo === 1) countSN++;      
+                    else if (tipo === 2) countDN++;      
+                    else if (tipo === 3) countExtraSD++; 
+                    else if (tipo === 4) countExtraSN++; 
+                    else if (tipo === 5) countExtraDN++; 
+                    else if (tipo === 7) countLefeSD++;  
+                    else if (tipo === 8) countLefeSN++;  
+                    else if (tipo === 9) countLefeDN++;  
+                });
+            });
+            
+            // Calcula valores deste mês
+            const valorSD = countSD * valoresPlantao.sd;
+            const valorSN = countSN * valoresPlantao.sn;
+            const valorDN = countDN * valoresPlantao.dn;
+            const valorExtraSD = countExtraSD * valoresPlantao['extra-sd'];
+            const valorExtraSN = countExtraSN * valoresPlantao['extra-sn'];
+            const valorExtraDN = countExtraDN * valoresPlantao['extra-dn'];
+            const valorLefeSD = countLefeSD * valoresPlantao['lefe-sd'];
+            const valorLefeSN = countLefeSN * valoresPlantao['lefe-sn'];
+            const valorLefeDN = countLefeDN * valoresPlantao['lefe-dn'];
+            
+            // Adiciona ao total acumulado
+            totalAcumulado += valorSD + valorSN + valorDN + valorExtraSD + valorExtraSN + valorExtraDN + valorLefeSD + valorLefeSN + valorLefeDN;
+        }
+        
+        return totalAcumulado;
+    }
+    
     // Função para calcular totais
     function calcularTotais(mes, ano) {
         debugLog(`Calculando totais para ${mes}/${ano}`);
@@ -2044,10 +2116,30 @@
                 `<strong>Total:</strong> ${countLefeDN} &nbsp; (${countLefeDN} x R$ ${valoresPlantao['lefe-dn'].toFixed(2).replace('.', ',')} = <strong>R$ ${valorLefeDN.toFixed(2).replace('.', ',')}</strong>)`;
         }
         
+        // Atualizar o elemento HTML com o total do mês
         const totalGeralElement = document.getElementById('total-geral');
         if (totalGeralElement) {
+            const nomesMeses = [
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+            ];
             totalGeralElement.innerHTML = 
-                `<i class="fas fa-money-bill-wave"></i> Valor Total a Receber: R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+                `<i class="fas fa-money-bill-wave"></i> Valor Total a Receber (${nomesMeses[mes]} ${ano}): R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+        }
+        
+        // Calcular e atualizar o total acumulado
+        const totalAcumulado = calcularTotalAcumulado();
+        const totalAcumuladoElement = document.getElementById('total-acumulado');
+        if (totalAcumuladoElement) {
+            const nomesMeses = [
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+            ];
+            const mesAnterior = mesAtual > 0 ? mesAtual - 1 : 11; // Se for janeiro, o anterior é dezembro
+            const anoAnterior = mesAtual > 0 ? anoAtual : anoAtual - 1;
+            
+            totalAcumuladoElement.innerHTML = 
+                `<i class="fas fa-chart-line"></i> Valor Total Acumulado (até ${nomesMeses[mesAnterior]} ${anoAnterior}): R$ ${totalAcumulado.toFixed(2).replace('.', ',')}`;
         }
         
         debugLog("Totais calculados com sucesso");
@@ -2376,7 +2468,7 @@
         if (nomeLefeDn) labelsPlantao['lefe-dn'] = nomeLefeDn.value || 'Lefe DN';
         
         const nomeFolga = document.getElementById('nome-folga');
-        if (nomeFolga) labelsPlantao.folga = nomeFolga.value || 'Folga';
+        if (nomeFolga) labelsPlantao.folga = nomeFolga.value || 'Troca';
         
         // Salvar dados
         salvarDados();
@@ -2486,6 +2578,7 @@
             legendaItems[6].textContent = labelsPlantao['lefe-sd'];
             legendaItems[7].textContent = labelsPlantao['lefe-sn'];
             legendaItems[8].textContent = labelsPlantao['lefe-dn'];
+            legendaItems[9].textContent = labelsPlantao.folga;
         }
     }
     
