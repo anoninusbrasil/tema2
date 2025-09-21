@@ -142,14 +142,13 @@
         .calendario-container {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            margin: 0 -10px;
-            padding: 0 10px;
+            margin: 0;
+            padding: 0;
         }
         .calendario {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            min-width: 800px;
         }
         .calendario caption {
             font-size: 1.3rem;
@@ -312,16 +311,24 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             margin-top: 20px;
             padding: 15px;
             background-color: rgba(106, 64, 191, 0.05);
             border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .calendario-controls .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .calendario-controls label {
             font-weight: bold;
             color: var(--primary-color);
+            white-space: nowrap;
         }
         
         .calendario-controls select {
@@ -628,7 +635,7 @@
             }
             
             .calendario {
-                min-width: 600px;
+                font-size: 0.9rem;
             }
             
             #resumo {
@@ -670,8 +677,14 @@
             }
             
             .calendario-controls {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 10px;
+                justify-content: center;
+            }
+            
+            .calendario-controls .control-group {
+                flex: 1;
+                max-width: 45%;
             }
             
             .floating-menu {
@@ -715,7 +728,7 @@
             }
             
             .calendario {
-                min-width: 320px;
+                font-size: 0.8rem;
             }
             
             .calendario td {
@@ -774,6 +787,41 @@
             .nome-input input {
                 width: 100%;
             }
+            
+            /* Melhorias para a legenda em celulares */
+            .legenda {
+                min-width: auto;
+                padding: 12px;
+            }
+            
+            .legenda-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .legenda-item {
+                padding: 8px;
+            }
+            
+            .legenda-item strong {
+                min-width: 50px;
+                padding: 6px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .legenda-item span {
+                font-size: 0.85rem;
+            }
+            
+            .legenda h2 {
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+            }
+            
+            .legenda-instrucoes {
+                font-size: 0.8rem;
+                margin-top: 12px;
+            }
         }
         
         /* Notificação */
@@ -820,32 +868,36 @@
             </section>
             
             <div class="calendario-controls">
-                <label for="mes-selecionado">Mês:</label>
-                <select id="mes-selecionado">
-                    <option value="0">Janeiro</option>
-                    <option value="1">Fevereiro</option>
-                    <option value="2">Março</option>
-                    <option value="3">Abril</option>
-                    <option value="4">Maio</option>
-                    <option value="5" selected>Junho</option>
-                    <option value="6">Julho</option>
-                    <option value="7">Agosto</option>
-                    <option value="8">Setembro</option>
-                    <option value="9">Outubro</option>
-                    <option value="10">Novembro</option>
-                    <option value="11">Dezembro</option>
-                </select>
-                
-                <label for="ano-selecionado">Ano:</label>
-                <select id="ano-selecionado">
-                    <option value="2024" selected>2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
-                </select>
+                <div class="control-group">
+                    <label for="mes-selecionado">Mês:</label>
+                    <select id="mes-selecionado">
+                        <option value="0">Janeiro</option>
+                        <option value="1">Fevereiro</option>
+                        <option value="2">Março</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Maio</option>
+                        <option value="5" selected>Junho</option>
+                        <option value="6">Julho</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Setembro</option>
+                        <option value="9">Outubro</option>
+                        <option value="10">Novembro</option>
+                        <option value="11">Dezembro</option>
+                    </select>
+                </div>
+                  
+                <div class="control-group">
+                    <label for="ano-selecionado">&nbsp;&nbsp;&nbsp;&nbsp; &thinsp;&nbsp;&nbsp;Ano:</label>
+                    <select id="ano-selecionado">
+                        <option value="2024" selected>2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -1000,55 +1052,55 @@
             
             <div class="color-picker">
                 <label for="cor-sd">Plantão SD:</label>
-                <input type="color" id="cor-sd" value="#6a40bf">
+                <input type="color" id="cor-sd" value="#4BA0FF">
                 <button class="btn-cor-padrao" data-tipo="sd">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-sn">Plantão SN:</label>
-                <input type="color" id="cor-sn" value="#4a6fa5">
+                <input type="color" id="cor-sn" value="#D5A755">
                 <button class="btn-cor-padrao" data-tipo="sn">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-dn">Plantão DN:</label>
-                <input type="color" id="cor-dn" value="#ff9e40">
+                <input type="color" id="cor-dn" value="#AC00FF">
                 <button class="btn-cor-padrao" data-tipo="dn">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-extra-sd">Extra SD:</label>
-                <input type="color" id="cor-extra-sd" value="#8e6cbf">
+                <input type="color" id="cor-extra-sd" value="#4BA0FF">
                 <button class="btn-cor-padrao" data-tipo="extra-sd">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-extra-sn">Extra SN:</label>
-                <input type="color" id="cor-extra-sn" value="#6b8cae">
+                <input type="color" id="cor-extra-sn" value="#D5A755">
                 <button class="btn-cor-padrao" data-tipo="extra-sn">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-extra-dn">Extra DN:</label>
-                <input type="color" id="cor-extra-dn" value="#ffb570">
+                <input type="color" id="cor-extra-dn" value="#38B800">
                 <button class="btn-cor-padrao" data-tipo="extra-dn">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-lefe-sd">Lefe Dia:</label>
-                <input type="color" id="cor-lefe-sd" value="#6a40bf">
+                <input type="color" id="cor-lefe-sd" value="#4BA0FF">
                 <button class="btn-cor-padrao" data-tipo="lefe-sd">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-lefe-sn">Lefe Noite:</label>
-                <input type="color" id="cor-lefe-sn" value="#4a6fa5">
+                <input type="color" id="cor-lefe-sn" value="#D5A755">
                 <button class="btn-cor-padrao" data-tipo="lefe-sn">Padrão</button>
             </div>
             
             <div class="color-picker">
                 <label for="cor-lefe-dn">Lefe DN:</label>
-                <input type="color" id="cor-lefe-dn" value="#ff6b40">
+                <input type="color" id="cor-lefe-dn" value="#FF0100">
                 <button class="btn-cor-padrao" data-tipo="lefe-dn">Padrão</button>
             </div>
             
@@ -1481,15 +1533,15 @@
                 e.preventDefault();
                 const tipo = this.getAttribute('data-tipo');
                 const corPadrao = {
-                    'sd': '#6a40bf',
-                    'sn': '#4a6fa5',
-                    'dn': '#ff9e40',
-                    'extra-sd': '#8e6cbf',
-                    'extra-sn': '#6b8cae',
-                    'extra-dn': '#ffb570',
-                    'lefe-sd': '#6a40bf',
-                    'lefe-sn': '#4a6fa5',
-                    'lefe-dn': '#ff6b40',
+                    'sd': '#4BA0FF',
+                    'sn': '#D5A755',
+                    'dn': '#AC00FF',
+                    'extra-sd': '#4BA0FF',
+                    'extra-sn': '#D5A755',
+                    'extra-dn': '#38B800',
+                    'lefe-sd': '#4BA0FF',
+                    'lefe-sn': '#D5A755',
+                    'lefe-dn': '#FF0100',
                     'folga': '#bdc3c7',
                     'hoje': '#ffeb3b'
                 }[tipo];
