@@ -47,10 +47,11 @@
             line-height: 1.6;
             padding: 12px;
             touch-action: manipulation;
+            overflow-x: hidden; /* Evita rolagem horizontal no body */
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1400px; /* Aumentado de 1000px para 1400px */
             margin: 0 auto;
             background-color: var(--card-color);
             padding: 20px;
@@ -139,17 +140,26 @@
         }
         
         /* --- Tabela do Calendário --- */
+        .calendario-mes {
+            width: 100%;
+            overflow: hidden;
+        }
+        
         .calendario-container {
-            overflow-x: auto;
+            overflow-x: hidden; /* Removido a barra de rolagem horizontal */
             -webkit-overflow-scrolling: touch;
             margin: 0;
             padding: 0;
+            width: 100%;
         }
+        
         .calendario {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            table-layout: fixed; /* Garante colunas de largura igual */
         }
+        
         .calendario caption {
             font-size: 1.3rem;
             font-weight: bold;
@@ -157,47 +167,61 @@
             color: var(--primary-color);
             padding: 8px;
         }
+        
         .calendario th, .calendario td {
             border: 1px solid var(--border-color);
-            padding: 10px 6px;
+            padding: 12px 8px; /* Aumentado o padding horizontal */
             text-align: center;
             vertical-align: top;
+            width: calc(100% / 7); /* Garante que todas as colunas tenham a mesma largura */
         }
+        
         .calendario th {
             background-color: #f2f2f2;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.9rem; /* Aumentado o tamanho da fonte */
             color: var(--primary-color);
+            padding: 10px 5px;
         }
+        
         .calendario td {
-            height: 80px;
+            height: 90px; /* Aumentado a altura das células */
             position: relative;
             cursor: pointer;
             transition: background-color 0.2s;
         }
+        
         .calendario td:active {
             background-color: rgba(106, 64, 191, 0.1);
         }
+        
         .calendario .day-number {
             font-weight: bold;
             font-size: 0.9rem;
             color: var(--text-color);
             margin-bottom: 4px;
         }
+        
         .calendario .plantao-info {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: bold;
             color: white;
             padding: 3px;
             border-radius: 4px;
             display: block;
             margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
+        
         /* Células vazias ou de outros meses */
         .calendario .other-month {
             background-color: #fafafa;
             color: #ccc;
         }
+        
         .calendario .continuation {
             font-style: italic;
             font-size: 0.7rem;
@@ -211,18 +235,21 @@
             padding: 16px;
             border-radius: 8px;
             margin-bottom: 20px;
-            min-width: 700px;
+            min-width: auto; /* Removido o min-width fixo */
         }
+        
         #resumo h2 {
             color: var(--primary-color);
             margin-bottom: 12px;
         }
+        
         #resumo .resumo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 12px;
             margin-bottom: 16px;
         }
+        
         #resumo .resumo-item {
             background-color: white;
             border-radius: 8px;
@@ -230,20 +257,24 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
         }
+        
         #resumo .resumo-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        
         #resumo .resumo-item h3 {
             color: var(--primary-color);
             font-size: 1rem;
             margin-bottom: 8px;
         }
+        
         #resumo .resumo-item p {
             font-size: 0.95rem;
             line-height: 1.6;
             margin: 0;
         }
+        
         #resumo .total-geral {
             font-size: 1.2rem;
             font-weight: bold;
@@ -263,18 +294,21 @@
             background-color: var(--card-color);
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            min-width: 700px;
+            min-width: auto; /* Removido o min-width fixo */
         }
+        
         .legenda h2 {
             color: var(--primary-color);
             margin-bottom: 16px;
             text-align: center;
         }
+        
         .legenda-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 12px;
         }
+        
         .legenda-item {
             display: flex;
             align-items: center;
@@ -283,10 +317,12 @@
             border-radius: 8px;
             transition: transform 0.2s;
         }
+        
         .legenda-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+        
         .legenda-item strong {
             display: inline-block;
             padding: 8px 12px;
@@ -296,9 +332,11 @@
             min-width: 60px;
             text-align: center;
         }
+        
         .legenda-item span {
             flex: 1;
         }
+        
         .legenda-instrucoes {
             margin-top: 20px;
             text-align: center;
@@ -420,6 +458,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-y: auto; /* Permitir rolagem apenas no modal se necessário */
         }
         
         .modal-content {
@@ -617,6 +656,44 @@
         }
         
         /* Responsividade */
+        @media screen and (max-width: 1400px) {
+            .container {
+                max-width: 95%;
+                padding: 15px;
+            }
+        }
+        
+        @media screen and (max-width: 1200px) {
+            .container {
+                max-width: 100%;
+                padding: 15px;
+            }
+            
+            .calendario th, .calendario td {
+                padding: 10px 6px;
+            }
+            
+            .calendario td {
+                height: 85px;
+            }
+        }
+        
+        @media screen and (max-width: 992px) {
+            .calendario th, .calendario td {
+                padding: 8px 5px;
+                font-size: 0.9rem;
+            }
+            
+            .calendario td {
+                height: 80px;
+            }
+            
+            .calendario .plantao-info {
+                font-size: 0.65rem;
+                padding: 2px;
+            }
+        }
+        
         @media screen and (max-width: 768px) {
             body {
                 padding: 8px;
@@ -638,14 +715,6 @@
                 font-size: 0.9rem;
             }
             
-            #resumo {
-                min-width: auto;
-            }
-            
-            .resumo-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .calendario caption {
                 font-size: 1.2rem;
             }
@@ -656,7 +725,7 @@
             }
             
             .calendario td {
-                height: 60px;
+                height: 70px;
             }
             
             .calendario .day-number {
@@ -664,8 +733,8 @@
             }
             
             .calendario .plantao-info {
-                font-size: 0.65rem;
-                padding: 2px;
+                font-size: 0.6rem;
+                padding: 1px;
             }
             
             #resumo p {
@@ -732,7 +801,7 @@
             }
             
             .calendario td {
-                height: 55px;
+                height: 65px;
             }
             
             .calendario .plantao-info {
