@@ -1555,8 +1555,8 @@
     
     // Variáveis para controle do dia selecionado
     let diaSelecionado = null;
-    let mesSelecionado = null;
-    let anoSelecionado = null;
+    let mesSelecionadoGlobal = null; // Renomeado para evitar conflito com elemento HTML
+    let anoSelecionadoGlobal = null; // Renomeado para evitar conflito com elemento HTML
     
     // Data atual
     const dataAtual = new Date();
@@ -1636,19 +1636,19 @@
     // Função para configurar todos os event listeners
     function configurarEventListeners() {
         // Seletores de mês e ano
-        const mesSelecionado = document.getElementById('mes-selecionado');
-        const anoSelecionado = document.getElementById('ano-selecionado');
+        const mesSelecionadoElement = document.getElementById('mes-selecionado');
+        const anoSelecionadoElement = document.getElementById('ano-selecionado');
         
-        if (mesSelecionado) {
-            mesSelecionado.addEventListener('change', function() {
+        if (mesSelecionadoElement) {
+            mesSelecionadoElement.addEventListener('change', function() {
                 const mes = parseInt(this.value);
                 const ano = parseInt(document.getElementById('ano-selecionado').value);
                 gerarCalendario(mes, ano);
             });
         }
         
-        if (anoSelecionado) {
-            anoSelecionado.addEventListener('change', function() {
+        if (anoSelecionadoElement) {
+            anoSelecionadoElement.addEventListener('change', function() {
                 const mes = parseInt(document.getElementById('mes-selecionado').value);
                 const ano = parseInt(this.value);
                 gerarCalendario(mes, ano);
@@ -1837,7 +1837,7 @@
                 showNotification("Legendas salvas com sucesso!");
                 
                 // Atualiza o calendário para refletir as alterações
-                gerarCalendario(mesSelecionado, anoSelecionado);
+                gerarCalendario(mesSelecionadoGlobal, anoSelecionadoGlobal);
             }
         });
         
@@ -1845,7 +1845,7 @@
         document.addEventListener('input', function(e) {
             if (e.target.classList.contains('plantao-legenda')) {
                 const index = parseInt(e.target.getAttribute('data-index'));
-                const chave = `${mesSelecionado}-${anoSelecionado}`;
+                const chave = `${mesSelecionadoGlobal}-${anoSelecionadoGlobal}`;
                 
                 // Garantir que o array de legendas exista
                 if (!calendarioData[chave][diaSelecionado].legendas) {
@@ -1859,7 +1859,7 @@
                 
                 calendarioData[chave][diaSelecionado].legendas[index] = e.target.value;
                 salvarDados();
-                gerarCalendario(mesSelecionado, anoSelecionado);
+                gerarCalendario(mesSelecionadoGlobal, anoSelecionadoGlobal);
             }
         });
     }
@@ -1867,8 +1867,8 @@
     // Função para gerar o calendário
     function gerarCalendario(mes, ano) {
         debugLog(`Gerando calendário para ${mes}/${ano}`);
-        mesSelecionado = mes;
-        anoSelecionado = ano;
+        mesSelecionadoGlobal = mes;
+        anoSelecionadoGlobal = ano;
         
         const sectionCalendario = document.getElementById('calendario-mes');
         if (!sectionCalendario) {
@@ -2062,8 +2062,8 @@
     function abrirModalPlantao(dia, mes, ano) {
         debugLog(`Abrindo modal para o dia ${dia}/${mes+1}/${ano}`);
         diaSelecionado = dia;
-        mesSelecionado = mes;
-        anoSelecionado = ano;
+        mesSelecionadoGlobal = mes;
+        anoSelecionadoGlobal = ano;
         
         const diaSelecionadoElement = document.getElementById('dia-selecionado');
         if (diaSelecionadoElement) {
@@ -2121,7 +2121,7 @@
         }
         
         debugLog(`Adicionando plantão do tipo ${tipo}`);
-        const chave = `${mesSelecionado}-${anoSelecionado}`;
+        const chave = `${mesSelecionadoGlobal}-${anoSelecionadoGlobal}`;
         const tipoIndex = tiposPlantao.indexOf(tipo);
         
         if (tipoIndex === -1) {
@@ -2147,8 +2147,8 @@
             calendarioData[chave][diaSelecionado].tipo.push(tipoIndex);
             calendarioData[chave][diaSelecionado].legendas.push(''); // Legenda vazia inicialmente
             salvarDados();
-            gerarCalendario(mesSelecionado, anoSelecionado);
-            calcularTotais(mesSelecionado, anoSelecionado);
+            gerarCalendario(mesSelecionadoGlobal, anoSelecionadoGlobal);
+            calcularTotais(mesSelecionadoGlobal, anoSelecionadoGlobal);
             
             const modalPlantao = document.getElementById('modal-plantao');
             if (modalPlantao) {
@@ -2166,7 +2166,7 @@
     function removerPlantao(index) {
         if (diaSelecionado === null) return;
         
-        const chave = `${mesSelecionado}-${anoSelecionado}`;
+        const chave = `${mesSelecionadoGlobal}-${anoSelecionadoGlobal}`;
         if (calendarioData[chave] && calendarioData[chave][diaSelecionado]) {
             const tipoRemovido = calendarioData[chave][diaSelecionado].tipo[index];
             calendarioData[chave][diaSelecionado].tipo.splice(index, 1);
@@ -2179,11 +2179,11 @@
             salvarDados();
             
             // Atualizar a lista de plantões no modal
-            abrirModalPlantao(diaSelecionado, mesSelecionado, anoSelecionado);
+            abrirModalPlantao(diaSelecionado, mesSelecionadoGlobal, anoSelecionadoGlobal);
             
             // Atualizar o calendário and totais
-            gerarCalendario(mesSelecionado, anoSelecionado);
-            calcularTotais(mesSelecionado, anoSelecionado);
+            gerarCalendario(mesSelecionadoGlobal, anoSelecionadoGlobal);
+            calcularTotais(mesSelecionadoGlobal, anoSelecionadoGlobal);
             
             showNotification(`Plantão ${labelsPlantao[tiposPlantao[tipoRemovido]]} removido com sucesso!`);
         }
@@ -2193,13 +2193,13 @@
     function limparPlantoesDia() {
         if (diaSelecionado === null) return;
         
-        const chave = `${mesSelecionado}-${anoSelecionado}`;
+        const chave = `${mesSelecionadoGlobal}-${anoSelecionadoGlobal}`;
         if (calendarioData[chave] && calendarioData[chave][diaSelecionado]) {
             calendarioData[chave][diaSelecionado].tipo = [];
             calendarioData[chave][diaSelecionado].legendas = [];
             salvarDados();
-            gerarCalendario(mesSelecionado, anoSelecionado);
-            calcularTotais(mesSelecionado, anoSelecionado);
+            gerarCalendario(mesSelecionadoGlobal, anoSelecionadoGlobal);
+            calcularTotais(mesSelecionadoGlobal, anoSelecionadoGlobal);
             
             const modalPlantao = document.getElementById('modal-plantao');
             if (modalPlantao) {
@@ -2653,7 +2653,7 @@
         atualizarValoresExibidos();
         
         // Recalcular totais
-        calcularTotais(mesSelecionado, anoSelecionado);
+        calcularTotais(mesSelecionadoGlobal, anoSelecionadoGlobal);
         
         const modalValores = document.getElementById('modal-valores');
         if (modalValores) {
@@ -2744,7 +2744,7 @@
         atualizarNomesExibidos();
         
         // Atualizar calendário
-        gerarCalendario(mesSelecionado, anoSelecionado);
+        gerarCalendario(mesSelecionadoGlobal, anoSelecionadoGlobal);
         
         const modalNomes = document.getElementById('modal-nomes');
         if (modalNomes) {
