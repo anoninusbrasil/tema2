@@ -19,7 +19,7 @@
             --sd-color: #4BA0FF;
             --sn-color: #D5A755;
             --dn-color: #AC00FF;
-            --folga-color: #A9FF00; /* Alterado para #A9FF00 */
+            --folga-color: #A9FF00;
             --extra-sd-color: #4BA0FF;
             --extra-sn-color: #D5A755;
             --extra-dn-color: #38B800;
@@ -45,16 +45,16 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            padding: 12px;
+            padding: 10px;
             touch-action: manipulation;
-            overflow-x: hidden; /* Evita rolagem horizontal no body */
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 1400px; /* Aumentado de 1000px para 1400px */
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;
             background-color: var(--card-color);
-            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
@@ -67,7 +67,7 @@
         h1 {
             text-align: center;
             font-size: 1.8rem;
-            padding-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
             margin-bottom: 20px;
         }
@@ -75,7 +75,7 @@
         /* --- Sistema de Abas --- */
         .tabs {
             display: flex;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -87,16 +87,17 @@
         }
         
         .tab {
-            padding: 12px 16px;
+            padding: 8px 12px;
             cursor: pointer;
             background: var(--tab-inactive);
             border-radius: 6px 6px 0 0;
             margin-right: 4px;
             transition: all 0.3s ease;
             white-space: nowrap;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            font-weight: bold;
             flex-shrink: 0;
-            min-height: 44px;
+            min-height: 36px;
             display: flex;
             align-items: center;
         }
@@ -108,7 +109,7 @@
         
         .tab-content {
             display: none;
-            padding: 16px;
+            padding: 10px;
             background: var(--card-color);
             border-radius: 0 0 8px 8px;
         }
@@ -146,7 +147,7 @@
         }
         
         .calendario-container {
-            overflow-x: hidden; /* Removido a barra de rolagem horizontal */
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             margin: 0;
             padding: 0;
@@ -157,7 +158,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            table-layout: fixed; /* Garante colunas de largura igual */
+            table-layout: fixed;
         }
         
         .calendario caption {
@@ -170,22 +171,22 @@
         
         .calendario th, .calendario td {
             border: 1px solid var(--border-color);
-            padding: 12px 8px; /* Aumentado o padding horizontal */
+            padding: 12px 8px;
             text-align: center;
             vertical-align: top;
-            width: calc(100% / 7); /* Garante que todas as colunas tenham a mesma largura */
+            width: calc(100% / 7);
         }
         
         .calendario th {
             background-color: #f2f2f2;
             font-weight: bold;
-            font-size: 0.9rem; /* Aumentado o tamanho da fonte */
+            font-size: 0.9rem;
             color: var(--primary-color);
             padding: 10px 5px;
         }
         
         .calendario td {
-            height: 90px; /* Aumentado a altura das células */
+            height: 90px;
             position: relative;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -232,28 +233,28 @@
         #resumo {
             background-color: #f9f9f9;
             border-left: 4px solid var(--primary-color);
-            padding: 16px;
+            padding: 10px;
             border-radius: 8px;
             margin-bottom: 20px;
-            min-width: auto; /* Removido o min-width fixo */
+            min-width: auto;
         }
         
         #resumo h2 {
             color: var(--primary-color);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         #resumo .resumo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         
         #resumo .resumo-item {
             background-color: white;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
         }
@@ -280,8 +281,8 @@
             font-weight: bold;
             color: var(--accent-color);
             text-align: center;
-            margin-top: 16px;
-            padding: 16px;
+            margin-top: 10px;
+            padding: 10px;
             background-color: rgba(71, 184, 129, 0.1);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -292,8 +293,8 @@
             font-weight: bold;
             color: var(--primary-color);
             text-align: center;
-            margin-top: 16px;
-            padding: 16px;
+            margin-top: 10px;
+            padding: 10px;
             background-color: rgba(106, 64, 191, 0.1);
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -302,29 +303,29 @@
         /* --- Legenda --- */
         .legenda {
             margin-bottom: 20px;
-            padding: 16px;
+            padding: 10px;
             background-color: var(--card-color);
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            min-width: auto; /* Removido o min-width fixo */
+            min-width: auto;
         }
         
         .legenda h2 {
             color: var(--primary-color);
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             text-align: center;
         }
         
         .legenda-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 12px;
+            gap: 10px;
         }
         
         .legenda-item {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 8px;
             background-color: rgba(106, 64, 191, 0.05);
             border-radius: 8px;
             transition: transform 0.2s;
@@ -350,7 +351,7 @@
         }
         
         .legenda-instrucoes {
-            margin-top: 20px;
+            margin-top: 10px;
             text-align: center;
             font-style: italic;
             color: var(--light-text);
@@ -358,8 +359,8 @@
         
         /* --- Rodapé do Calendário com Legendas --- */
         .calendario-legendas {
-            margin-top: 20px;
-            padding: 16px;
+            margin-top: 10px;
+            padding: 10px;
             background-color: rgba(106, 64, 191, 0.05);
             border-radius: 8px;
             border: 1px solid var(--border-color);
@@ -367,26 +368,27 @@
         
         .calendario-legendas h3 {
             color: var(--primary-color);
-            margin-bottom: 12px;
-            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            font-weight: bold;
             text-align: center;
         }
         
         .legendas-lista {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 10px;
+            gap: 8px;
         }
         
         .legenda-item-calendario {
             background-color: white;
             border-radius: 6px;
-            padding: 12px;
+            padding: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         
         .legenda-item-calendario:hover {
@@ -416,13 +418,14 @@
         .legenda-texto {
             font-size: 0.9rem;
             color: var(--text-color);
+            font-weight: bold;
         }
         
         .sem-legendas {
             text-align: center;
             color: var(--light-text);
             font-style: italic;
-            padding: 20px;
+            padding: 10px;
         }
         
         /* --- Controles --- */
@@ -431,8 +434,8 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 10px;
             background-color: rgba(106, 64, 191, 0.05);
             border-radius: 8px;
             flex-wrap: wrap;
@@ -499,7 +502,7 @@
             background-color: var(--card-color);
             border-radius: 10px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-            padding: 12px;
+            padding: 10px;
             display: none;
             flex-direction: column;
             gap: 8px;
@@ -508,7 +511,7 @@
         }
         
         .floating-menu button {
-            padding: 12px;
+            padding: 10px;
             border: none;
             border-radius: 6px;
             background-color: var(--primary-color);
@@ -519,7 +522,7 @@
             gap: 8px;
             transition: all 0.2s;
             font-size: 0.95rem;
-            min-height: 44px;
+            min-height: 40px;
         }
         
         .floating-menu button:active {
@@ -538,13 +541,13 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            overflow-y: auto; /* Permitir rolagem apenas no modal se necessário */
+            padding: 10px;
+            overflow-y: auto;
         }
         
         .modal-content {
             background-color: var(--card-color);
-            padding: 20px;
+            padding: 10px;
             border-radius: 12px;
             width: 100%;
             max-width: 600px;
@@ -555,7 +558,7 @@
         
         .modal h2 {
             color: var(--primary-color);
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             text-align: center;
             font-size: 1.4rem;
         }
@@ -564,7 +567,7 @@
             width: 100%;
             height: 200px;
             margin: 8px 0;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             resize: vertical;
@@ -576,11 +579,11 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            margin-top: 16px;
+            margin-top: 10px;
         }
         
         .modal-buttons button {
-            padding: 12px 16px;
+            padding: 10px 12px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -589,7 +592,7 @@
             gap: 6px;
             transition: all 0.2s;
             font-size: 0.9rem;
-            min-height: 44px;
+            min-height: 40px;
         }
         
         .modal-buttons button:first-child {
@@ -606,7 +609,7 @@
         .color-picker {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         
@@ -628,27 +631,27 @@
         }
         
         .btn-cor-padrao {
-            padding: 8px 12px;
+            padding: 8px 10px;
             background-color: #e2e2e2;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
-            min-height: 40px;
+            min-height: 36px;
         }
         
         /* Modal de valores dos plantões */
         .valores-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         
         .valor-input {
             display: flex;
             flex-direction: column;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .valor-input label {
@@ -670,14 +673,14 @@
         .nomes-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         
         .nome-input {
             display: flex;
             flex-direction: column;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .nome-input label {
@@ -699,7 +702,7 @@
         .plantao-item {
             display: flex;
             flex-direction: column;
-            padding: 10px;
+            padding: 8px;
             border-bottom: 1px solid var(--border-color);
             border-radius: 6px;
             margin-bottom: 6px;
@@ -717,7 +720,7 @@
             background-color: #e74c3c;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
@@ -734,7 +737,7 @@
         
         /* Botões para adicionar plantão */
         .btn-tipo-plantao {
-            padding: 12px;
+            padding: 10px;
             border: none;
             border-radius: 6px;
             background-color: var(--primary-color);
@@ -743,7 +746,7 @@
             text-align: left;
             transition: all 0.2s;
             font-size: 0.9rem;
-            min-height: 44px;
+            min-height: 40px;
         }
         
         .btn-tipo-plantao:active {
@@ -752,11 +755,11 @@
         
         /* Botão para salvar legendas */
         .btn-salvar-legendas {
-            margin-top: 12px;
+            margin-top: 10px;
             background-color: var(--accent-color);
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 10px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
@@ -765,7 +768,7 @@
             justify-content: center;
             gap: 8px;
             transition: all 0.2s;
-            min-height: 44px;
+            min-height: 40px;
         }
         
         .btn-salvar-legendas:hover {
@@ -779,15 +782,15 @@
         /* Responsividade */
         @media screen and (max-width: 1400px) {
             .container {
-                max-width: 95%;
-                padding: 15px;
+                max-width: 100%;
+                padding: 10px;
             }
         }
         
         @media screen and (max-width: 1200px) {
             .container {
                 max-width: 100%;
-                padding: 15px;
+                padding: 10px;
             }
             
             .calendario th, .calendario td {
@@ -821,7 +824,7 @@
             }
             
             .container {
-                padding: 15px;
+                padding: 10px;
             }
             
             h1 {
@@ -891,12 +894,12 @@
             }
             
             .tab {
-                padding: 10px 12px;
-                font-size: 0.9rem;
+                padding: 6px 10px;
+                font-size: 0.8rem;
             }
             
             .modal-content {
-                padding: 15px;
+                padding: 10px;
             }
             
             .modal h2 {
@@ -914,7 +917,7 @@
         
         @media screen and (max-width: 480px) {
             .container {
-                padding: 12px;
+                padding: 8px;
             }
             
             h1 {
@@ -946,21 +949,21 @@
                 bottom: 72px;
                 right: 12px;
                 width: 170px;
-                padding: 10px;
+                padding: 8px;
             }
             
             .floating-menu button {
-                padding: 10px;
+                padding: 8px;
                 font-size: 0.85rem;
             }
             
             .tab {
-                padding: 8px 10px;
-                font-size: 0.85rem;
+                padding: 5px 8px;
+                font-size: 0.75rem;
             }
             
             .modal-content {
-                padding: 12px;
+                padding: 8px;
             }
             
             .modal h2 {
@@ -985,7 +988,7 @@
             /* Melhorias para a legenda em celulares */
             .legenda {
                 min-width: auto;
-                padding: 12px;
+                padding: 8px;
             }
             
             .legenda-grid {
@@ -994,7 +997,7 @@
             }
             
             .legenda-item {
-                padding: 8px;
+                padding: 6px;
             }
             
             .legenda-item strong {
@@ -1008,23 +1011,23 @@
             }
             
             .legenda h2 {
-                font-size: 1.1rem;
-                margin-bottom: 12px;
+                font-size: 1rem;
+                margin-bottom: 8px;
             }
             
             .legenda-instrucoes {
                 font-size: 0.8rem;
-                margin-top: 12px;
+                margin-top: 8px;
             }
             
             .calendario-legendas h3 {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
             
             .legenda-item-calendario {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
+                gap: 6px;
             }
             
             .legenda-dia {
@@ -1041,7 +1044,7 @@
             right: 20px;
             background-color: var(--accent-color);
             color: white;
-            padding: 15px 20px;
+            padding: 10px 15px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 2000;
@@ -1152,7 +1155,7 @@
                         <span>Plantão Lefe Dia/Noite - R$ 250,00</span>
                     </div>
                     <div class="legenda-item">
-                        <strong class="folga-bg">Troca</strong> <!-- Alterado de "Folga" para "Troca" -->
+                        <strong class="folga-bg">Troca</strong>
                         <span>Plantão trocado</span>
                     </div>
                 </div>
@@ -1318,7 +1321,7 @@
             </div>
             
             <div class="color-picker">
-                <label for="cor-folga">Troca:</label> <!-- Alterado de "Folga" para "Troca" -->
+                <label for="cor-folga">Troca:</label>
                 <input type="color" id="cor-folga" value="#A9FF00">
                 <button class="btn-cor-padrao" data-tipo="folga">Padrão</button>
             </div>
@@ -1447,7 +1450,7 @@
                 </div>
                 
                 <div class="nome-input">
-                    <label for="nome-folga">Troca</label> <!-- Alterado de "Folga" para "Troca" -->
+                    <label for="nome-folga">Troca</label>
                     <input type="text" id="nome-folga" value="Troca" maxlength="20">
                 </div>
             </div>
@@ -1474,7 +1477,7 @@
             
             <div id="adicionar-plantao">
                 <h3><i class="fas fa-plus-circle"></i> Adicionar Plantão</h3>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin: 12px 0;">
+                <div style="display: flex; flex-direction: column; gap: 8px; margin: 10px 0;">
                     <button class="btn-tipo-plantao" data-tipo="sd">Plantão Diurno (<span class="nome-sd">SD</span>) - R$ <span class="valor-sd">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="sn">Plantão Noturno (<span class="nome-sn">SN</span>) - R$ <span class="valor-sn">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="dn">Plantão Dia/Noite (<span class="nome-dn">DN</span>) - R$ <span class="valor-dn">200,00</span></button>
@@ -1484,7 +1487,7 @@
                     <button class="btn-tipo-plantao" data-tipo="lefe-sd">Lefe Dia (<span class="nome-lefe-sd">Lefe Dia</span>) - R$ <span class="valor-lefe-sd">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-sn">Lefe Noite (<span class="nome-lefe-sn">Lefe Noite</span>) - R$ <span class="valor-lefe-sn">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-dn">Lefe Dia/Noite (<span class="nome-lefe-dn">Lefe DN</span>) - R$ <span class="valor-lefe-dn">250,00</span></button>
-                    <button class="btn-tipo-plantao" data-tipo="folga">Troca (sem plantão)</button> <!-- Alterado de "Folga" para "Troca" -->
+                    <button class="btn-tipo-plantao" data-tipo="folga">Troca (sem plantão)</button>
                 </div>
             </div>
             
@@ -1535,7 +1538,7 @@
         'extra-sd': 'Extra SD',
         'extra-sn': 'Extra SN',
         'extra-dn': 'Extra DN',
-        'folga': 'Troca', // Alterado de "Folga" para "Troca"
+        'folga': 'Troca',
         'lefe-sd': 'Lefe Dia',
         'lefe-sn': 'Lefe Noite',
         'lefe-dn': 'Lefe DN'
@@ -1555,8 +1558,8 @@
     
     // Variáveis para controle do dia selecionado
     let diaSelecionado = null;
-    let mesSelecionadoGlobal = null; // Renomeado para evitar conflito com elemento HTML
-    let anoSelecionadoGlobal = null; // Renomeado para evitar conflito com elemento HTML
+    let mesSelecionadoGlobal = null;
+    let anoSelecionadoGlobal = null;
     
     // Data atual
     const dataAtual = new Date();
@@ -1763,7 +1766,7 @@
                     'lefe-sd': '#4BA0FF',
                     'lefe-sn': '#D5A755',
                     'lefe-dn': '#FF0100',
-                    'folga': '#A9FF00', // Alterado para #A9FF00
+                    'folga': '#A9FF00',
                     'hoje': '#ffeb3b'
                 }[tipo];
                 
