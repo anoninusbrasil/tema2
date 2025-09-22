@@ -356,6 +356,75 @@
             color: var(--light-text);
         }
         
+        /* --- Rodapé do Calendário com Legendas --- */
+        .calendario-legendas {
+            margin-top: 20px;
+            padding: 16px;
+            background-color: rgba(106, 64, 191, 0.05);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .calendario-legendas h3 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .legendas-lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+        
+        .legenda-item-calendario {
+            background-color: white;
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legenda-item-calendario:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legenda-dia {
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 40px;
+            text-align: center;
+            background-color: rgba(106, 64, 191, 0.1);
+            padding: 6px;
+            border-radius: 4px;
+        }
+        
+        .legenda-conteudo {
+            flex: 1;
+        }
+        
+        .legenda-tipo {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .legenda-texto {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .sem-legendas {
+            text-align: center;
+            color: var(--light-text);
+            font-style: italic;
+            padding: 20px;
+        }
+        
         /* --- Controles --- */
         .calendario-controls {
             display: flex;
@@ -681,6 +750,32 @@
             background-color: #5835a0;
         }
         
+        /* Botão para salvar legendas */
+        .btn-salvar-legendas {
+            margin-top: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            min-height: 44px;
+        }
+        
+        .btn-salvar-legendas:hover {
+            background-color: #3da870;
+        }
+        
+        .btn-salvar-legendas:active {
+            transform: scale(0.98);
+        }
+        
         /* Responsividade */
         @media screen and (max-width: 1400px) {
             .container {
@@ -811,6 +906,10 @@
             .valores-grid, .nomes-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .legendas-lista {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media screen and (max-width: 480px) {
@@ -916,6 +1015,22 @@
             .legenda-instrucoes {
                 font-size: 0.8rem;
                 margin-top: 12px;
+            }
+            
+            .calendario-legendas h3 {
+                font-size: 1rem;
+            }
+            
+            .legenda-item-calendario {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .legenda-dia {
+                min-width: auto;
+                width: 100%;
+                text-align: center;
             }
         }
         
@@ -1352,6 +1467,9 @@
             <div id="plantoes-existente">
                 <h3><i class="fas fa-list"></i> Plantões Atuais</h3>
                 <div id="lista-plantoes"></div>
+                <button id="btn-salvar-legendas" class="btn-salvar-legendas">
+                    <i class="fas fa-save"></i> Salvar Legendas
+                </button>
             </div>
             
             <div id="adicionar-plantao">
@@ -1707,16 +1825,36 @@
                 const index = parseInt(btn.getAttribute('data-index'));
                 removerPlantao(index);
             }
+            
+            // Botão para salvar legendas
+            if (e.target.id === 'btn-salvar-legendas' || e.target.closest('#btn-salvar-legendas')) {
+                e.preventDefault();
+                
+                // Salva os dados (que já são salvos automaticamente, mas para garantir)
+                salvarDados();
+                
+                // Exibe notificação de sucesso
+                showNotification("Legendas salvas com sucesso!");
+                
+                // Atualiza o calendário para refletir as alterações
+                gerarCalendario(mesSelecionado, anoSelecionado);
+            }
         });
         
-        // Event listener para campos de legenda
+        // Event listener para campos de legenda (usando delegação)
         document.addEventListener('input', function(e) {
             if (e.target.classList.contains('plantao-legenda')) {
                 const index = parseInt(e.target.getAttribute('data-index'));
                 const chave = `${mesSelecionado}-${anoSelecionado}`;
                 
+                // Garantir que o array de legendas exista
                 if (!calendarioData[chave][diaSelecionado].legendas) {
                     calendarioData[chave][diaSelecionado].legendas = [];
+                }
+                
+                // Garantir que o array tenha o tamanho correto
+                while (calendarioData[chave][diaSelecionado].legendas.length <= index) {
+                    calendarioData[chave][diaSelecionado].legendas.push('');
                 }
                 
                 calendarioData[chave][diaSelecionado].legendas[index] = e.target.value;
@@ -1818,6 +1956,12 @@
                 </table>
             </div>`;
         
+        // Adicionar seção de legendas personalizadas
+        tabelaHTML += `<div class="calendario-legendas" id="calendario-legendas">
+            <h3><i class="fas fa-sticky-note"></i> Legendas Personalizadas do Mês</h3>
+            <div class="legendas-lista" id="legendas-lista"></div>
+        </div>`;
+        
         sectionCalendario.innerHTML = tabelaHTML;
         debugLog("Calendário gerado com sucesso");
         
@@ -1858,8 +2002,60 @@
         }
         calcularTotais(mes, ano);
         
+        // Gerar lista de legendas personalizadas
+        gerarListaLegendas(mes, ano);
+        
         // Aplicar cores personalizadas
         aplicarCoresCSS();
+    }
+    
+    // Função para gerar a lista de legendas personalizadas
+    function gerarListaLegendas(mes, ano) {
+        const legendasLista = document.getElementById('legendas-lista');
+        if (!legendasLista) {
+            debugLog("Elemento legendas-lista não encontrado");
+            return;
+        }
+        
+        const chaveMes = `${mes}-${ano}`;
+        const dadosMes = calendarioData[chaveMes] || {};
+        
+        let legendasHTML = '';
+        let temLegendas = false;
+        
+        // Iterar sobre todos os dias do mês
+        for (let dia = 1; dia <= 31; dia++) {
+            if (dadosMes[dia]) {
+                const diaInfo = dadosMes[dia];
+                const tipos = diaInfo.tipo || [];
+                const legendas = diaInfo.legendas || [];
+                
+                // Verificar se há legendas personalizadas neste dia
+                tipos.forEach((tipo, index) => {
+                    if (tipo >= 0 && tipo < tiposPlantao.length && legendas[index] && legendas[index].trim() !== '') {
+                        temLegendas = true;
+                        const tipoNome = labelsPlantao[tiposPlantao[tipo]];
+                        const legendaTexto = legendas[index];
+                        
+                        legendasHTML += `
+                            <div class="legenda-item-calendario">
+                                <div class="legenda-dia">${dia}</div>
+                                <div class="legenda-conteudo">
+                                    <div class="legenda-tipo ${tiposPlantao[tipo]}">${tipoNome}</div>
+                                    <div class="legenda-texto">${legendaTexto}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        }
+        
+        if (temLegendas) {
+            legendasLista.innerHTML = legendasHTML;
+        } else {
+            legendasLista.innerHTML = '<div class="sem-legendas">Nenhuma legenda personalizada cadastrada neste mês.</div>';
+        }
     }
     
     // Função para abrir modal de plantão
@@ -1893,7 +2089,7 @@
                 if (tipoIndex >= 0 && tipoIndex < tiposPlantao.length) {
                     const tipo = tiposPlantao[tipoIndex];
                     const label = labelsPlantao[tipo];
-                    const legenda = legendas[index] || '';
+                    const legenda = (legendas && legendas[index]) ? legendas[index] : '';
                     
                     const plantaoItem = document.createElement('div');
                     plantaoItem.className = 'plantao-item';
@@ -1939,6 +2135,11 @@
         
         if (!calendarioData[chave][diaSelecionado]) {
             calendarioData[chave][diaSelecionado] = { tipo: [], legendas: [] };
+        }
+        
+        // Garantir que o array de legendas exista e tenha o mesmo tamanho que o array de tipos
+        if (!calendarioData[chave][diaSelecionado].legendas) {
+            calendarioData[chave][diaSelecionado].legendas = [];
         }
         
         // Adicionar o tipo se não existir
@@ -2217,6 +2418,21 @@
             if (dados) {
                 const dadosCompletos = JSON.parse(dados);
                 calendarioData = dadosCompletos.calendario || {};
+                
+                // Garantir que cada entrada tenha o campo legendas
+                Object.keys(calendarioData).forEach(chave => {
+                    Object.keys(calendarioData[chave]).forEach(dia => {
+                        if (!calendarioData[chave][dia].legendas) {
+                            calendarioData[chave][dia].legendas = [];
+                        }
+                        // Garantir que o array de legendas tenha o mesmo tamanho que o array de tipos
+                        if (calendarioData[chave][dia].tipo) {
+                            while (calendarioData[chave][dia].legendas.length < calendarioData[chave][dia].tipo.length) {
+                                calendarioData[chave][dia].legendas.push('');
+                            }
+                        }
+                    });
+                });
                 
                 if (dadosCompletos.valores) {
                     valoresPlantao = dadosCompletos.valores;
@@ -2736,6 +2952,12 @@
                     Object.keys(calendarioData[chave]).forEach(dia => {
                         if (!calendarioData[chave][dia].legendas) {
                             calendarioData[chave][dia].legendas = [];
+                        }
+                        // Garantir que o array de legendas tenha o mesmo tamanho que o array de tipos
+                        if (calendarioData[chave][dia].tipo) {
+                            while (calendarioData[chave][dia].legendas.length < calendarioData[chave][dia].tipo.length) {
+                                calendarioData[chave][dia].legendas.push('');
+                            }
                         }
                     });
                 });
