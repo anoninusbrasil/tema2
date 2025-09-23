@@ -19,7 +19,7 @@
             --sd-color: #4BA0FF;
             --sn-color: #D5A755;
             --dn-color: #AC00FF;
-            --folga-color: #A9FF00;
+            --troca-color: #A9FF00;
             --extra-sd-color: #4BA0FF;
             --extra-sn-color: #D5A755;
             --extra-dn-color: #38B800;
@@ -122,7 +122,7 @@
         .sd, .legenda .sd-bg { background-color: var(--sd-color); }
         .sn, .legenda .sn-bg { background-color: var(--sn-color); }
         .dn, .legenda .dn-bg { background-color: var(--dn-color); }
-        .folga, .legenda .folga-bg { background-color: var(--folga-color); }
+        .troca, .legenda .troca-bg { background-color: var(--troca-color); }
         .extra-sd, .legenda .extra-sd-bg { background-color: var(--extra-sd-color); }
         .extra-sn, .legenda .extra-sn-bg { background-color: var(--extra-sn-color); }
         .extra-dn, .legenda .extra-dn-bg { background-color: var(--extra-dn-color); }
@@ -1155,7 +1155,7 @@
                         <span>Plantão Lefe Dia/Noite - R$ 250,00</span>
                     </div>
                     <div class="legenda-item">
-                        <strong class="folga-bg">Troca</strong>
+                        <strong class="troca-bg">Troca</strong>
                         <span>Plantão trocado</span>
                     </div>
                 </div>
@@ -1321,9 +1321,9 @@
             </div>
             
             <div class="color-picker">
-                <label for="cor-folga">Troca:</label>
-                <input type="color" id="cor-folga" value="#A9FF00">
-                <button class="btn-cor-padrao" data-tipo="folga">Padrão</button>
+                <label for="cor-troca">Troca:</label>
+                <input type="color" id="cor-troca" value="#A9FF00">
+                <button class="btn-cor-padrao" data-tipo="troca">Padrão</button>
             </div>
             
             <div class="color-picker">
@@ -1450,8 +1450,8 @@
                 </div>
                 
                 <div class="nome-input">
-                    <label for="nome-folga">Troca</label>
-                    <input type="text" id="nome-folga" value="Troca" maxlength="20">
+                    <label for="nome-troca">Troca</label>
+                    <input type="text" id="nome-troca" value="Troca" maxlength="20">
                 </div>
             </div>
             
@@ -1487,7 +1487,7 @@
                     <button class="btn-tipo-plantao" data-tipo="lefe-sd">Lefe Dia (<span class="nome-lefe-sd">Lefe Dia</span>) - R$ <span class="valor-lefe-sd">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-sn">Lefe Noite (<span class="nome-lefe-sn">Lefe Noite</span>) - R$ <span class="valor-lefe-sn">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-dn">Lefe Dia/Noite (<span class="nome-lefe-dn">Lefe DN</span>) - R$ <span class="valor-lefe-dn">250,00</span></button>
-                    <button class="btn-tipo-plantao" data-tipo="folga">Troca (sem plantão)</button>
+                    <button class="btn-tipo-plantao" data-tipo="troca">Troca (sem plantão)</button>
                 </div>
             </div>
             
@@ -1530,7 +1530,7 @@
 
     // Dados globais
     let calendarioData = {};
-    const tiposPlantao = ['sd', 'sn', 'dn', 'extra-sd', 'extra-sn', 'extra-dn', 'folga', 'lefe-sd', 'lefe-sn', 'lefe-dn'];
+    const tiposPlantao = ['sd', 'sn', 'dn', 'extra-sd', 'extra-sn', 'extra-dn', 'troca', 'lefe-sd', 'lefe-sn', 'lefe-dn'];
     let labelsPlantao = {
         'sd': 'SD',
         'sn': 'SN',
@@ -1538,7 +1538,7 @@
         'extra-sd': 'Extra SD',
         'extra-sn': 'Extra SN',
         'extra-dn': 'Extra DN',
-        'folga': 'Troca',
+        'troca': 'Troca',
         'lefe-sd': 'Lefe Dia',
         'lefe-sn': 'Lefe Noite',
         'lefe-dn': 'Lefe DN'
@@ -1550,7 +1550,7 @@
         'extra-sd': 100,
         'extra-sn': 100,
         'extra-dn': 200,
-        'folga': 0,
+        'troca': 0,
         'lefe-sd': 100,
         'lefe-sn': 100,
         'lefe-dn': 250
@@ -1766,7 +1766,7 @@
                     'lefe-sd': '#4BA0FF',
                     'lefe-sn': '#D5A755',
                     'lefe-dn': '#FF0100',
-                    'folga': '#A9FF00',
+                    'troca': '#A9FF00',
                     'hoje': '#ffeb3b'
                 }[tipo];
                 
@@ -2481,8 +2481,8 @@
         const corLefeDn = document.getElementById('cor-lefe-dn');
         if (corLefeDn) corLefeDn.value = getComputedStyle(document.documentElement).getPropertyValue('--lefe-dn-color').trim();
         
-        const corFolga = document.getElementById('cor-folga');
-        if (corFolga) corFolga.value = getComputedStyle(document.documentElement).getPropertyValue('--folga-color').trim();
+        const cortroca = document.getElementById('cor-troca');
+        if (cortroca) cortroca.value = getComputedStyle(document.documentElement).getPropertyValue('--troca-color').trim();
         
         const corHoje = document.getElementById('cor-hoje');
         if (corHoje) corHoje.value = getComputedStyle(document.documentElement).getPropertyValue('--today-color').trim();
@@ -2503,7 +2503,7 @@
         const corLefeSD = document.getElementById('cor-lefe-sd')?.value;
         const corLefeSN = document.getElementById('cor-lefe-sn')?.value;
         const corLefeDN = document.getElementById('cor-lefe-dn')?.value;
-        const corFolga = document.getElementById('cor-folga')?.value;
+        const cortroca = document.getElementById('cor-troca')?.value;
         const corHoje = document.getElementById('cor-hoje')?.value;
         
         // Salvar cores no localStorage
@@ -2518,7 +2518,7 @@
                 'lefe-sd': corLefeSD,
                 'lefe-sn': corLefeSN,
                 'lefe-dn': corLefeDN,
-                folga: corFolga,
+                troca: cortroca,
                 hoje: corHoje
             }));
             debugLog("Cores salvas com sucesso");
@@ -2551,7 +2551,7 @@
                 if (cores['lefe-sd']) document.documentElement.style.setProperty('--lefe-sd-color', cores['lefe-sd']);
                 if (cores['lefe-sn']) document.documentElement.style.setProperty('--lefe-sn-color', cores['lefe-sn']);
                 if (cores['lefe-dn']) document.documentElement.style.setProperty('--lefe-dn-color', cores['lefe-dn']);
-                if (cores.folga) document.documentElement.style.setProperty('--folga-color', cores.folga);
+                if (cores.troca) document.documentElement.style.setProperty('--troca-color', cores.troca);
                 if (cores.hoje) document.documentElement.style.setProperty('--today-color', cores.hoje);
                 debugLog("Cores carregadas com sucesso");
             }
@@ -2572,7 +2572,7 @@
             .lefe-sd, .legenda .lefe-sd-bg { background-color: var(--lefe-sd-color) !important; }
             .lefe-sn, .legenda .lefe-sn-bg { background-color: var(--lefe-sn-color) !important; }
             .lefe-dn, .legenda .lefe-dn-bg { background-color: var(--lefe-dn-color) !important; }
-            .folga, .legenda .folga-bg { background-color: var(--folga-color) !important; }
+            .troca, .legenda .troca-bg { background-color: var(--troca-color) !important; }
             .today { background-color: var(--today-color) !important; color: var(--today-text-color) !important; }
         `;
         
@@ -2700,8 +2700,8 @@
         const nomeLefeDn = document.getElementById('nome-lefe-dn');
         if (nomeLefeDn) nomeLefeDn.value = labelsPlantao['lefe-dn'];
         
-        const nomeFolga = document.getElementById('nome-folga');
-        if (nomeFolga) nomeFolga.value = labelsPlantao.folga;
+        const nometroca = document.getElementById('nome-troca');
+        if (nometroca) nometroca.value = labelsPlantao.troca;
         
         const modalNomes = document.getElementById('modal-nomes');
         if (modalNomes) {
@@ -2737,8 +2737,8 @@
         const nomeLefeDn = document.getElementById('nome-lefe-dn');
         if (nomeLefeDn) labelsPlantao['lefe-dn'] = nomeLefeDn.value || 'Lefe DN';
         
-        const nomeFolga = document.getElementById('nome-folga');
-        if (nomeFolga) labelsPlantao.folga = nomeFolga.value || 'Troca';
+        const nometroca = document.getElementById('nome-troca');
+        if (nometroca) labelsPlantao.troca = nometroca.value || 'Troca';
         
         // Salvar dados
         salvarDados();
@@ -2848,7 +2848,7 @@
             legendaItems[6].textContent = labelsPlantao['lefe-sd'];
             legendaItems[7].textContent = labelsPlantao['lefe-sn'];
             legendaItems[8].textContent = labelsPlantao['lefe-dn'];
-            legendaItems[9].textContent = labelsPlantao.folga;
+            legendaItems[9].textContent = labelsPlantao.troca;
         }
     }
     
@@ -2869,7 +2869,7 @@
                     'lefe-sd': getComputedStyle(document.documentElement).getPropertyValue('--lefe-sd-color').trim(),
                     'lefe-sn': getComputedStyle(document.documentElement).getPropertyValue('--lefe-sn-color').trim(),
                     'lefe-dn': getComputedStyle(document.documentElement).getPropertyValue('--lefe-dn-color').trim(),
-                    folga: getComputedStyle(document.documentElement).getPropertyValue('--folga-color').trim(),
+                    troca: getComputedStyle(document.documentElement).getPropertyValue('--troca-color').trim(),
                     hoje: getComputedStyle(document.documentElement).getPropertyValue('--today-color').trim()
                 }
             };
