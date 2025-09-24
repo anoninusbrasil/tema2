@@ -779,6 +779,256 @@
             transform: scale(0.98);
         }
         
+        /* Estilos para a nova funcionalidade de troca de plantão */
+        .troca-plantao-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .troca-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .troca-input label {
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        
+        .troca-input input, .troca-input select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .descricao-troca-preview {
+            background-color: rgba(106, 64, 191, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .descricao-troca-preview h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .descricao-preview-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .descricao-preview-texto {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            flex: 1;
+        }
+        
+        /* Estilos para o modo de edição */
+        .descricao-edit-container {
+            margin-top: 10px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        
+        .descricao-edit-container.editando {
+            background-color: rgba(106, 64, 191, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .descricao-edit-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .descricao-edit-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(106, 64, 191, 0.2);
+        }
+        
+        .descricao-edit-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .descricao-edit-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-salvar-edicao {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-salvar-edicao:hover {
+            background-color: #3da870;
+        }
+        
+        .btn-cancelar-edicao {
+            background-color: #e2e2e2;
+            color: var(--text-color);
+        }
+        
+        .btn-cancelar-edicao:hover {
+            background-color: #d0d0d0;
+        }
+        
+        /* Feedback visual para o botão de editar */
+        .btn-editar-descricao {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-editar-descricao:hover {
+            background-color: rgba(106, 64, 191, 0.1);
+            transform: scale(1.1);
+        }
+        
+        /* Indicador visual quando está em modo de edição */
+        .descricao-troca-preview {
+            position: relative;
+        }
+        
+        .descricao-troca-preview::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border: 2px dashed var(--primary-color);
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .descricao-troca-preview.editando::after {
+            opacity: 1;
+        }
+        
+        /* Estilos para a nova funcionalidade de descrição automática */
+        .config-descricao-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .config-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .config-input label {
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        
+        .config-input input, .config-input select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .exemplo-descricao {
+            background-color: rgba(106, 64, 191, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .exemplo-descricao h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .exemplo-texto {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .descricao-gerada {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 10px;
+        }
+        
+        /* Notificação */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            font-size: 1.2rem;
+        }
+        
         /* Responsividade */
         @media screen and (max-width: 1400px) {
             .container {
@@ -913,6 +1163,14 @@
             .legendas-lista {
                 grid-template-columns: 1fr;
             }
+            
+            .troca-plantao-grid, .config-descricao-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .descricao-preview-texto, .exemplo-texto, .descricao-gerada {
+                font-size: 0.8rem;
+            }
         }
         
         @media screen and (max-width: 480px) {
@@ -1035,32 +1293,6 @@
                 width: 100%;
                 text-align: center;
             }
-        }
-        
-        /* Notificação */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--accent-color);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transform: translateX(150%);
-            transition: transform 0.3s ease;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification i {
-            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -1246,6 +1478,8 @@
         <button id="btn-cores"><i class="fas fa-palette"></i> Personalizar Cores</button>
         <button id="btn-valores"><i class="fas fa-money-bill"></i> Alterar Valores</button>
         <button id="btn-nomes"><i class="fas fa-font"></i> Alterar Nomes</button>
+        <button id="btn-config-descricao"><i class="fas fa-file-alt"></i> Configurar Descrição</button>
+        <button id="btn-troca-plantao"><i class="fas fa-exchange-alt"></i> Troca de Plantão</button>
     </div>
     
     <!-- Modal para exportar/importar -->
@@ -1462,6 +1696,99 @@
         </div>
     </div>
     
+    <!-- Modal para configurar descrição -->
+    <div class="modal" id="modal-config-descricao">
+        <div class="modal-content">
+            <h2><i class="fas fa-file-alt"></i> Configurar Descrição Automática</h2>
+            
+            <div class="config-descricao-grid">
+                <div class="config-input">
+                    <label for="hospital">Hospital/Local</label>
+                    <input type="text" id="hospital" value="HRL" maxlength="20">
+                </div>
+                
+                <div class="config-input">
+                    <label for="condutor">Condutor</label>
+                    <input type="text" id="condutor" value="Anderson" maxlength="30">
+                </div>
+                
+                <div class="config-input">
+                    <label for="modelo-descricao">Modelo de Descrição</label>
+                    <select id="modelo-descricao">
+                        <option value="troca">Troca de plantão</option>
+                        <option value="simples">Plantão simples</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="exemplo-descricao">
+                <h3>Exemplo de como ficará:</h3>
+                <div class="exemplo-texto" id="exemplo-descricao">🔁 Plantão trocado: Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: Anderson</div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="btn-aplicar-config-descricao"><i class="fas fa-check"></i> Aplicar Configuração</button>
+                <button id="btn-fechar-config-descricao"><i class="fas fa-times"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para troca de plantão -->
+    <div class="modal" id="modal-troca-plantao">
+        <div class="modal-content">
+            <h2><i class="fas fa-exchange-alt"></i> Registrar Troca de Plantão</h2>
+            
+            <div class="troca-plantao-grid">
+                <div class="troca-input">
+                    <label for="dia-original">Dia Original (será trocado)</label>
+                    <input type="date" id="dia-original">
+                </div>
+                
+                <div class="troca-input">
+                    <label for="dia-troca">Dia da Troca (receberá o plantão)</label>
+                    <input type="date" id="dia-troca">
+                </div>
+                
+                <div class="troca-input">
+                    <label for="tipo-plantao-troca">Tipo de Plantão</label>
+                    <select id="tipo-plantao-troca">
+                        <option value="0">SD - Plantão Diurno</option>
+                        <option value="1">SN - Plantão Noturno</option>
+                        <option value="2">DN - Plantão Dia/Noite</option>
+                        <option value="3">Extra SD - Plantão Extra Diurno</option>
+                        <option value="4">Extra SN - Plantão Extra Noturno</option>
+                        <option value="5">Extra DN - Plantão Extra Dia/Noite</option>
+                        <option value="7">Lefe Dia - Plantão Lefe Diurno</option>
+                        <option value="8">Lefe Noite - Plantão Lefe Noturno</option>
+                        <option value="9">Lefe DN - Plantão Lefe Dia/Noite</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="descricao-troca-preview">
+                <h3>Descrição da Troca</h3>
+                <div class="descricao-preview-container">
+                    <div class="descricao-preview-texto" id="descricao-troca-preview">SD 12hs 🙋 Condutor: Anderson 🔁 Troca de plantão: SD 📅 21/09 ➝ SD 📅 30/10</div>
+                    <button class="btn-editar-descricao" id="btn-editar-descricao-troca" title="Editar descrição">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+                <div class="descricao-edit-container" id="descricao-edit-container">
+                    <textarea class="descricao-edit-textarea" id="descricao-edit-textarea"></textarea>
+                    <div class="descricao-edit-buttons">
+                        <button class="btn-salvar-edicao" id="btn-salvar-edicao-troca">Salvar</button>
+                        <button class="btn-cancelar-edicao" id="btn-cancelar-edicao-troca">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="btn-executar-troca"><i class="fas fa-check"></i> Executar Troca</button>
+                <button id="btn-fechar-troca"><i class="fas fa-times"></i> Fechar</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modal para adicionar/remover plantões -->
     <div class="modal" id="modal-plantao">
         <div class="modal-content">
@@ -1488,6 +1815,21 @@
                     <button class="btn-tipo-plantao" data-tipo="lefe-sn">Lefe Noite (<span class="nome-lefe-sn">Lefe Noite</span>) - R$ <span class="valor-lefe-sn">100,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="lefe-dn">Lefe Dia/Noite (<span class="nome-lefe-dn">Lefe DN</span>) - R$ <span class="valor-lefe-dn">250,00</span></button>
                     <button class="btn-tipo-plantao" data-tipo="troca">Troca (sem plantão)</button>
+                </div>
+            </div>
+            
+            <div id="gerar-descricao">
+                <h3><i class="fas fa-magic"></i> Gerar Descrição Automática</h3>
+                <div style="margin: 10px 0;">
+                    <div class="descricao-gerada" id="descricao-gerada" style="display: none;">SD 12hs 🙋 Condutor: Anderson 🔁 Troca de plantão: SD 📅 21/09 ➝ SD 📅 30/10</div>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button id="btn-gerar-descricao" class="btn-tipo-plantao">
+                            <i class="fas fa-magic"></i> Gerar Descrição
+                        </button>
+                        <button id="btn-copiar-descricao" class="btn-tipo-plantao" style="display: none;">
+                            <i class="fas fa-copy"></i> Copiar Descrição
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -1561,6 +1903,13 @@
     let mesSelecionadoGlobal = null;
     let anoSelecionadoGlobal = null;
     
+    // Variáveis para configuração de descrição
+    let configDescricao = {
+        hospital: 'HRL',
+        condutor: 'Anderson',
+        modelo: 'troca'
+    };
+    
     // Data atual
     const dataAtual = new Date();
     const diaAtual = dataAtual.getDate();
@@ -1587,6 +1936,9 @@
             
             // Carregar nomes personalizados se existirem
             carregarNomesPersonalizados();
+            
+            // Carregar configuração de descrição
+            carregarConfigDescricao();
             
             // Gerar calendário inicial
             gerarCalendario(mesAtual, anoAtual);
@@ -1696,6 +2048,16 @@
             btnNomes.addEventListener('click', personalizarNomes);
         }
         
+        const btnConfigDescricao = document.getElementById('btn-config-descricao');
+        if (btnConfigDescricao) {
+            btnConfigDescricao.addEventListener('click', configurarDescricao);
+        }
+        
+        const btnTrocaPlantao = document.getElementById('btn-troca-plantao');
+        if (btnTrocaPlantao) {
+            btnTrocaPlantao.addEventListener('click', abrirModalTrocaPlantao);
+        }
+        
         // Botões dos modais
         const btnCopiar = document.getElementById('btn-copiar');
         if (btnCopiar) {
@@ -1749,6 +2111,95 @@
             btnFecharNomes.addEventListener('click', function() {
                 document.getElementById('modal-nomes').style.display = 'none';
             });
+        }
+        
+        // Event listeners para modal de configuração de descrição
+        const btnAplicarConfigDescricao = document.getElementById('btn-aplicar-config-descricao');
+        if (btnAplicarConfigDescricao) {
+            btnAplicarConfigDescricao.addEventListener('click', aplicarConfigDescricao);
+        }
+        
+        const btnFecharConfigDescricao = document.getElementById('btn-fechar-config-descricao');
+        if (btnFecharConfigDescricao) {
+            btnFecharConfigDescricao.addEventListener('click', function() {
+                document.getElementById('modal-config-descricao').style.display = 'none';
+            });
+        }
+        
+        // Event listeners para os inputs do modal de configuração de descrição
+        const hospitalInput = document.getElementById('hospital');
+        if (hospitalInput) {
+            hospitalInput.addEventListener('input', atualizarExemploDescricao);
+        }
+        
+        const condutorInput = document.getElementById('condutor');
+        if (condutorInput) {
+            condutorInput.addEventListener('input', atualizarExemploDescricao);
+        }
+        
+        const modeloSelect = document.getElementById('modelo-descricao');
+        if (modeloSelect) {
+            modeloSelect.addEventListener('change', atualizarExemploDescricao);
+        }
+        
+        // Event listeners para modal de troca de plantão
+        const btnExecutarTroca = document.getElementById('btn-executar-troca');
+        if (btnExecutarTroca) {
+            btnExecutarTroca.addEventListener('click', executarTrocaPlantao);
+        }
+        
+        const btnFecharTroca = document.getElementById('btn-fechar-troca');
+        if (btnFecharTroca) {
+            btnFecharTroca.addEventListener('click', function() {
+                document.getElementById('modal-troca-plantao').style.display = 'none';
+            });
+        }
+        
+        // Event listeners para atualizar a preview da descrição da troca
+        const diaOriginal = document.getElementById('dia-original');
+        if (diaOriginal) {
+            diaOriginal.addEventListener('change', atualizarPreviewTroca);
+        }
+        
+        const diaTroca = document.getElementById('dia-troca');
+        if (diaTroca) {
+            diaTroca.addEventListener('change', atualizarPreviewTroca);
+        }
+        
+        const tipoPlantaoTroca = document.getElementById('tipo-plantao-troca');
+        if (tipoPlantaoTroca) {
+            tipoPlantaoTroca.addEventListener('change', atualizarPreviewTroca);
+        }
+        
+        // Event listeners para edição de descrição da troca
+        const btnEditarDescricaoTroca = document.getElementById('btn-editar-descricao-troca');
+        if (btnEditarDescricaoTroca) {
+            btnEditarDescricaoTroca.addEventListener('click', entrarModoEdicao);
+        }
+        
+        const btnSalvarEdicaoTroca = document.getElementById('btn-salvar-edicao-troca');
+        if (btnSalvarEdicaoTroca) {
+            btnSalvarEdicaoTroca.addEventListener('click', function() {
+                sairModoEdicao(true); // true = salvar
+            });
+        }
+        
+        const btnCancelarEdicaoTroca = document.getElementById('btn-cancelar-edicao-troca');
+        if (btnCancelarEdicaoTroca) {
+            btnCancelarEdicaoTroca.addEventListener('click', function() {
+                sairModoEdicao(false); // false = cancelar
+            });
+        }
+        
+        // Botões para gerar e copiar descrição
+        const btnGerarDescricao = document.getElementById('btn-gerar-descricao');
+        if (btnGerarDescricao) {
+            btnGerarDescricao.addEventListener('click', gerarDescricaoPlantao);
+        }
+        
+        const btnCopiarDescricao = document.getElementById('btn-copiar-descricao');
+        if (btnCopiarDescricao) {
+            btnCopiarDescricao.addEventListener('click', copiarDescricaoGerada);
         }
         
         // Event listeners para botões de cor padrão
@@ -2108,6 +2559,17 @@
             });
         } else {
             listaPlantoes.innerHTML = '<p>Nenhum plantão cadastrado para este dia.</p>';
+        }
+        
+        // Esconder a descrição gerada anteriormente
+        const descricaoGerada = document.getElementById('descricao-gerada');
+        if (descricaoGerada) {
+            descricaoGerada.style.display = 'none';
+        }
+        
+        const btnCopiarDescricao = document.getElementById('btn-copiar-descricao');
+        if (btnCopiarDescricao) {
+            btnCopiarDescricao.style.display = 'none';
         }
         
         const modalPlantao = document.getElementById('modal-plantao');
@@ -2850,6 +3312,460 @@
             legendaItems[8].textContent = labelsPlantao['lefe-dn'];
             legendaItems[9].textContent = labelsPlantao.troca;
         }
+    }
+    
+    // Funções para configurar descrição
+    function configurarDescricao() {
+        // Preencher os valores atuais
+        const hospitalInput = document.getElementById('hospital');
+        if (hospitalInput) hospitalInput.value = configDescricao.hospital;
+        
+        const condutorInput = document.getElementById('condutor');
+        if (condutorInput) condutorInput.value = configDescricao.condutor;
+        
+        const modeloSelect = document.getElementById('modelo-descricao');
+        if (modeloSelect) modeloSelect.value = configDescricao.modelo;
+        
+        // Atualizar o exemplo
+        atualizarExemploDescricao();
+        
+        const modalConfigDescricao = document.getElementById('modal-config-descricao');
+        if (modalConfigDescricao) {
+            modalConfigDescricao.style.display = 'flex';
+        }
+    }
+    
+    function atualizarExemploDescricao() {
+        const hospital = document.getElementById('hospital')?.value || 'HRL';
+        const condutor = document.getElementById('condutor')?.value || 'Anderson';
+        const modelo = document.getElementById('modelo-descricao')?.value || 'troca';
+        
+        let exemplo = '';
+        
+        if (modelo === 'troca') {
+            exemplo = `🔁 Troca de plantão: Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: ${condutor}`;
+        } else {
+            exemplo = `Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: ${condutor}`;
+        }
+        
+        const exemploElement = document.getElementById('exemplo-descricao');
+        if (exemploElement) {
+            exemploElement.textContent = exemplo;
+        }
+    }
+    
+    function aplicarConfigDescricao() {
+        const hospital = document.getElementById('hospital')?.value || 'HRL';
+        const condutor = document.getElementById('condutor')?.value || 'Anderson';
+        const modelo = document.getElementById('modelo-descricao')?.value || 'troca';
+        
+        configDescricao = {
+            hospital: hospital,
+            condutor: condutor,
+            modelo: modelo
+        };
+        
+        // Salvar no localStorage
+        try {
+            localStorage.setItem('configDescricao', JSON.stringify(configDescricao));
+            debugLog("Configuração de descrição salva com sucesso");
+        } catch (error) {
+            console.error("Erro ao salvar configuração de descrição:", error);
+        }
+        
+        const modalConfigDescricao = document.getElementById('modal-config-descricao');
+        if (modalConfigDescricao) {
+            modalConfigDescricao.style.display = 'none';
+        }
+        
+        showNotification("Configuração de descrição aplicada com sucesso!");
+    }
+    
+    function carregarConfigDescricao() {
+        try {
+            const configSalva = localStorage.getItem('configDescricao');
+            if (configSalva) {
+                configDescricao = JSON.parse(configSalva);
+                debugLog("Configuração de descrição carregada com sucesso");
+            }
+        } catch (error) {
+            console.error("Erro ao carregar configuração de descrição:", error);
+        }
+    }
+    
+    // Função para gerar a descrição do plantão
+    function gerarDescricaoPlantao() {
+        if (diaSelecionado === null) return;
+        
+        const chave = `${mesSelecionadoGlobal}-${anoSelecionadoGlobal}`;
+        const diaInfo = calendarioData[chave] && calendarioData[chave][diaSelecionado];
+        const tipos = diaInfo ? diaInfo.tipo : [];
+        
+        if (tipos.length === 0) {
+            showNotification("Adicione pelo menos um plantão para gerar a descrição!");
+            return;
+        }
+        
+        // Pegar o primeiro tipo de plantão do dia
+        const tipoIndex = tipos[0];
+        if (tipoIndex === undefined || tipoIndex < 0 || tipoIndex >= tiposPlantao.length) {
+            showNotification("Tipo de plantão inválido!");
+            return;
+        }
+        
+        const tipo = tiposPlantao[tipoIndex];
+        const label = labelsPlantao[tipo];
+        
+        // Formatar a data do dia
+        const dataDia = new Date(anoSelecionadoGlobal, mesSelecionadoGlobal, diaSelecionado);
+        const dataFormatada = `${dataDia.getDate()}/${(dataDia.getMonth() + 1).toString().padStart(2, '0')}`;
+        
+        // Determinar a duração do plantão
+        let duracao = '12hs';
+        if (tipo === 'dn' || tipo === 'extra-dn' || tipo === 'lefe-dn') {
+            duracao = '24hs';
+        }
+        
+        let descricao = '';
+        
+        if (configDescricao.modelo === 'troca') {
+            // Formato de troca de plantão
+            // Para este exemplo, vamos usar uma data futura fixa (30/10)
+            descricao = `${label} 📅 ${dataFormatada} ➝ ${label} 📅 30/10 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+        } else {
+            // Formato simples
+            descricao = `${label} 📅 ${dataFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+        }
+        
+        const descricaoGeradaElement = document.getElementById('descricao-gerada');
+        if (descricaoGeradaElement) {
+            descricaoGeradaElement.textContent = descricao;
+            descricaoGeradaElement.style.display = 'block';
+        }
+        
+        const btnCopiarDescricao = document.getElementById('btn-copiar-descricao');
+        if (btnCopiarDescricao) {
+            btnCopiarDescricao.style.display = 'block';
+        }
+    }
+    
+    // Função para copiar a descrição gerada
+    function copiarDescricaoGerada() {
+        try {
+            const descricaoGeradaElement = document.getElementById('descricao-gerada');
+            if (!descricaoGeradaElement) {
+                throw new Error("Elemento descricao-gerada não encontrado");
+            }
+            
+            const descricao = descricaoGeradaElement.textContent;
+            
+            // Usar a API de clipboard moderna se disponível
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(descricao)
+                    .then(() => {
+                        showNotification('Descrição copiada para a área de transferência!');
+                    })
+                    .catch(err => {
+                        console.error('Erro ao copiar texto: ', err);
+                        // Fallback para método antigo
+                        fallbackCopyTextToClipboard(descricao);
+                    });
+            } else {
+                // Fallback para navegadores mais antigos
+                fallbackCopyTextToClipboard(descricao);
+            }
+        } catch (error) {
+            console.error("Erro ao copiar descrição:", error);
+            showNotification("Erro ao copiar descrição!", 4000);
+        }
+    }
+    
+    // Função de fallback para copiar texto
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        // Evitar rolagem até o fundo
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            const msg = successful ? 'Descrição copiada para a área de transferência!' : 'Não foi possível copiar a descrição';
+            showNotification(msg);
+        } catch (err) {
+            console.error('Erro ao copiar texto: ', err);
+            showNotification("Erro ao copiar descrição!", 4000);
+        }
+        
+        document.body.removeChild(textArea);
+    }
+    
+    // Função para atualizar a preview da descrição da troca
+    function atualizarPreviewTroca() {
+        const diaOriginal = document.getElementById('dia-original')?.value;
+        const diaTroca = document.getElementById('dia-troca')?.value;
+        const tipoPlantaoIndex = parseInt(document.getElementById('tipo-plantao-troca')?.value || '0');
+        
+        if (!diaOriginal || !diaTroca) {
+            const previewElement = document.getElementById('descricao-troca-preview');
+            if (previewElement) {
+                previewElement.textContent = 'Selecione os dias e o tipo de plantão';
+            }
+            return;
+        }
+        
+        // Obter o tipo de plantão
+        const tipoPlantao = tiposPlantao[tipoPlantaoIndex];
+        const labelPlantao = labelsPlantao[tipoPlantao];
+        
+        // Formatar as datas
+        const dataOriginal = new Date(diaOriginal);
+        const dataTroca = new Date(diaTroca);
+        
+        const dataOriginalFormatada = `${dataOriginal.getDate()}/${(dataOriginal.getMonth() + 1).toString().padStart(2, '0')}`;
+        const dataTrocaFormatada = `${dataTroca.getDate()}/${(dataTroca.getMonth() + 1).toString().padStart(2, '0')}`;
+        
+        // Determinar a duração do plantão
+        let duracao = '12hs';
+        if (tipoPlantao === 'dn' || tipoPlantao === 'extra-dn' || tipoPlantao === 'lefe-dn') {
+            duracao = '24hs';
+        }
+        
+        // Gerar a descrição conforme o modelo configurado
+        let descricao = '';
+        if (configDescricao.modelo === 'troca') {
+            descricao = `🔁 Plantão trocado: ${labelPlantao} 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+        } else {
+            descricao = `${labelPlantao} 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+        }
+        
+        const previewElement = document.getElementById('descricao-troca-preview');
+        if (previewElement) {
+            previewElement.textContent = descricao;
+        }
+    }
+    
+    // Funções para troca de plantão
+    function abrirModalTrocaPlantao() {
+        // Limpar os campos
+        const diaOriginal = document.getElementById('dia-original');
+        const diaTroca = document.getElementById('dia-troca');
+        
+        if (diaOriginal) diaOriginal.value = '';
+        if (diaTroca) diaTroca.value = '';
+        
+        // Atualizar a preview
+        atualizarPreviewTroca();
+        
+        const modalTrocaPlantao = document.getElementById('modal-troca-plantao');
+        if (modalTrocaPlantao) {
+            modalTrocaPlantao.style.display = 'flex';
+        }
+    }
+    
+    // Função para entrar no modo de edição
+    function entrarModoEdicao() {
+        const descricaoPreview = document.getElementById('descricao-troca-preview');
+        const descricaoEditContainer = document.getElementById('descricao-edit-container');
+        const descricaoEditTextarea = document.getElementById('descricao-edit-textarea');
+        const btnEditarDescricao = document.getElementById('btn-editar-descricao-troca');
+        
+        if (descricaoPreview && descricaoEditContainer && descricaoEditTextarea) {
+            // Preencher o textarea com o texto atual
+            descricaoEditTextarea.value = descricaoPreview.textContent;
+            
+            // Mostrar o editor e esconder a visualização
+            descricaoPreview.style.display = 'none';
+            btnEditarDescricao.style.display = 'none';
+            descricaoEditContainer.style.display = 'block';
+            
+            // Adicionar classe para indicar modo de edição
+            descricaoEditContainer.classList.add('editando');
+            
+            // Adicionar classe para indicar que está editando
+            descricaoPreview.classList.add('editando');
+            
+            // Focar no textarea
+            descricaoEditTextarea.focus();
+            descricaoEditTextarea.select();
+            
+            debugLog("Entrou no modo de edição da descrição da troca");
+        }
+    }
+    
+    // Função para sair do modo de edição
+    function sairModoEdicao(salvar = false) {
+        const descricaoPreview = document.getElementById('descricao-troca-preview');
+        const descricaoEditContainer = document.getElementById('descricao-edit-container');
+        const descricaoEditTextarea = document.getElementById('descricao-edit-textarea');
+        const btnEditarDescricao = document.getElementById('btn-editar-descricao-troca');
+        
+        if (descricaoPreview && descricaoEditContainer && descricaoEditTextarea) {
+            if (salvar) {
+                // Atualizar o texto da preview
+                descricaoPreview.textContent = descricaoEditTextarea.value;
+                debugLog("Descrição da troca salva: " + descricaoEditTextarea.value);
+            }
+            
+            // Esconder o editor e mostrar a visualização
+            descricaoEditContainer.style.display = 'none';
+            descricaoPreview.style.display = 'block';
+            btnEditarDescricao.style.display = 'block';
+            
+            // Remover classe de modo de edição
+            descricaoEditContainer.classList.remove('editando');
+            descricaoPreview.classList.remove('editando');
+            
+            debugLog("Saiu do modo de edição da descrição da troca");
+        }
+    }
+    
+    // Função para verificar se está em modo de edição
+    function estaEmModoEdicao() {
+        const descricaoEditContainer = document.getElementById('descricao-edit-container');
+        return descricaoEditContainer && 
+               descricaoEditContainer.classList.contains('editando') && 
+               descricaoEditContainer.style.display !== 'none';
+    }
+    
+    function executarTrocaPlantao() {
+        const diaOriginal = document.getElementById('dia-original')?.value;
+        const diaTroca = document.getElementById('dia-troca')?.value;
+        const tipoPlantaoIndex = parseInt(document.getElementById('tipo-plantao-troca')?.value || '0');
+        
+        if (!diaOriginal || !diaTroca) {
+            showNotification('Selecione ambos os dias para a troca!', 4000);
+            return;
+        }
+        
+        // Obter as datas
+        const dataOriginal = new Date(diaOriginal);
+        const dataTroca = new Date(diaTroca);
+        
+        // Verificar se as datas são diferentes
+        if (dataOriginal.getTime() === dataTroca.getTime()) {
+            showNotification('Os dias da troca devem ser diferentes!', 4000);
+            return;
+        }
+        
+        // Obter mês e ano de cada data
+        const mesOriginal = dataOriginal.getMonth();
+        const anoOriginal = dataOriginal.getFullYear();
+        const diaOriginalNum = dataOriginal.getDate();
+        
+        const mesTroca = dataTroca.getMonth();
+        const anoTroca = dataTroca.getFullYear();
+        const diaTrocaNum = dataTroca.getDate();
+        
+        // Obter o tipo de plantão
+        const tipoPlantao = tiposPlantao[tipoPlantaoIndex];
+        const labelPlantao = labelsPlantao[tipoPlantao];
+        
+        // Formatar as datas para a descrição
+        const dataOriginalFormatada = `${diaOriginalNum}/${(mesOriginal + 1).toString().padStart(2, '0')}`;
+        const dataTrocaFormatada = `${diaTrocaNum}/${(mesTroca + 1).toString().padStart(2, '0')}`;
+        
+        // Determinar a duração do plantão
+        let duracao = '12hs';
+        if (tipoPlantao === 'dn' || tipoPlantao === 'extra-dn' || tipoPlantao === 'lefe-dn') {
+            duracao = '24hs';
+        }
+        
+        // Obter a descrição
+        let descricaoOriginal = '';
+        let descricaoTroca = '';
+        
+        if (estaEmModoEdicao()) {
+            // Usar a descrição editada pelo usuário para o dia original
+            const descricaoEditTextarea = document.getElementById('descricao-edit-textarea');
+            if (descricaoEditTextarea) {
+                descricaoOriginal = descricaoEditTextarea.value.trim();
+                debugLog("Usando descrição editada pelo usuário para o dia original: " + descricaoOriginal);
+            }
+            
+            // Gerar a descrição invertida para o dia da troca
+            descricaoTroca = `🔁 Troca de plantão: ${labelPlantao} (${duracao}) 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            debugLog("Descrição gerada para o dia da troca: " + descricaoTroca);
+        } else {
+            // Gerar descrições automáticas para ambos os dias
+            descricaoOriginal = `${labelPlantao} 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            descricaoTroca = `${labelPlantao} 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            debugLog("Descrições geradas automaticamente");
+        }
+        
+        // Garantir que os meses/anos existam no calendário
+        const chaveOriginal = `${mesOriginal}-${anoOriginal}`;
+        const chaveTroca = `${mesTroca}-${anoTroca}`;
+        
+        if (!calendarioData[chaveOriginal]) {
+            calendarioData[chaveOriginal] = {};
+        }
+        
+        if (!calendarioData[chaveTroca]) {
+            calendarioData[chaveTroca] = {};
+        }
+        
+        // Garantir que os dias existam
+        if (!calendarioData[chaveOriginal][diaOriginalNum]) {
+            calendarioData[chaveOriginal][diaOriginalNum] = { tipo: [], legendas: [] };
+        }
+        
+        if (!calendarioData[chaveTroca][diaTrocaNum]) {
+            calendarioData[chaveTroca][diaTrocaNum] = { tipo: [], legendas: [] };
+        }
+        
+        // 1. Adicionar a anotação de troca no dia original
+        const indexTrocaOriginal = calendarioData[chaveOriginal][diaOriginalNum].tipo.indexOf(6); // 6 é o índice do tipo "troca"
+        if (indexTrocaOriginal === -1) {
+            calendarioData[chaveOriginal][diaOriginalNum].tipo.push(6); // 6 é o índice do tipo "troca"
+            calendarioData[chaveOriginal][diaOriginalNum].legendas.push(descricaoOriginal);
+            debugLog(`Anotação de troca adicionada ao dia original ${diaOriginalNum}/${mesOriginal+1}`);
+        } else {
+            calendarioData[chaveOriginal][diaOriginalNum].legendas[indexTrocaOriginal] = descricaoOriginal;
+            debugLog(`Anotação de troca atualizada no dia original ${diaOriginalNum}/${mesOriginal+1}`);
+        }
+        
+        // 2. Adicionar a anotação de troca no dia da troca
+        const indexTrocaTroca = calendarioData[chaveTroca][diaTrocaNum].tipo.indexOf(6); // 6 é o índice do tipo "troca"
+        if (indexTrocaTroca === -1) {
+            calendarioData[chaveTroca][diaTrocaNum].tipo.push(6); // 6 é o índice do tipo "troca"
+            calendarioData[chaveTroca][diaTrocaNum].legendas.push(descricaoTroca);
+            debugLog(`Anotação de troca adicionada ao dia da troca ${diaTrocaNum}/${mesTroca+1}`);
+        } else {
+            calendarioData[chaveTroca][diaTrocaNum].legendas[indexTrocaTroca] = descricaoTroca;
+            debugLog(`Anotação de troca atualizada no dia da troca ${diaTrocaNum}/${mesTroca+1}`);
+        }
+        
+        // Salvar os dados
+        salvarDados();
+        
+        // Fechar o modal
+        const modalTrocaPlantao = document.getElementById('modal-troca-plantao');
+        if (modalTrocaPlantao) {
+            modalTrocaPlantao.style.display = 'none';
+        }
+        
+        // Atualizar o calendário se estiver mostrando um dos meses envolvidos
+        const mesAtual = parseInt(document.getElementById('mes-selecionado')?.value || mesAtual);
+        const anoAtual = parseInt(document.getElementById('ano-selecionado')?.value || anoAtual);
+        
+        if (mesAtual === mesOriginal && anoAtual === anoOriginal) {
+            gerarCalendario(mesOriginal, anoOriginal);
+            calcularTotais(mesOriginal, anoOriginal);
+        }
+        
+        if (mesAtual === mesTroca && anoAtual === anoTroca) {
+            gerarCalendario(mesTroca, anoTroca);
+            calcularTotais(mesTroca, anoTroca);
+        }
+        
+        showNotification(`Troca de plantão registrada: ${labelPlantao} entre ${dataOriginalFormatada} e ${dataTrocaFormatada}!`);
     }
     
     // Funções para exportar e importar dados
