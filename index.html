@@ -2347,6 +2347,8 @@
             debugLog(`Criando nova entrada para ${chaveMes}`);
         }
         
+        debugLog(`Dados para ${chaveMes}: ${JSON.stringify(calendarioData[chaveMes])}`);
+        
         let tabelaHTML = `
             <div class="calendario-container">
                 <table class="calendario">
@@ -2376,9 +2378,11 @@
                 if ((i === 0 && j < primeiroDiaSemana) || dia > diasNoMes) {
                     tabelaHTML += '<td class="other-month"></td>';
                 } else {
-                    const diaInfo = calendarioData[chaveMes][dia] || { tipo: [] };
+                    const diaInfo = calendarioData[chaveMes][dia] || { tipo: [], legendas: [] };
                     const tipos = diaInfo.tipo || [];
                     const legendas = diaInfo.legendas || [];
+                    
+                    debugLog(`Processando dia ${dia}: tipos=${JSON.stringify(tipos)}, legendas=${JSON.stringify(legendas)}`);
                     
                     const isToday = (dia === diaAtual && mes === mesAtual && ano === anoAtual);
                     const todayClass = isToday ? ' today' : '';
@@ -2394,6 +2398,7 @@
                             const label = labelsPlantao[tiposPlantao[tipo]];
                             const legenda = (legendas && legendas[index]) ? ` - ${legendas[index]}` : '';
                             tabelaHTML += `<span class="plantao-info ${classe}">${label}${legenda}</span>`;
+                            debugLog(`Adicionando plantão: tipo=${tipo}, classe=${classe}, label=${label}, legenda=${legenda}`);
                         }
                     });
                     
@@ -2872,8 +2877,10 @@
             };
             localStorage.setItem('calendarioPlantao', JSON.stringify(dadosCompletos));
             debugLog("Dados salvos com sucesso");
+            debugLog("Dados salvos: " + JSON.stringify(dadosCompletos, null, 2));
         } catch (error) {
             console.error("Erro ao salvar dados:", error);
+            debugLog("Erro ao salvar dados: " + error.message);
         }
     }
     
@@ -2883,6 +2890,8 @@
             if (dados) {
                 const dadosCompletos = JSON.parse(dados);
                 calendarioData = dadosCompletos.calendario || {};
+                
+                debugLog("Dados carregados: " + JSON.stringify(dadosCompletos, null, 2));
                 
                 // Garantir que cada entrada tenha o campo legendas
                 Object.keys(calendarioData).forEach(chave => {
@@ -2907,9 +2916,12 @@
                     labelsPlantao = dadosCompletos.nomes;
                 }
                 debugLog("Dados carregados com sucesso");
+            } else {
+                debugLog("Nenhum dado encontrado no localStorage");
             }
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
+            debugLog("Erro ao carregar dados: " + error.message);
         }
     }
     
@@ -3023,6 +3035,33 @@
     }
     
     function aplicarCoresCSS() {
+        debugLog("Aplicando cores CSS");
+        
+        // Verificar se as cores estão definidas
+        const corSD = getComputedStyle(document.documentElement).getPropertyValue('--sd-color').trim();
+        const corSN = getComputedStyle(document.documentElement).getPropertyValue('--sn-color').trim();
+        const corDN = getComputedStyle(document.documentElement).getPropertyValue('--dn-color').trim();
+        const corExtraSD = getComputedStyle(document.documentElement).getPropertyValue('--extra-sd-color').trim();
+        const corExtraSN = getComputedStyle(document.documentElement).getPropertyValue('--extra-sn-color').trim();
+        const corExtraDN = getComputedStyle(document.documentElement).getPropertyValue('--extra-dn-color').trim();
+        const corLefeSD = getComputedStyle(document.documentElement).getPropertyValue('--lefe-sd-color').trim();
+        const corLefeSN = getComputedStyle(document.documentElement).getPropertyValue('--lefe-sn-color').trim();
+        const corLefeDN = getComputedStyle(document.documentElement).getPropertyValue('--lefe-dn-color').trim();
+        const cortroca = getComputedStyle(document.documentElement).getPropertyValue('--troca-color').trim();
+        const corHoje = getComputedStyle(document.documentElement).getPropertyValue('--today-color').trim();
+        
+        debugLog(`Cor SD: ${corSD}`);
+        debugLog(`Cor SN: ${corSN}`);
+        debugLog(`Cor DN: ${corDN}`);
+        debugLog(`Cor Extra SD: ${corExtraSD}`);
+        debugLog(`Cor Extra SN: ${corExtraSN}`);
+        debugLog(`Cor Extra DN: ${corExtraDN}`);
+        debugLog(`Cor Lefe SD: ${corLefeSD}`);
+        debugLog(`Cor Lefe SN: ${corLefeSN}`);
+        debugLog(`Cor Lefe DN: ${corLefeDN}`);
+        debugLog(`Cor Troca: ${cortroca}`);
+        debugLog(`Cor Hoje: ${corHoje}`);
+        
         // Aplicar as cores CSS personalizadas a todos os elementos
         const styles = `
             .sd, .legenda .sd-bg { background-color: var(--sd-color) !important; }
@@ -3045,6 +3084,8 @@
             document.head.appendChild(styleSheet);
         }
         styleSheet.textContent = styles;
+        
+        debugLog("Cores CSS aplicadas");
     }
     
     // Funções para personalizar valores
@@ -3520,16 +3561,24 @@
             return;
         }
         
+        // CORREÇÃO: Extrair componentes da data diretamente da string
+        const [anoOriginal, mesOriginalStr, diaOriginalStr] = diaOriginal.split('-');
+        const [anoTroca, mesTrocaStr, diaTrocaStr] = diaTroca.split('-');
+        
+        // Converter para números
+        const mesOriginal = parseInt(mesOriginalStr) - 1;
+        const diaOriginalNum = parseInt(diaOriginalStr);
+        
+        const mesTroca = parseInt(mesTrocaStr) - 1;
+        const diaTrocaNum = parseInt(diaTrocaStr);
+        
         // Obter o tipo de plantão
         const tipoPlantao = tiposPlantao[tipoPlantaoIndex];
         const labelPlantao = labelsPlantao[tipoPlantao];
         
         // Formatar as datas
-        const dataOriginal = new Date(diaOriginal);
-        const dataTroca = new Date(diaTroca);
-        
-        const dataOriginalFormatada = `${dataOriginal.getDate()}/${(dataOriginal.getMonth() + 1).toString().padStart(2, '0')}`;
-        const dataTrocaFormatada = `${dataTroca.getDate()}/${(dataTroca.getMonth() + 1).toString().padStart(2, '0')}`;
+        const dataOriginalFormatada = `${diaOriginalNum}/${(mesOriginal + 1).toString().padStart(2, '0')}`;
+        const dataTrocaFormatada = `${diaTrocaNum}/${(mesTroca + 1).toString().padStart(2, '0')}`;
         
         // Determinar a duração do plantão
         let duracao = '12hs';
@@ -3635,33 +3684,34 @@
     }
     
     function executarTrocaPlantao() {
+        debugLog("Iniciando execução da troca de plantão");
+        
         const diaOriginal = document.getElementById('dia-original')?.value;
         const diaTroca = document.getElementById('dia-troca')?.value;
         const tipoPlantaoIndex = parseInt(document.getElementById('tipo-plantao-troca')?.value || '0');
+        
+        debugLog(`Dia original: ${diaOriginal}, Dia troca: ${diaTroca}, Tipo: ${tipoPlantaoIndex}`);
         
         if (!diaOriginal || !diaTroca) {
             showNotification('Selecione ambos os dias para a troca!', 4000);
             return;
         }
         
-        // Obter as datas
-        const dataOriginal = new Date(diaOriginal);
-        const dataTroca = new Date(diaTroca);
+        // Extrair componentes da data
+        const [anoOriginal, mesOriginalStr, diaOriginalStr] = diaOriginal.split('-');
+        const [anoTroca, mesTrocaStr, diaTrocaStr] = diaTroca.split('-');
         
-        // Verificar se as datas são diferentes
-        if (dataOriginal.getTime() === dataTroca.getTime()) {
-            showNotification('Os dias da troca devem ser diferentes!', 4000);
-            return;
-        }
+        // Converter para números
+        const mesOriginal = parseInt(mesOriginalStr) - 1;
+        const diaOriginalNum = parseInt(diaOriginalStr);
+        const anoOriginalNum = parseInt(anoOriginal);
         
-        // Obter mês e ano de cada data
-        const mesOriginal = dataOriginal.getMonth();
-        const anoOriginal = dataOriginal.getFullYear();
-        const diaOriginalNum = dataOriginal.getDate();
+        const mesTroca = parseInt(mesTrocaStr) - 1;
+        const diaTrocaNum = parseInt(diaTrocaStr);
+        const anoTrocaNum = parseInt(anoTroca);
         
-        const mesTroca = dataTroca.getMonth();
-        const anoTroca = dataTroca.getFullYear();
-        const diaTrocaNum = dataTroca.getDate();
+        debugLog(`Data original: ${diaOriginalNum}/${mesOriginal+1}/${anoOriginalNum}`);
+        debugLog(`Data troca: ${diaTrocaNum}/${mesTroca+1}/${anoTrocaNum}`);
         
         // Obter o tipo de plantão
         const tipoPlantao = tiposPlantao[tipoPlantaoIndex];
@@ -3694,30 +3744,37 @@
             debugLog("Descrição gerada para o dia da troca: " + descricaoTroca);
         } else {
             // Gerar descrições automáticas para ambos os dias
-            descricaoOriginal = `${labelPlantao} 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
-            descricaoTroca = `${labelPlantao} 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            descricaoOriginal = `🔁 Troca de plantão: ${labelPlantao} (${duracao}) 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            descricaoTroca = `🔁 Troca de plantão: ${labelPlantao} (${duracao}) 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
             debugLog("Descrições geradas automaticamente");
         }
         
         // Garantir que os meses/anos existam no calendário
-        const chaveOriginal = `${mesOriginal}-${anoOriginal}`;
-        const chaveTroca = `${mesTroca}-${anoTroca}`;
+        const chaveOriginal = `${mesOriginal}-${anoOriginalNum}`;
+        const chaveTroca = `${mesTroca}-${anoTrocaNum}`;
+        
+        debugLog(`Chave original: ${chaveOriginal}`);
+        debugLog(`Chave troca: ${chaveTroca}`);
         
         if (!calendarioData[chaveOriginal]) {
             calendarioData[chaveOriginal] = {};
+            debugLog(`Criada nova entrada para ${chaveOriginal}`);
         }
         
         if (!calendarioData[chaveTroca]) {
             calendarioData[chaveTroca] = {};
+            debugLog(`Criada nova entrada para ${chaveTroca}`);
         }
         
         // Garantir que os dias existam
         if (!calendarioData[chaveOriginal][diaOriginalNum]) {
             calendarioData[chaveOriginal][diaOriginalNum] = { tipo: [], legendas: [] };
+            debugLog(`Criada nova entrada para o dia ${diaOriginalNum} em ${chaveOriginal}`);
         }
         
         if (!calendarioData[chaveTroca][diaTrocaNum]) {
             calendarioData[chaveTroca][diaTrocaNum] = { tipo: [], legendas: [] };
+            debugLog(`Criada nova entrada para o dia ${diaTrocaNum} em ${chaveTroca}`);
         }
         
         // 1. Adicionar a anotação de troca no dia original
@@ -3744,25 +3801,33 @@
         
         // Salvar os dados
         salvarDados();
+        debugLog("Dados salvos com sucesso");
+        
+        // Obter o mês e ano atual do calendário
+        const mesCalendario = parseInt(document.getElementById('mes-selecionado').value);
+        const anoCalendario = parseInt(document.getElementById('ano-selecionado').value);
+        
+        debugLog(`Mês/ano do calendário: ${mesCalendario}/${anoCalendario}`);
+        debugLog(`Mês/ano original: ${mesOriginal}/${anoOriginalNum}`);
+        debugLog(`Mês/ano troca: ${mesTroca}/${anoTrocaNum}`);
+        
+        // Atualizar o calendário se estiver mostrando um dos meses envolvidos
+        if (mesCalendario === mesOriginal && anoCalendario === anoOriginalNum) {
+            debugLog("Atualizando calendário do mês original");
+            gerarCalendario(mesOriginal, anoOriginalNum);
+            calcularTotais(mesOriginal, anoOriginalNum);
+        }
+        
+        if (mesCalendario === mesTroca && anoCalendario === anoTrocaNum) {
+            debugLog("Atualizando calendário do mês da troca");
+            gerarCalendario(mesTroca, anoTrocaNum);
+            calcularTotais(mesTroca, anoTrocaNum);
+        }
         
         // Fechar o modal
         const modalTrocaPlantao = document.getElementById('modal-troca-plantao');
         if (modalTrocaPlantao) {
             modalTrocaPlantao.style.display = 'none';
-        }
-        
-        // Atualizar o calendário se estiver mostrando um dos meses envolvidos
-        const mesAtual = parseInt(document.getElementById('mes-selecionado')?.value || mesAtual);
-        const anoAtual = parseInt(document.getElementById('ano-selecionado')?.value || anoAtual);
-        
-        if (mesAtual === mesOriginal && anoAtual === anoOriginal) {
-            gerarCalendario(mesOriginal, anoOriginal);
-            calcularTotais(mesOriginal, anoOriginal);
-        }
-        
-        if (mesAtual === mesTroca && anoAtual === anoTroca) {
-            gerarCalendario(mesTroca, anoTroca);
-            calcularTotais(mesTroca, anoTroca);
         }
         
         showNotification(`Troca de plantão registrada: ${labelPlantao} entre ${dataOriginalFormatada} e ${dataTrocaFormatada}!`);
