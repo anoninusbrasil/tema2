@@ -1723,7 +1723,7 @@
             
             <div class="exemplo-descricao">
                 <h3>Exemplo de como ficará:</h3>
-                <div class="exemplo-texto" id="exemplo-descricao">🔁 Plantão trocado: Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: Anderson</div>
+                <div class="exemplo-texto" id="exemplo-descricao">Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: Anderson</div>
             </div>
             
             <div class="modal-buttons">
@@ -1768,7 +1768,7 @@
             <div class="descricao-troca-preview">
                 <h3>Descrição da Troca</h3>
                 <div class="descricao-preview-container">
-                    <div class="descricao-preview-texto" id="descricao-troca-preview">SD 12hs 🙋 Condutor: Anderson 🔁 Troca de plantão: SD 📅 21/09 ➝ SD 📅 30/10</div>
+                    <div class="descricao-preview-texto" id="descricao-troca-preview">Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: Anderson</div>
                     <button class="btn-editar-descricao" id="btn-editar-descricao-troca" title="Editar descrição">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -1821,7 +1821,7 @@
             <div id="gerar-descricao">
                 <h3><i class="fas fa-magic"></i> Gerar Descrição Automática</h3>
                 <div style="margin: 10px 0;">
-                    <div class="descricao-gerada" id="descricao-gerada" style="display: none;">SD 12hs 🙋 Condutor: Anderson 🔁 Troca de plantão: SD 📅 21/09 ➝ SD 📅 30/10</div>
+                    <div class="descricao-gerada" id="descricao-gerada" style="display: none;">Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: Anderson</div>
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
                         <button id="btn-gerar-descricao" class="btn-tipo-plantao">
                             <i class="fas fa-magic"></i> Gerar Descrição
@@ -3384,7 +3384,7 @@
         let exemplo = '';
         
         if (modelo === 'troca') {
-            exemplo = `🔁 Troca de plantão: Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: ${condutor}`;
+            exemplo = `🔁 Plantão trocado: Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: ${condutor}`;
         } else {
             exemplo = `Lefe SN 📅 2/09 ➝ Lefe SD 📅 16/09 🙋🏻‍♂️ Condutor: ${condutor}`;
         }
@@ -3740,12 +3740,12 @@
             }
             
             // Gerar a descrição invertida para o dia da troca
-            descricaoTroca = `🔁 Troca de plantão: ${labelPlantao} (${duracao}) 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            descricaoTroca = `${labelPlantao} 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
             debugLog("Descrição gerada para o dia da troca: " + descricaoTroca);
         } else {
             // Gerar descrições automáticas para ambos os dias
-            descricaoOriginal = `🔁 Troca de plantão: ${labelPlantao} (${duracao}) 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
-            descricaoTroca = `🔁 Troca de plantão: ${labelPlantao} (${duracao}) 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            descricaoOriginal = `${labelPlantao} 📅 ${dataOriginalFormatada} ➝ ${labelPlantao} 📅 ${dataTrocaFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
+            descricaoTroca = `${labelPlantao} 📅 ${dataTrocaFormatada} ➝ ${labelPlantao} 📅 ${dataOriginalFormatada} 🙋🏻‍♂️ Condutor: ${configDescricao.condutor}`;
             debugLog("Descrições geradas automaticamente");
         }
         
