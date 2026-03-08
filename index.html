@@ -259,7 +259,12 @@
         }
         .next-bill-value { font-weight: 800; font-size: 1.3rem; color: #f2c94c; }
 
-        /* BOTÃO PAGAR */
+        /* BOTÕES DE PAGAMENTO */
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
         .btn-pay {
             background: white;
             color: #1a1a2e;
@@ -271,15 +276,37 @@
             transition: 0.2s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            width: 100%;
+            flex: 3;
         }
         .btn-pay:hover { background: #cfc3ff; }
+        
+        .btn-reopen {
+            background: #ffd966;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 40px;
+            padding: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex: 1;
+            font-size: 1.2rem;
+        }
+        .btn-reopen:hover { background: #ffb347; }
         
         /* ESTADO PAGO */
         .paid .btn-pay {
             background: #2d2d3f;
             color: #aaa;
             pointer-events: none;
+            opacity: 0.5;
+        }
+        .paid .btn-reopen {
+            background: #4d3f2d;
+            color: #ffd966;
+            pointer-events: auto;
         }
         .paid .bill-value {
             color: #87d68d;
@@ -426,6 +453,47 @@
             margin-top: 4px;
         }
 
+        /* Modal de confirmação */
+        .confirm-modal {
+            max-width: 400px;
+            text-align: center;
+        }
+        .confirm-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .confirm-message {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .confirm-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .confirm-btn {
+            padding: 12px 25px;
+            border-radius: 40px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .confirm-btn.yes {
+            background: #4CAF50;
+            color: white;
+            flex: 1;
+        }
+        .confirm-btn.yes:hover { background: #45a049; }
+        .confirm-btn.no {
+            background: #ff5a5a;
+            color: white;
+            flex: 1;
+        }
+        .confirm-btn.no:hover { background: #ff4444; }
+
         @media (max-width: 400px) {
             .card-container { grid-template-columns: 1fr; }
             h1 { font-size: 1.5rem; }
@@ -479,7 +547,7 @@
             <input type="hidden" id="purchaseId">
             <div class="input-group"><label>Descrição</label><input id="purchaseDesc" placeholder="Ex: Mercado" required></div>
             
-            <!-- NOVO: Opção de escolha entre valor total ou valor da parcela -->
+            <!-- Opção de escolha entre valor total ou valor da parcela -->
             <div class="input-group">
                 <label>Tipo de valor:</label>
                 <div class="radio-group">
@@ -524,6 +592,30 @@
     </div>
 </div>
 
+<!-- MODAL CONFIRMAÇÃO DE PAGAMENTO -->
+<div class="modal-overlay" id="modalConfirmPayment">
+    <div class="modal-content confirm-modal">
+        <div class="confirm-icon">💰</div>
+        <div class="confirm-message" id="confirmPaymentMessage">Confirmar pagamento da fatura?</div>
+        <div class="confirm-buttons">
+            <button class="confirm-btn yes" onclick="confirmPayment()">Sim, pagar</button>
+            <button class="confirm-btn no" onclick="closeConfirmModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAÇÃO DE REABERTURA -->
+<div class="modal-overlay" id="modalConfirmReopen">
+    <div class="modal-content confirm-modal">
+        <div class="confirm-icon">🔄</div>
+        <div class="confirm-message" id="confirmReopenMessage">Reabrir fatura paga?</div>
+        <div class="confirm-buttons">
+            <button class="confirm-btn yes" onclick="confirmReopen()">Sim, reabrir</button>
+            <button class="confirm-btn no" onclick="closeReopenModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // ========== SISTEMA DE PERSISTÊNCIA ==========
     const STORAGE_KEY = 'creditCardAppData';
@@ -550,6 +642,7 @@
 
     let nextId = cards.length > 0 ? Math.max(...cards.map(c => c.id)) + 1 : 1;
     let purchaseNextId = 100;
+    let currentCardId = null; // Para controlar qual cartão está sendo pago/reaberto
     
     // Inicializa IDs internos de compra para evitar duplicatas
     cards.forEach(card => {
@@ -601,7 +694,9 @@
     function calculateTotalMonth() {
         let total = 0;
         cards.forEach(card => {
-            total += calculateCurrentBill(card.purchases);
+            if (!card.paid) { // Só conta faturas não pagas
+                total += calculateCurrentBill(card.purchases);
+            }
         });
         return total;
     }
@@ -703,12 +798,77 @@
                         <span class="next-bill-value">${currency(nextPreview)}</span>
                     </div>
                 </div>
-                <button class="btn-pay" onclick="togglePaid(${card.id})">${card.paid ? 'Pago ✓' : '💰 Marcar como pago'}</button>
+                <div class="payment-actions">
+                    <button class="btn-pay" onclick="openPaymentConfirm(${card.id})">${card.paid ? 'Fatura Paga' : '💰 Pagar fatura'}</button>
+                    ${card.paid ? '<button class="btn-reopen" onclick="openReopenConfirm(' + card.id + ')">↩️</button>' : ''}
+                </div>
             `;
             container.appendChild(cardDiv);
         });
 
         updateTotalMonth();
+    }
+
+    // Funções para os modais de confirmação
+    function openPaymentConfirm(cardId) {
+        const card = cards.find(c => c.id === cardId);
+        if (!card) return;
+        
+        currentCardId = cardId;
+        const currentBill = calculateCurrentBill(card.purchases);
+        
+        if (currentBill === 0) {
+            alert('Não há valor em aberto para pagar nesta fatura.');
+            return;
+        }
+        
+        document.getElementById('confirmPaymentMessage').innerHTML = 
+            `Confirmar pagamento da fatura de <strong>${currency(currentBill)}</strong> do cartão <strong>${card.bank}</strong>?`;
+        document.getElementById('modalConfirmPayment').classList.add('modal-active');
+    }
+
+    function openReopenConfirm(cardId) {
+        const card = cards.find(c => c.id === cardId);
+        if (!card) return;
+        
+        currentCardId = cardId;
+        document.getElementById('confirmReopenMessage').innerHTML = 
+            `Reabrir fatura paga do cartão <strong>${card.bank}</strong>? Isso irá marcá-la como não paga novamente.`;
+        document.getElementById('modalConfirmReopen').classList.add('modal-active');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('modalConfirmPayment').classList.remove('modal-active');
+        currentCardId = null;
+    }
+
+    function closeReopenModal() {
+        document.getElementById('modalConfirmReopen').classList.remove('modal-active');
+        currentCardId = null;
+    }
+
+    function confirmPayment() {
+        if (currentCardId) {
+            const card = cards.find(c => c.id === currentCardId);
+            if (card) {
+                card.paid = true;
+                saveData();
+                render();
+            }
+        }
+        closeConfirmModal();
+    }
+
+    function confirmReopen() {
+        if (currentCardId) {
+            const card = cards.find(c => c.id === currentCardId);
+            if (card) {
+                card.paid = false;
+                saveData();
+                render();
+            }
+        }
+        closeReopenModal();
     }
 
     // modais de cartão
@@ -853,6 +1013,11 @@
             });
         }
         
+        // Se o cartão estava pago e adicionamos uma compra, ele não está mais pago
+        if (card.paid) {
+            card.paid = false;
+        }
+        
         saveData();
         render();
         closePurchaseModal();
@@ -870,15 +1035,6 @@
                 render();
                 closePurchaseModal();
             }
-        }
-    }
-
-    function togglePaid(id) {
-        const card = cards.find(c => c.id === id);
-        if (card) { 
-            card.paid = !card.paid; 
-            saveData();
-            render(); 
         }
     }
 
