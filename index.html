@@ -34,6 +34,88 @@
             gap: 10px;
         }
 
+        /* TELA DE BLOQUEIO (PIN) */
+        .pin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0818;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .pin-container {
+            background: #26223b;
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #6d5ac9;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .pin-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffd966, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pin-subtitle {
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+        .pin-input {
+            background: #19162b;
+            border: 2px solid #4a3f70;
+            color: white;
+            font-size: 2rem;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 10px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .pin-input:focus {
+            border-color: #9f7aff;
+        }
+        .pin-keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .pin-key {
+            background: #2d264d;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            padding: 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .pin-key:hover {
+            background: #4a3f70;
+        }
+        .pin-key.clear {
+            background: #ff5a5a;
+        }
+        .pin-key.enter {
+            background: #4CAF50;
+        }
+        .pin-error {
+            color: #ff8a8a;
+            margin-top: 10px;
+            min-height: 24px;
+        }
+
         /* GRADE DE CARDS */
         .card-container {
             display: grid;
@@ -113,7 +195,11 @@
             gap: 8px;
             align-items: center;
         }
-        .actions { display: flex; gap: 8px; }
+        .actions { 
+            display: flex; 
+            gap: 8px;
+            align-items: center;
+        }
         .action-btn {
             background: rgba(255,255,255,0.1);
             border: none;
@@ -187,6 +273,36 @@
             justify-content: space-around;
         }
 
+        /* Contador de urgência - CORRIGIDO ALINHAMENTO */
+        .urgent-badge {
+            background: #ff5a5a;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+        .warning-badge {
+            background: #ffd966;
+            color: #1a1a2e;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            white-space: nowrap;
+            margin-right: 5px;
+        }
+
         /* HISTÓRICO DE COMPRAS */
         .purchases-section {
             background: rgba(10, 8, 22, 0.6);
@@ -222,6 +338,14 @@
         .purchase-name { font-weight: 600; font-size: 1rem; }
         .purchase-installment { font-size: 0.75rem; opacity: 0.7; }
         .purchase-price { text-align: right; font-weight: 700; color: #f0c4a0; margin-right: 10px; }
+        .purchase-date-badge {
+            font-size: 0.7rem;
+            background: #2d264d;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-top: 2px;
+            display: inline-block;
+        }
         .purchase-actions { display: flex; gap: 6px; }
         .purchase-edit-btn {
             background: rgba(255,255,255,0.1);
@@ -337,27 +461,102 @@
             z-index: 5;
         }
 
-        /* FAB */
-        .fab-add {
+        /* FAB - BOTÃO EXPANSÍVEL */
+        .fab-container {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 64px;
-            height: 64px;
-            background: #9f7aff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .fab-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .fab-menu.hidden {
+            display: none;
+        }
+        
+        .fab-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .fab-item-label {
+            background: #26223b;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: white;
+            border: 1px solid #6d5ac9;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+        
+        .fab-button {
+            width: 56px;
+            height: 56px;
             border: none;
             border-radius: 50%;
-            font-size: 2.2rem;
-            color: black;
+            font-size: 1.5rem;
+            color: white;
             cursor: pointer;
-            box-shadow: 0 6px 20px #7f5fd0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
             transition: 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
         }
-        .fab-add:hover { transform: scale(1.1); background: #b8a2ff; }
+        
+        .fab-button.main {
+            background: #9f7aff;
+            font-size: 2rem;
+            width: 64px;
+            height: 64px;
+            transition: transform 0.3s;
+        }
+        
+        .fab-button.main:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+        
+        .fab-button.add {
+            background: #9f7aff;
+        }
+        
+        .fab-button.export {
+            background: #6d5ac9;
+        }
+        
+        .fab-button.import {
+            background: #4a3f70;
+        }
+        
+        .fab-button:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
         /* MODAIS */
         .modal-overlay {
@@ -502,6 +701,26 @@
         }
         .confirm-btn.no:hover { background: #ff4444; }
 
+        /* Modal de importação */
+        .import-area {
+            background: #19162b;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #6d5ac9;
+        }
+        .import-textarea {
+            width: 100%;
+            min-height: 150px;
+            background: #0f0c1f;
+            color: white;
+            border: 1px solid #4a3f70;
+            border-radius: 12px;
+            padding: 12px;
+            font-family: monospace;
+            margin-bottom: 15px;
+        }
+
         @media (max-width: 400px) {
             .card-container { grid-template-columns: 1fr; }
             h1 { font-size: 1.5rem; }
@@ -509,6 +728,30 @@
     </style>
 </head>
 <body>
+
+<!-- TELA DE BLOQUEIO (PIN) -->
+<div class="pin-overlay" id="pinScreen">
+    <div class="pin-container">
+        <div class="pin-title">🔒 BLOQUEADO</div>
+        <div class="pin-subtitle">Digite o PIN para acessar</div>
+        <input type="password" class="pin-input" id="pinInput" maxlength="4" pattern="\d*" inputmode="numeric" readonly>
+        <div class="pin-keyboard">
+            <button class="pin-key" onclick="addPinDigit('1')">1</button>
+            <button class="pin-key" onclick="addPinDigit('2')">2</button>
+            <button class="pin-key" onclick="addPinDigit('3')">3</button>
+            <button class="pin-key" onclick="addPinDigit('4')">4</button>
+            <button class="pin-key" onclick="addPinDigit('5')">5</button>
+            <button class="pin-key" onclick="addPinDigit('6')">6</button>
+            <button class="pin-key" onclick="addPinDigit('7')">7</button>
+            <button class="pin-key" onclick="addPinDigit('8')">8</button>
+            <button class="pin-key" onclick="addPinDigit('9')">9</button>
+            <button class="pin-key clear" onclick="clearPin()">C</button>
+            <button class="pin-key" onclick="addPinDigit('0')">0</button>
+            <button class="pin-key enter" onclick="checkPin()">↵</button>
+        </div>
+        <div class="pin-error" id="pinError"></div>
+    </div>
+</div>
 
 <h1>💳 Meus Cartões</h1>
 
@@ -519,7 +762,24 @@
     <span class="total-value" id="totalMonthValue">R$ 0,00</span>
 </div>
 
-<button class="fab-add" onclick="openCardModal()">+</button>
+<!-- FAB EXPANSÍVEL -->
+<div class="fab-container">
+    <div class="fab-menu hidden" id="fabMenu">
+        <div class="fab-item">
+            <span class="fab-item-label">💳 Novo Cartão</span>
+            <button class="fab-button add" onclick="openCardModal(); toggleFab()" title="Novo Cartão">💳</button>
+        </div>
+        <div class="fab-item">
+            <span class="fab-item-label">💾 Exportar</span>
+            <button class="fab-button export" onclick="exportBackup(); toggleFab()" title="Exportar Backup">💾</button>
+        </div>
+        <div class="fab-item">
+            <span class="fab-item-label">📂 Importar</span>
+            <button class="fab-button import" onclick="openImportModal(); toggleFab()" title="Importar Backup">📂</button>
+        </div>
+    </div>
+    <button class="fab-button main" onclick="toggleFab()" id="fabMain">👆🏻</button>
+</div>
 
 <!-- MODAL CARD -->
 <div class="modal-overlay" id="modalCard">
@@ -531,9 +791,9 @@
         <form onsubmit="saveCard(event)">
             <input type="hidden" id="cardId">
             <div class="input-group"><label>Banco</label><input id="bankName" placeholder="Ex: Nubank" required></div>
-            <div class="input-group"><label>Limite Total (R$)</label><input type="number" id="totalLimit" placeholder="5000" required></div>
-            <div class="input-group"><label>Fechamento</label><input id="closeDate" placeholder="Ex: 10" required></div>
-            <div class="input-group"><label>Vencimento</label><input id="dueDate" placeholder="Ex: 20" required></div>
+            <div class="input-group"><label>Limite Total (R$)</label><input type="text" id="totalLimit" placeholder="5.000,00" oninput="applyCurrencyMask(this)" required></div>
+            <div class="input-group"><label>Fechamento (dia)</label><input id="closeDate" placeholder="Ex: 10" required></div>
+            <div class="input-group"><label>Vencimento (dia)</label><input id="dueDate" placeholder="Ex: 20" required></div>
             
             <div class="btn-actions-row">
                 <button class="btn-delete-modal" id="btnDeleteCard" onclick="deleteCard()" type="button">🗑️</button>
@@ -553,7 +813,10 @@
         <form onsubmit="savePurchase(event)">
             <input type="hidden" id="purchaseCardId">
             <input type="hidden" id="purchaseId">
+            
             <div class="input-group"><label>Descrição</label><input id="purchaseDesc" placeholder="Ex: Mercado" required></div>
+            
+            <div class="input-group"><label>Data da Compra</label><input type="date" id="purchaseDate" required></div>
             
             <!-- Opção de escolha entre valor total ou valor da parcela -->
             <div class="input-group">
@@ -570,7 +833,7 @@
             
             <div class="input-group">
                 <label id="amountLabel">Valor total (R$)</label>
-                <input type="number" id="purchaseAmount" step="0.01" placeholder="150.00" required>
+                <input type="text" id="purchaseAmount" placeholder="150,00" oninput="applyCurrencyMask(this)" required>
             </div>
             
             <div class="input-group"><label>Número de Parcelas</label>
@@ -600,6 +863,21 @@
     </div>
 </div>
 
+<!-- MODAL IMPORTAÇÃO -->
+<div class="modal-overlay" id="modalImport">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">📂 Importar Backup</span>
+            <button class="close-modal" onclick="closeImportModal()">×</button>
+        </div>
+        <div class="import-area">
+            <textarea class="import-textarea" id="importData" placeholder="Cole aqui o JSON do backup..."></textarea>
+            <button class="btn-save" onclick="importBackup()" style="width:100%">Importar Dados</button>
+        </div>
+        <div class="help-text" style="text-align:center">⚠️ Isso substituirá todos os dados atuais!</div>
+    </div>
+</div>
+
 <!-- MODAL CONFIRMAÇÃO DE PAGAMENTO -->
 <div class="modal-overlay" id="modalConfirmPayment">
     <div class="modal-content confirm-modal">
@@ -625,23 +903,92 @@
 </div>
 
 <script>
+    // ========== CONFIGURAÇÃO DO PIN ==========
+    const CORRECT_PIN = "1234"; // PIN padrão - pode ser alterado aqui
+    let pinAttempt = "";
+
     // ========== SISTEMA DE PERSISTÊNCIA ==========
     const STORAGE_KEY = 'creditCardAppData';
     const HISTORY_VISIBILITY_KEY = 'cardHistoryVisibility';
+    const PIN_UNLOCKED_KEY = 'pinUnlocked';
 
-    // Tenta carregar dados do LocalStorage, senão usa o padrão
+    // Verifica se já estava desbloqueado nesta sessão
+    if (!sessionStorage.getItem(PIN_UNLOCKED_KEY)) {
+        document.getElementById('pinScreen').style.display = 'flex';
+    } else {
+        document.getElementById('pinScreen').style.display = 'none';
+    }
+
+    function addPinDigit(digit) {
+        if (pinAttempt.length < 4) {
+            pinAttempt += digit;
+            document.getElementById('pinInput').value = pinAttempt;
+        }
+    }
+
+    function clearPin() {
+        pinAttempt = "";
+        document.getElementById('pinInput').value = "";
+        document.getElementById('pinError').innerText = "";
+    }
+
+    function checkPin() {
+        if (pinAttempt === CORRECT_PIN) {
+            sessionStorage.setItem(PIN_UNLOCKED_KEY, 'true');
+            document.getElementById('pinScreen').style.display = 'none';
+            clearPin();
+        } else {
+            document.getElementById('pinError').innerText = "PIN incorreto! Tente novamente.";
+            clearPin();
+        }
+    }
+
+    // ========== FUNÇÃO DO FAB EXPANSÍVEL ==========
+    function toggleFab() {
+        const menu = document.getElementById('fabMenu');
+        const mainBtn = document.getElementById('fabMain');
+        menu.classList.toggle('hidden');
+        
+        if (menu.classList.contains('hidden')) {
+            mainBtn.innerHTML = '👆🏻';
+        } else {
+            mainBtn.innerHTML = '✕';
+        }
+    }
+
+    // ========== MÁSCARA DE MOEDA ==========
+    function applyCurrencyMask(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value === '') {
+            input.value = '';
+            return;
+        }
+        value = (parseInt(value) / 100).toFixed(2);
+        input.value = formatCurrency(value);
+    }
+
+    function formatCurrency(value) {
+        return parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function parseCurrency(value) {
+        if (!value) return 0;
+        return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+    }
+
+    // ========== SISTEMA DE DADOS ==========
     let cards = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
         {
             id: 1, bank: 'Nubank', limit: 6000, close: '12', due: '22', paid: false,
             purchases: [
-                { id: 'p1', desc: 'Mercado Livre', amount: 576.50, installments: 1 },
-                { id: 'p2', desc: 'Celular parcelado', amount: 500, installments: 2 },
-                { id: 'p3', desc: 'Tênis', amount: 300, installments: 3 }
+                { id: 'p1', desc: 'Mercado Livre', amount: 576.50, installments: 1, date: '2024-03-15' },
+                { id: 'p2', desc: 'Celular parcelado', amount: 1000, installments: 2, date: '2024-03-10' },
+                { id: 'p3', desc: 'Tênis', amount: 900, installments: 3, date: '2024-03-05' }
             ]
         },
         {
             id: 2, bank: 'Itaú', limit: 2000, close: '05', due: '15', paid: false,
-            purchases: [ { id: 'p4', desc: 'Almoço', amount: 89.90, installments: 1 } ]
+            purchases: [ { id: 'p4', desc: 'Almoço', amount: 89.90, installments: 1, date: '2024-03-18' } ]
         },
         {
             id: 3, bank: 'Inter', limit: 10000, close: '28', due: '07', paid: true,
@@ -649,14 +996,12 @@
         }
     ];
 
-    // Estado de visibilidade do histórico para cada cartão
     let historyVisibility = JSON.parse(localStorage.getItem(HISTORY_VISIBILITY_KEY)) || {};
-
     let nextId = cards.length > 0 ? Math.max(...cards.map(c => c.id)) + 1 : 1;
     let purchaseNextId = 100;
-    let currentCardId = null; // Para controlar qual cartão está sendo pago/reaberto
+    let currentCardId = null;
     
-    // Inicializa IDs internos de compra para evitar duplicatas
+    // Inicializa IDs
     cards.forEach(card => {
         card.purchases.forEach(p => {
             const numId = parseInt(p.id.replace('p', ''));
@@ -664,58 +1009,103 @@
         });
     });
 
-    // Função para salvar no LocalStorage
     function saveData() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
         localStorage.setItem(HISTORY_VISIBILITY_KEY, JSON.stringify(historyVisibility));
     }
 
-    // Função para alternar visibilidade do histórico
     function toggleHistory(cardId) {
         historyVisibility[cardId] = !historyVisibility[cardId];
         saveData();
         render();
     }
 
-    // helpers
     const formatBR = (val) => val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const currency = (val) => `R$ ${formatBR(val)}`;
 
-    // CORREÇÃO LÓGICA:
-    // 1. Fatura Atual: Soma das parcelas do mês.
-    // 2. Limite Usado: Soma do VALOR TOTAL das compras (o banco "trava" o total antecipadamente).
-    
-    function calculateCurrentBill(purchases) {
+    // ========== CÁLCULO INTELIGENTE DE PARCELAS ==========
+    function calculateCurrentBill(purchases, closeDay, referenceDate = new Date()) {
         let total = 0;
+        const currentMonth = referenceDate.getMonth();
+        const currentYear = referenceDate.getFullYear();
+        
         purchases.forEach(p => {
+            if (!p.date) return;
+            
+            const purchaseDate = new Date(p.date + 'T12:00:00'); // Adiciona hora para evitar problemas de fuso
             const parcela = p.amount / p.installments;
-            total += parcela;
+            
+            // Calcula quantas parcelas já entraram na fatura
+            for (let i = 0; i < p.installments; i++) {
+                const installmentDate = new Date(purchaseDate);
+                installmentDate.setMonth(purchaseDate.getMonth() + i);
+                
+                // Verifica se esta parcela cai na fatura atual
+                const installmentMonth = installmentDate.getMonth();
+                const installmentYear = installmentDate.getFullYear();
+                const installmentDay = installmentDate.getDate();
+                
+                if (installmentYear === currentYear && installmentMonth === currentMonth) {
+                    if (installmentDay <= closeDay) {
+                        total += parcela;
+                    }
+                }
+            }
         });
         return total;
     }
 
-    // Calcula o quanto do limite está comprometido (Valor Total das dívidas)
     function calculateTotalDebt(purchases) {
         return purchases.reduce((sum, p) => sum + p.amount, 0);
     }
 
-    // Previsão próxima fatura (considerando que as parcelas continuam)
-    function calculateNextBillPreview(purchases) {
+    function calculateNextBillPreview(purchases, closeDay) {
         let next = 0;
+        const today = new Date();
+        const nextMonth = new Date(today);
+        nextMonth.setMonth(today.getMonth() + 1);
+        
         purchases.forEach(p => {
-            if (p.installments > 1) {
-                const parcela = p.amount / p.installments;
-                next += parcela;
+            if (!p.date) return;
+            
+            const purchaseDate = new Date(p.date + 'T12:00:00');
+            const parcela = p.amount / p.installments;
+            
+            for (let i = 0; i < p.installments; i++) {
+                const installmentDate = new Date(purchaseDate);
+                installmentDate.setMonth(purchaseDate.getMonth() + i);
+                
+                // Verifica se cai na próxima fatura
+                if (installmentDate.getMonth() === nextMonth.getMonth() && 
+                    installmentDate.getFullYear() === nextMonth.getFullYear()) {
+                    next += parcela;
+                }
             }
         });
         return next;
     }
 
+    function getDaysUntilClose(closeDay) {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        
+        let closeDate = new Date(currentYear, currentMonth, parseInt(closeDay));
+        
+        if (today > closeDate) {
+            closeDate.setMonth(closeDate.getMonth() + 1);
+        }
+        
+        const diffTime = closeDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    }
+
     function calculateTotalMonth() {
         let total = 0;
         cards.forEach(card => {
-            if (!card.paid) { // Só conta faturas não pagas
-                total += calculateCurrentBill(card.purchases);
+            if (!card.paid) {
+                total += calculateCurrentBill(card.purchases, card.close);
             }
         });
         return total;
@@ -726,7 +1116,6 @@
         document.getElementById('totalMonthValue').innerText = currency(total);
     }
 
-    // Função para atualizar o texto do label baseado na seleção
     function toggleValueType() {
         const isTotal = document.querySelector('input[name="valueType"]:checked').value === 'total';
         const amountLabel = document.getElementById('amountLabel');
@@ -741,18 +1130,18 @@
         }
     }
 
-    // render completo
     function render() {
         const container = document.getElementById('cardContainer');
         container.innerHTML = '';
 
         cards.forEach(card => {
-            const currentBill = calculateCurrentBill(card.purchases);
+            const currentBill = calculateCurrentBill(card.purchases, card.close);
             const totalDebt = calculateTotalDebt(card.purchases);
             
             const available = card.limit - totalDebt;
             const usedPercent = Math.max(0, Math.min((totalDebt / card.limit) * 100, 100));
-            const nextPreview = calculateNextBillPreview(card.purchases);
+            const nextPreview = calculateNextBillPreview(card.purchases, card.close);
+            const daysToClose = getDaysUntilClose(card.close);
             
             let availableClass = 'available-positive';
             if (available < 0) availableClass = 'available-negative';
@@ -761,17 +1150,20 @@
             const cardDiv = document.createElement('div');
             cardDiv.className = `credit-card ${card.paid ? 'paid' : ''}`;
 
-            const isHistoryVisible = historyVisibility[card.id] !== false; // Padrão é visível
+            const isHistoryVisible = historyVisibility[card.id] !== false;
 
             let purchasesHtml = '';
             card.purchases.forEach(p => {
                 const parcela = p.amount / p.installments;
                 const parcelaInfo = p.installments > 1 ? `${p.installments}x de ${currency(parcela)}` : 'à vista';
+                const purchaseDate = p.date ? new Date(p.date + 'T12:00:00').toLocaleDateString('pt-BR') : 'Data não informada';
+                
                 purchasesHtml += `
                     <div class="purchase-item">
                         <div class="purchase-desc">
                             <span class="purchase-name">${p.desc}</span>
                             <span class="purchase-installment">${parcelaInfo}</span>
+                            <span class="purchase-date-badge">📅 ${purchaseDate}</span>
                         </div>
                         <div class="purchase-price">${currency(p.amount)}</div>
                         <div class="purchase-actions">
@@ -781,11 +1173,20 @@
                 `;
             });
 
+            // Badge de urgência - CORRIGIDO ALINHAMENTO
+            let urgencyBadge = '';
+            if (daysToClose <= 3) {
+                urgencyBadge = '<span class="urgent-badge">🔴 Fecha em ' + daysToClose + ' dias</span>';
+            } else if (daysToClose <= 7) {
+                urgencyBadge = '<span class="warning-badge">🟡 Fecha em ' + daysToClose + ' dias</span>';
+            }
+
             cardDiv.innerHTML = `
                 <div>
                     <div class="card-header">
                         <span class="bank-name">🏦 ${card.bank}</span>
                         <div class="actions">
+                            ${urgencyBadge}
                             <button class="action-btn toggle-history" onclick="toggleHistory(${card.id})" title="${isHistoryVisible ? 'Ocultar' : 'Mostrar'} histórico">
                                 ${isHistoryVisible ? '👁️' : '👁️‍🗨️'}
                             </button>
@@ -834,13 +1235,54 @@
         updateTotalMonth();
     }
 
+    // Funções de backup
+    function exportBackup() {
+        const dataStr = JSON.stringify(cards, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-cartoes-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function openImportModal() {
+        document.getElementById('modalImport').classList.add('modal-active');
+    }
+
+    function closeImportModal() {
+        document.getElementById('modalImport').classList.remove('modal-active');
+        document.getElementById('importData').value = '';
+    }
+
+    function importBackup() {
+        try {
+            const importText = document.getElementById('importData').value;
+            const importedData = JSON.parse(importText);
+            
+            if (Array.isArray(importedData)) {
+                cards = importedData;
+                nextId = Math.max(...cards.map(c => c.id), 0) + 1;
+                saveData();
+                render();
+                closeImportModal();
+                alert('Backup importado com sucesso!');
+            } else {
+                alert('Formato de backup inválido!');
+            }
+        } catch (e) {
+            alert('Erro ao importar: ' + e.message);
+        }
+    }
+
     // Funções para os modais de confirmação
     function openPaymentConfirm(cardId) {
         const card = cards.find(c => c.id === cardId);
         if (!card) return;
         
         currentCardId = cardId;
-        const currentBill = calculateCurrentBill(card.purchases);
+        const currentBill = calculateCurrentBill(card.purchases, card.close);
         
         if (currentBill === 0) {
             alert('Não há valor em aberto para pagar nesta fatura.');
@@ -896,7 +1338,7 @@
         closeReopenModal();
     }
 
-    // modais de cartão
+    // Modais de cartão
     function openCardModal(editId = null) {
         const modal = document.getElementById('modalCard');
         const deleteBtn = document.getElementById('btnDeleteCard');
@@ -911,7 +1353,7 @@
             if (c) {
                 document.getElementById('cardId').value = c.id;
                 document.getElementById('bankName').value = c.bank;
-                document.getElementById('totalLimit').value = c.limit;
+                document.getElementById('totalLimit').value = c.limit.toFixed(2).replace('.', ',');
                 document.getElementById('closeDate').value = c.close;
                 document.getElementById('dueDate').value = c.due;
             }
@@ -923,14 +1365,20 @@
             document.getElementById('dueDate').value = '';
         }
     }
-    function closeCardModal() { document.getElementById('modalCard').classList.remove('modal-active'); }
-    function editCard(id) { openCardModal(id); }
+    
+    function closeCardModal() { 
+        document.getElementById('modalCard').classList.remove('modal-active'); 
+    }
+    
+    function editCard(id) { 
+        openCardModal(id); 
+    }
 
     function saveCard(e) {
         e.preventDefault();
         const id = document.getElementById('cardId').value;
         const bank = document.getElementById('bankName').value;
-        const limit = parseFloat(document.getElementById('totalLimit').value);
+        const limit = parseCurrency(document.getElementById('totalLimit').value);
         const close = document.getElementById('closeDate').value;
         const due = document.getElementById('dueDate').value;
 
@@ -954,7 +1402,6 @@
         const id = document.getElementById('cardId').value;
         if(id && confirm("Tem certeza que deseja excluir este cartão e todo seu histórico?")) {
             cards = cards.filter(c => c.id != id);
-            // Remove também a preferência de visibilidade
             delete historyVisibility[id];
             saveData();
             render();
@@ -962,7 +1409,7 @@
         }
     }
 
-    // modal compra
+    // Modal compra
     function openPurchaseModal(cardId, purchaseId = null) {
         const modal = document.getElementById('modalPurchase');
         const deleteBtn = document.getElementById('btnDeletePurchase');
@@ -972,6 +1419,9 @@
         
         deleteBtn.style.display = purchaseId ? 'flex' : 'none';
         
+        // Data padrão = hoje
+        const today = new Date().toISOString().split('T')[0];
+        
         if (purchaseId) {
             document.getElementById('modalPurchaseTitle').innerText = '✏️ Editar Compra';
             const card = cards.find(c => c.id === cardId);
@@ -979,18 +1429,19 @@
             if (purchase) {
                 document.getElementById('purchaseId').value = purchase.id;
                 document.getElementById('purchaseDesc').value = purchase.desc;
+                document.getElementById('purchaseDate').value = purchase.date || today;
                 
-                // Na edição, sempre usamos valor total (não temos como saber como foi inserido originalmente)
                 document.querySelector('input[name="valueType"][value="total"]').checked = true;
                 toggleValueType();
                 
-                document.getElementById('purchaseAmount').value = purchase.amount;
+                document.getElementById('purchaseAmount').value = purchase.amount.toFixed(2).replace('.', ',');
                 document.getElementById('purchaseInstallments').value = purchase.installments;
             }
         } else {
             document.getElementById('modalPurchaseTitle').innerText = '🛒 Nova Compra';
             document.getElementById('purchaseId').value = '';
             document.getElementById('purchaseDesc').value = '';
+            document.getElementById('purchaseDate').value = today;
             document.getElementById('purchaseAmount').value = '';
             document.getElementById('purchaseInstallments').value = '1';
             document.querySelector('input[name="valueType"][value="total"]').checked = true;
@@ -1002,23 +1453,25 @@
         openPurchaseModal(cardId, purchaseId);
     }
 
-    function closePurchaseModal() { document.getElementById('modalPurchase').classList.remove('modal-active'); }
+    function closePurchaseModal() { 
+        document.getElementById('modalPurchase').classList.remove('modal-active'); 
+    }
 
     function savePurchase(e) {
         e.preventDefault();
         const cardId = parseInt(document.getElementById('purchaseCardId').value);
         const purchaseId = document.getElementById('purchaseId').value;
         const desc = document.getElementById('purchaseDesc').value;
-        const amount = parseFloat(document.getElementById('purchaseAmount').value);
+        const purchaseDate = document.getElementById('purchaseDate').value;
+        const amount = parseCurrency(document.getElementById('purchaseAmount').value);
         const installments = parseInt(document.getElementById('purchaseInstallments').value);
         const valueType = document.querySelector('input[name="valueType"]:checked').value;
 
-        // Calcula o valor total baseado no tipo selecionado
         let totalAmount;
         if (valueType === 'total') {
-            totalAmount = amount; // amount é o valor total
+            totalAmount = amount;
         } else {
-            totalAmount = amount * installments; // amount é o valor da parcela
+            totalAmount = amount * installments;
         }
 
         const card = cards.find(c => c.id === cardId);
@@ -1030,17 +1483,18 @@
                 purchase.desc = desc;
                 purchase.amount = totalAmount;
                 purchase.installments = installments;
+                purchase.date = purchaseDate;
             }
         } else {
             card.purchases.push({
                 id: 'p' + purchaseNextId++,
                 desc, 
                 amount: totalAmount, 
-                installments
+                installments,
+                date: purchaseDate
             });
         }
         
-        // Se o cartão estava pago e adicionamos uma compra, ele não está mais pago
         if (card.paid) {
             card.paid = false;
         }
@@ -1065,7 +1519,7 @@
         }
     }
 
-    // inicialização
+    // Inicialização
     render();
 </script>
 </body>
