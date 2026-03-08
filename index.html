@@ -67,11 +67,9 @@
             font-weight: 600;
             color: #ddd9ff;
         }
-        .total-label span {
-            font-size: 1.4rem;
-        }
+        .total-label span { font-size: 1.4rem; }
         .total-value {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 800;
             background: linear-gradient(135deg, #ffd966, #ffb347);
             -webkit-background-clip: text;
@@ -91,6 +89,8 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            position: relative; /* Necessário para o selo PAGO */
+            overflow: hidden;
         }
 
         .credit-card:hover {
@@ -113,10 +113,7 @@
             gap: 8px;
             align-items: center;
         }
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
+        .actions { display: flex; gap: 8px; }
         .action-btn {
             background: rgba(255,255,255,0.1);
             border: none;
@@ -131,10 +128,8 @@
             align-items: center;
             justify-content: center;
         }
-        .action-btn:hover {
-            background: #6d5ac9;
-            color: white;
-        }
+        .action-btn:hover { background: #6d5ac9; color: white; }
+        .action-btn.delete:hover { background: #ff5a5a; }
 
         /* área de totais */
         .totals-grid {
@@ -151,10 +146,7 @@
             align-items: baseline;
             flex-wrap: wrap;
         }
-        .bill-label {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
+        .bill-label { font-size: 0.9rem; opacity: 0.7; }
         .bill-value {
             font-size: 2rem;
             font-weight: 700;
@@ -167,6 +159,8 @@
         }
         .available-positive { color: #9effb4; font-weight: 600; }
         .available-warning { color: #ffd966; font-weight: 600; }
+        .available-negative { color: #ff8a8a; font-weight: 600; }
+        
         .limit-bar {
             height: 8px;
             background: rgba(0,0,0,0.4);
@@ -216,30 +210,11 @@
             align-items: center;
             border-left: 4px solid #6d5ac9;
         }
-        .purchase-desc {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1;
-        }
-        .purchase-name {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        .purchase-installment {
-            font-size: 0.75rem;
-            opacity: 0.7;
-        }
-        .purchase-price {
-            text-align: right;
-            font-weight: 700;
-            color: #f0c4a0;
-            margin-right: 10px;
-        }
-        .purchase-actions {
-            display: flex;
-            gap: 6px;
-        }
+        .purchase-desc { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .purchase-name { font-weight: 600; font-size: 1rem; }
+        .purchase-installment { font-size: 0.75rem; opacity: 0.7; }
+        .purchase-price { text-align: right; font-weight: 700; color: #f0c4a0; margin-right: 10px; }
+        .purchase-actions { display: flex; gap: 6px; }
         .purchase-edit-btn {
             background: rgba(255,255,255,0.1);
             border: none;
@@ -254,10 +229,9 @@
             align-items: center;
             justify-content: center;
         }
-        .purchase-edit-btn:hover {
-            background: #7e6ad6;
-            color: white;
-        }
+        .purchase-edit-btn:hover { background: #7e6ad6; color: white; }
+        .purchase-edit-btn.delete:hover { background: #ff5a5a; color: white; }
+
         .btn-add-purchase {
             background: rgba(255,255,240,0.05);
             border: 1px dashed rgba(255,255,255,0.2);
@@ -270,10 +244,7 @@
             margin-top: 8px;
             transition: 0.2s;
         }
-        .btn-add-purchase:hover {
-            background: #3f3a6b;
-            color: white;
-        }
+        .btn-add-purchase:hover { background: #3f3a6b; color: white; }
 
         /* preview da próxima fatura */
         .next-bill-preview {
@@ -286,11 +257,7 @@
             font-size: 0.95rem;
             border: 1px solid #5f4b9e;
         }
-        .next-bill-value {
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: #f2c94c;
-        }
+        .next-bill-value { font-weight: 800; font-size: 1.3rem; color: #f2c94c; }
 
         /* BOTÃO PAGAR */
         .btn-pay {
@@ -304,10 +271,11 @@
             transition: 0.2s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            width: 100%;
         }
-        .btn-pay:hover {
-            background: #cfc3ff;
-        }
+        .btn-pay:hover { background: #cfc3ff; }
+        
+        /* ESTADO PAGO */
         .paid .btn-pay {
             background: #2d2d3f;
             color: #aaa;
@@ -377,6 +345,7 @@
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
+            position: relative;
         }
         .modal-header {
             display: flex;
@@ -388,9 +357,7 @@
         .close-modal {
             background: none; border: none; color: white; font-size: 2rem; cursor: pointer;
         }
-        .input-group {
-            margin-bottom: 15px;
-        }
+        .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 6px; opacity: 0.8; }
         .input-group input, .input-group select {
             width: 100%;
@@ -400,16 +367,43 @@
             background: #19162b;
             color: white;
         }
+        
+        .btn-actions-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
         .btn-save {
             background: #9f7aff;
             color: black;
             font-weight: bold;
             padding: 14px;
-            width: 100%;
+            flex: 1;
             border-radius: 40px;
             border: none;
-            margin-top: 15px;
             cursor: pointer;
+        }
+        
+        .btn-delete-modal {
+            background: #ff5a5a;
+            color: white;
+            font-weight: bold;
+            padding: 14px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            width: 50px; /* Largura fixa para ícone */
+            display: none; /* Só aparece se estiver editando */
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Responsividade ajuste */
+        @media (max-width: 400px) {
+            .card-container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -419,10 +413,8 @@
 
 <div class="card-container" id="cardContainer"></div>
 
-<!-- TOTAL GASTO NO MÊS (AGORA NO RODAPÉ) -->
 <div class="total-month-footer" id="totalMonthContainer">
-    <div class="total-label">
-        <span>💰</span> Total:</div>
+    <div class="total-label"><span>💰</span> Total do Mês:</div>
     <span class="total-value" id="totalMonthValue">R$ 0,00</span>
 </div>
 
@@ -437,16 +429,20 @@
         </div>
         <form onsubmit="saveCard(event)">
             <input type="hidden" id="cardId">
-            <div class="input-group"><label>Banco</label><input id="bankName" required></div>
-            <div class="input-group"><label>Limite Total (R$)</label><input type="number" id="totalLimit" required></div>
-            <div class="input-group"><label>Fechamento</label><input id="closeDate" placeholder="10/Out" required></div>
-            <div class="input-group"><label>Vencimento</label><input id="dueDate" placeholder="20/Out" required></div>
-            <button class="btn-save" type="submit">Salvar</button>
+            <div class="input-group"><label>Banco</label><input id="bankName" placeholder="Ex: Nubank" required></div>
+            <div class="input-group"><label>Limite Total (R$)</label><input type="number" id="totalLimit" placeholder="5000" required></div>
+            <div class="input-group"><label>Fechamento</label><input id="closeDate" placeholder="Ex: 10" required></div>
+            <div class="input-group"><label>Vencimento</label><input id="dueDate" placeholder="Ex: 20" required></div>
+            
+            <div class="btn-actions-row">
+                <button class="btn-delete-modal" id="btnDeleteCard" onclick="deleteCard()" type="button">🗑️</button>
+                <button class="btn-save" type="submit">Salvar</button>
+            </div>
         </form>
     </div>
 </div>
 
-<!-- MODAL COMPRA (lançamento/edição) -->
+<!-- MODAL COMPRA -->
 <div class="modal-overlay" id="modalPurchase">
     <div class="modal-content">
         <div class="modal-header">
@@ -456,8 +452,8 @@
         <form onsubmit="savePurchase(event)">
             <input type="hidden" id="purchaseCardId">
             <input type="hidden" id="purchaseId">
-            <div class="input-group"><label>Descrição</label><input id="purchaseDesc" required></div>
-            <div class="input-group"><label>Valor total (R$)</label><input type="number" id="purchaseAmount" step="0.01" required></div>
+            <div class="input-group"><label>Descrição</label><input id="purchaseDesc" placeholder="Ex: Mercado" required></div>
+            <div class="input-group"><label>Valor total (R$)</label><input type="number" id="purchaseAmount" step="0.01" placeholder="150.00" required></div>
             <div class="input-group"><label>Parcelas</label><select id="purchaseInstallments">
                 <option value="1">À vista (1x)</option>
                 <option value="2">2x</option>
@@ -472,16 +468,23 @@
                 <option value="11">11x</option>
                 <option value="12">12x</option>
             </select></div>
-            <button class="btn-save" type="submit">Salvar Compra</button>
+            
+            <div class="btn-actions-row">
+                <button class="btn-delete-modal" id="btnDeletePurchase" onclick="deletePurchase()" type="button">🗑️</button>
+                <button class="btn-save" type="submit">Salvar Compra</button>
+            </div>
         </form>
     </div>
 </div>
 
 <script>
-    // ========== DADOS ==========
-    let cards = [
+    // ========== SISTEMA DE PERSISTÊNCIA ==========
+    const STORAGE_KEY = 'creditCardAppData';
+
+    // Tenta carregar dados do LocalStorage, senão usa o padrão
+    let cards = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
         {
-            id: 1, bank: 'Nubank', limit: 6000, close: '12/Out', due: '22/Out', paid: false,
+            id: 1, bank: 'Nubank', limit: 6000, close: '12', due: '22', paid: false,
             purchases: [
                 { id: 'p1', desc: 'Mercado Livre', amount: 576.50, installments: 1 },
                 { id: 'p2', desc: 'Celular parcelado', amount: 500, installments: 2 },
@@ -489,38 +492,55 @@
             ]
         },
         {
-            id: 2, bank: 'Itaú', limit: 2000, close: '05/Nov', due: '15/Nov', paid: false,
-            purchases: [
-                { id: 'p4', desc: 'Almoço', amount: 89.90, installments: 1 }
-            ]
+            id: 2, bank: 'Itaú', limit: 2000, close: '05', due: '15', paid: false,
+            purchases: [ { id: 'p4', desc: 'Almoço', amount: 89.90, installments: 1 } ]
         },
         {
-            id: 3, bank: 'Inter', limit: 10000, close: '28/Out', due: '07/Nov', paid: true,
+            id: 3, bank: 'Inter', limit: 10000, close: '28', due: '07', paid: true,
             purchases: []
         }
     ];
-    let nextId = 4;
+
+    let nextId = cards.length > 0 ? Math.max(...cards.map(c => c.id)) + 1 : 1;
     let purchaseNextId = 100;
+    
+    // Inicializa IDs internos de compra para evitar duplicatas
+    cards.forEach(card => {
+        card.purchases.forEach(p => {
+            const numId = parseInt(p.id.replace('p', ''));
+            if(numId >= purchaseNextId) purchaseNextId = numId + 1;
+        });
+    });
+
+    // Função para salvar no LocalStorage
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+    }
 
     // helpers
     const formatBR = (val) => val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const currency = (val) => `R$ ${formatBR(val)}`;
 
-    // calcular total da fatura atual (soma de compras à vista + parcelas vigentes)
+    // CORREÇÃO LÓGICA:
+    // 1. Fatura Atual: Soma das parcelas do mês.
+    // 2. Limite Usado: Soma do VALOR TOTAL das compras (o banco "trava" o total antecipadamente).
+    
     function calculateCurrentBill(purchases) {
         let total = 0;
         purchases.forEach(p => {
-            if (p.installments === 1) {
-                total += p.amount;
-            } else {
-                const parcela = p.amount / p.installments;
-                total += parcela;
-            }
+            const parcela = p.amount / p.installments;
+            total += parcela;
         });
         return total;
     }
 
-    // calcular previsão próxima fatura (parcelas futuras)
+    // Calcula o quanto do limite está comprometido (Valor Total das dívidas)
+    function calculateTotalDebt(purchases) {
+        return purchases.reduce((sum, p) => sum + p.amount, 0);
+    }
+
+    // Previsão próxima fatura (considerando que as parcelas continuam)
+    // Simplificação: Assume que todas as parcelas atuais terão continuidade
     function calculateNextBillPreview(purchases) {
         let next = 0;
         purchases.forEach(p => {
@@ -532,7 +552,6 @@
         return next;
     }
 
-    // calcular total gasto no mês (todos os cartões)
     function calculateTotalMonth() {
         let total = 0;
         cards.forEach(card => {
@@ -541,7 +560,6 @@
         return total;
     }
 
-    // atualizar total do mês no rodapé
     function updateTotalMonth() {
         const total = calculateTotalMonth();
         document.getElementById('totalMonthValue').innerText = currency(total);
@@ -554,15 +572,21 @@
 
         cards.forEach(card => {
             const currentBill = calculateCurrentBill(card.purchases);
-            const available = card.limit - currentBill;
-            const usedPercent = (currentBill / card.limit) * 100;
+            const totalDebt = calculateTotalDebt(card.purchases); // Usado para calculo do limite
+            
+            const available = card.limit - totalDebt;
+            // Limita a porcentagem da barra entre 0 e 100
+            const usedPercent = Math.max(0, Math.min((totalDebt / card.limit) * 100, 100));
             const nextPreview = calculateNextBillPreview(card.purchases);
-            const availableClass = available > 500 ? 'available-positive' : 'available-warning';
+            
+            let availableClass = 'available-positive';
+            if (available < 0) availableClass = 'available-negative';
+            else if (available < card.limit * 0.2) availableClass = 'available-warning';
 
             const cardDiv = document.createElement('div');
             cardDiv.className = `credit-card ${card.paid ? 'paid' : ''}`;
 
-            // lista compras com botão editar
+            // lista compras
             let purchasesHtml = '';
             card.purchases.forEach(p => {
                 const parcela = p.amount / p.installments;
@@ -602,49 +626,54 @@
                             <span>Disponível</span>
                             <span class="${availableClass}">${currency(available)}</span>
                         </div>
-                        <div class="limit-bar"><div class="limit-fill" style="width: ${Math.min(usedPercent,100)}%"></div></div>
+                        <div class="limit-bar"><div class="limit-fill" style="width: ${usedPercent}%"></div></div>
                         <div class="info-dates">
-                            <span>📅 Fecha ${card.close}</span>
-                            <span>📅 Vence ${card.due}</span>
+                            <span>📅 Fecha dia ${card.close}</span>
+                            <span>📅 Vence dia ${card.due}</span>
                         </div>
                     </div>
 
-                    <!-- histórico de compras -->
                     <div class="purchases-section">
-                        <div class="section-title">🛒 Últimas compras</div>
-                        ${purchasesHtml || '<div style="opacity:0.4; padding:8px;">Nenhuma compra</div>'}
+                        <div class="section-title">🛒 Compras</div>
+                        ${purchasesHtml || '<div style="opacity:0.4; padding:8px; text-align:center;">Nenhuma compra registrada</div>'}
                         <button class="btn-add-purchase" onclick="openPurchaseModal(${card.id})">🛍️ Nova compra</button>
                     </div>
 
-                    <!-- previsão próxima fatura -->
                     <div class="next-bill-preview">
-                        <span>📆 Próxima fatura</span>
+                        <span>📆 Próxima fatura (prev.)</span>
                         <span class="next-bill-value">${currency(nextPreview)}</span>
                     </div>
                 </div>
-                <button class="btn-pay" onclick="togglePaid(${card.id})">${card.paid ? 'Pago' : '💰 Marcar como pago'}</button>
+                <button class="btn-pay" onclick="togglePaid(${card.id})">${card.paid ? 'Pago ✓' : '💰 Marcar como pago'}</button>
             `;
             container.appendChild(cardDiv);
         });
 
-        // Atualizar total do mês no rodapé
         updateTotalMonth();
     }
 
     // modais de cartão
     function openCardModal(editId = null) {
-        document.getElementById('modalCard').classList.add('modal-active');
+        const modal = document.getElementById('modalCard');
+        const deleteBtn = document.getElementById('btnDeleteCard');
+        
+        modal.classList.add('modal-active');
         document.getElementById('modalCardTitle').innerText = editId ? 'Editar Cartão' : '💳 Novo Cartão';
-        document.getElementById('cardId').value = editId || '';
+        
+        // Mostra ou esconde botão deletar
+        deleteBtn.style.display = editId ? 'flex' : 'none';
+
         if (editId) {
             const c = cards.find(c => c.id == editId);
             if (c) {
+                document.getElementById('cardId').value = c.id;
                 document.getElementById('bankName').value = c.bank;
                 document.getElementById('totalLimit').value = c.limit;
                 document.getElementById('closeDate').value = c.close;
                 document.getElementById('dueDate').value = c.due;
             }
         } else {
+            document.getElementById('cardId').value = '';
             document.getElementById('bankName').value = '';
             document.getElementById('totalLimit').value = '';
             document.getElementById('closeDate').value = '';
@@ -662,12 +691,9 @@
         const close = document.getElementById('closeDate').value;
         const due = document.getElementById('dueDate').value;
 
-        if (id) { // update
+        if (id) {
             const index = cards.findIndex(c => c.id == id);
-            cards[index].bank = bank;
-            cards[index].limit = limit;
-            cards[index].close = close;
-            cards[index].due = due;
+            cards[index] = { ...cards[index], bank, limit, close, due };
         } else {
             cards.push({
                 id: nextId++,
@@ -676,28 +702,43 @@
                 purchases: []
             });
         }
+        saveData(); // Salva alteração
         render();
         closeCardModal();
     }
 
-    // modal compra (abrir para nova compra ou edição)
+    function deleteCard() {
+        const id = document.getElementById('cardId').value;
+        if(id && confirm("Tem certeza que deseja excluir este cartão e todo seu histórico?")) {
+            cards = cards.filter(c => c.id != id);
+            saveData();
+            render();
+            closeCardModal();
+        }
+    }
+
+    // modal compra
     function openPurchaseModal(cardId, purchaseId = null) {
-        document.getElementById('modalPurchase').classList.add('modal-active');
+        const modal = document.getElementById('modalPurchase');
+        const deleteBtn = document.getElementById('btnDeletePurchase');
+        
+        modal.classList.add('modal-active');
         document.getElementById('purchaseCardId').value = cardId;
         
+        // Mostra ou esconde botão deletar
+        deleteBtn.style.display = purchaseId ? 'flex' : 'none';
+        
         if (purchaseId) {
-            // modo edição
+            document.getElementById('modalPurchaseTitle').innerText = '✏️ Editar Compra';
             const card = cards.find(c => c.id === cardId);
             const purchase = card.purchases.find(p => p.id === purchaseId);
             if (purchase) {
-                document.getElementById('modalPurchaseTitle').innerText = '✏️ Editar Compra';
                 document.getElementById('purchaseId').value = purchase.id;
                 document.getElementById('purchaseDesc').value = purchase.desc;
                 document.getElementById('purchaseAmount').value = purchase.amount;
                 document.getElementById('purchaseInstallments').value = purchase.installments;
             }
         } else {
-            // modo nova compra
             document.getElementById('modalPurchaseTitle').innerText = '🛒 Nova Compra';
             document.getElementById('purchaseId').value = '';
             document.getElementById('purchaseDesc').value = '';
@@ -710,9 +751,7 @@
         openPurchaseModal(cardId, purchaseId);
     }
 
-    function closePurchaseModal() {
-        document.getElementById('modalPurchase').classList.remove('modal-active');
-    }
+    function closePurchaseModal() { document.getElementById('modalPurchase').classList.remove('modal-active'); }
 
     function savePurchase(e) {
         e.preventDefault();
@@ -726,7 +765,6 @@
         if (!card) return;
 
         if (purchaseId) {
-            // editar compra existente
             const purchase = card.purchases.find(p => p.id === purchaseId);
             if (purchase) {
                 purchase.desc = desc;
@@ -734,21 +772,42 @@
                 purchase.installments = installments;
             }
         } else {
-            // nova compra
-            const newPurchase = {
+            card.purchases.push({
                 id: 'p' + purchaseNextId++,
                 desc, amount, installments
-            };
-            card.purchases.push(newPurchase);
+            });
         }
 
+        // Ao salvar compra, garantimos que o status 'pago' seja desmarcado se houver nova movimentação
+        // card.paid = false; 
+        
+        saveData(); // Salva alteração
         render();
         closePurchaseModal();
     }
 
+    function deletePurchase() {
+        const cardId = parseInt(document.getElementById('purchaseCardId').value);
+        const purchaseId = document.getElementById('purchaseId').value;
+        
+        if(purchaseId && confirm("Excluir esta compra?")) {
+            const card = cards.find(c => c.id === cardId);
+            if(card) {
+                card.purchases = card.purchases.filter(p => p.id !== purchaseId);
+                saveData();
+                render();
+                closePurchaseModal();
+            }
+        }
+    }
+
     function togglePaid(id) {
         const card = cards.find(c => c.id === id);
-        if (card) { card.paid = !card.paid; render(); }
+        if (card) { 
+            card.paid = !card.paid; 
+            saveData(); // Salva alteração
+            render(); 
+        }
     }
 
     // inicialização
