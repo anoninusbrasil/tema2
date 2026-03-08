@@ -130,6 +130,7 @@
         }
         .action-btn:hover { background: #6d5ac9; color: white; }
         .action-btn.delete:hover { background: #ff5a5a; }
+        .action-btn.toggle-history:hover { background: #6d5ac9; color: white; }
 
         /* área de totais */
         .totals-grid {
@@ -191,7 +192,13 @@
             background: rgba(10, 8, 22, 0.6);
             border-radius: 22px;
             padding: 14px;
+            transition: all 0.3s ease;
         }
+        
+        .purchases-section.hidden {
+            display: none;
+        }
+        
         .section-title {
             display: flex;
             align-items: center;
@@ -200,6 +207,7 @@
             margin-bottom: 12px;
             opacity: 0.9;
         }
+        
         .purchase-item {
             background: rgba(255,255,255,0.04);
             border-radius: 16px;
@@ -619,6 +627,7 @@
 <script>
     // ========== SISTEMA DE PERSISTÊNCIA ==========
     const STORAGE_KEY = 'creditCardAppData';
+    const HISTORY_VISIBILITY_KEY = 'cardHistoryVisibility';
 
     // Tenta carregar dados do LocalStorage, senão usa o padrão
     let cards = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
@@ -640,6 +649,9 @@
         }
     ];
 
+    // Estado de visibilidade do histórico para cada cartão
+    let historyVisibility = JSON.parse(localStorage.getItem(HISTORY_VISIBILITY_KEY)) || {};
+
     let nextId = cards.length > 0 ? Math.max(...cards.map(c => c.id)) + 1 : 1;
     let purchaseNextId = 100;
     let currentCardId = null; // Para controlar qual cartão está sendo pago/reaberto
@@ -655,6 +667,14 @@
     // Função para salvar no LocalStorage
     function saveData() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+        localStorage.setItem(HISTORY_VISIBILITY_KEY, JSON.stringify(historyVisibility));
+    }
+
+    // Função para alternar visibilidade do histórico
+    function toggleHistory(cardId) {
+        historyVisibility[cardId] = !historyVisibility[cardId];
+        saveData();
+        render();
     }
 
     // helpers
@@ -741,6 +761,8 @@
             const cardDiv = document.createElement('div');
             cardDiv.className = `credit-card ${card.paid ? 'paid' : ''}`;
 
+            const isHistoryVisible = historyVisibility[card.id] !== false; // Padrão é visível
+
             let purchasesHtml = '';
             card.purchases.forEach(p => {
                 const parcela = p.amount / p.installments;
@@ -764,6 +786,9 @@
                     <div class="card-header">
                         <span class="bank-name">🏦 ${card.bank}</span>
                         <div class="actions">
+                            <button class="action-btn toggle-history" onclick="toggleHistory(${card.id})" title="${isHistoryVisible ? 'Ocultar' : 'Mostrar'} histórico">
+                                ${isHistoryVisible ? '👁️' : '👁️‍🗨️'}
+                            </button>
                             <button class="action-btn" onclick="editCard(${card.id})">✏️</button>
                         </div>
                     </div>
@@ -787,7 +812,7 @@
                         </div>
                     </div>
 
-                    <div class="purchases-section">
+                    <div class="purchases-section ${!isHistoryVisible ? 'hidden' : ''}">
                         <div class="section-title">🛒 Compras</div>
                         ${purchasesHtml || '<div style="opacity:0.4; padding:8px; text-align:center;">Nenhuma compra registrada</div>'}
                         <button class="btn-add-purchase" onclick="openPurchaseModal(${card.id})">🛍️ Nova compra</button>
@@ -929,6 +954,8 @@
         const id = document.getElementById('cardId').value;
         if(id && confirm("Tem certeza que deseja excluir este cartão e todo seu histórico?")) {
             cards = cards.filter(c => c.id != id);
+            // Remove também a preferência de visibilidade
+            delete historyVisibility[id];
             saveData();
             render();
             closeCardModal();
